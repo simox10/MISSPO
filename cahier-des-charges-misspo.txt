@@ -1,0 +1,2296 @@
+Cahier des Charges Fonctionnel de l'Application Web "MISSPO"
+
+================================================================================
+1. INTRODUCTION ET CONTEXTE
+================================================================================
+
+Titre du Projet : Application Web de Réservation de Services Anti-Poux "MISSPO"
+Version : 1.0 (MVP)
+Date : 14 Février 2026
+
+Description : 
+Application web moderne et bilingue (Français/Arabe) pour MISSPO, spécialiste du 
+traitement anti-poux intervenant en milieu scolaire et à domicile à Casablanca.
+L'application offre une interface publique pour la présentation des services et 
+la prise de rendez-vous, ainsi qu'un panel d'administration pour la gestion des 
+demandes de rendez-vous et du contenu du site.
+
+Objectif Principal :
+- Fournir une vitrine moderne et professionnelle pour MISSPO
+- Permettre aux clients de découvrir les services et prendre rendez-vous facilement
+- Offrir à l'administrateur un outil de gestion efficace des rendez-vous et du contenu
+- Proposer une expérience utilisateur fluide, innovante et rassurante
+
+Acteurs (Rôles Utilisateurs) :
+- Admin : Le gestionnaire de MISSPO (compte unique)
+- Client : Les parents, écoles et visiteurs du site
+
+================================================================================
+2. OBJECTIFS DU SITE WEB
+================================================================================
+
+Interface Client (Site Public) :
+- Présenter MISSPO et ses valeurs de manière professionnelle et rassurante
+- Informer sur les services proposés (Pack École et Pack Domicile)
+- Permettre aux clients de prendre rendez-vous facilement
+- Fournir les informations de contact et répondre aux questions fréquentes
+
+Interface Admin (Panel d'Administration) :
+- Gérer les demandes de rendez-vous (accepter, refuser, modifier, suivre les statuts)
+- Gérer les horaires de travail et disponibilités
+- Gérer le contenu du site (services, FAQ)
+- Recevoir des notifications pour les nouvelles demandes
+- Consulter des statistiques basiques
+
+================================================================================
+3. FONCTIONNALITÉS DÉTAILLÉES PAR INTERFACE
+================================================================================
+
+3.1. INTERFACE CLIENT (SITE PUBLIC)
+--------------------------------------------------------------------------------
+
+3.1.1. Page d'Accueil
+Objectif : Présenter MISSPO de manière attractive et rassurante
+
+Contenu :
+- Hero Section :
+  * Titre principal : "Misspo – Spécialiste du traitement anti-poux"
+  * Sous-titre : "Intervention en milieu scolaire & à domicile"
+  * Bouton d'action principal : "Prendre Rendez-vous"
+  * Image/illustration professionnelle et rassurante
+
+- Section Présentation :
+  * Description courte de MISSPO
+  * "Nous intervenons :"
+    - 🏫 dans les écoles
+    - 🏠 à domicile
+    - 👩‍⚕️ avec une équipe formée
+    - 🪮 à l'aide de matériel professionnel
+  * Message clé : "Une solution efficace, douce et rassurante pour les parents 
+    et les établissements"
+
+- Section Services (Aperçu) :
+  * Présentation visuelle des 2 packs
+  * Bouton "Découvrir nos services"
+
+- Section Valeurs :
+  * ✅ Hygiène irréprochable
+  * ✅ Sécurité des enfants
+  * ✅ Discrétion
+  * ✅ Efficacité
+  * ✅ Respect du cuir chevelu
+
+- Section Appel à l'Action :
+  * Bouton "Prendre Rendez-vous"
+  * Informations de contact rapides
+
+- Footer :
+  * Liens vers les pages
+  * Informations de contact
+  * Sélecteur de langue (FR/AR)
+
+Animations :
+- Animations fluides au scroll
+- Transitions douces entre les sections
+- Effets hover sur les boutons et cartes
+
+
+
+3.1.2. Page "Nos Services"
+Objectif : Présenter en détail les deux packs de services
+
+Contenu :
+
+Pack 1 : 🏫 Pack École
+- Titre : "Pack École - Diagnostic + Aspirateur anti-poux + Peigne"
+- Description détaillée :
+  * Diagnostic précis
+  * Utilisation d'un aspirateur anti-poux professionnel
+  * Élimination mécanique des poux et lentes
+  * Intervention discrète au sein de l'établissement
+  * Autorisation parentale obligatoire
+- Tarif : "Tarifs adaptés selon le nombre d'enfants – devis sur demande"
+- Bouton : "Demander un devis"
+
+Pack 2 : 🏠 Pack Domicile
+- Titre : "Pack Domicile - Traitement complet à domicile"
+- Description détaillée :
+  * Diagnostic
+  * Traitement anti-poux
+  * Aspirateur + peigne
+  * Conseils de prévention pour la famille
+- Tarif : "250 DH"
+- Durée : [À définir selon le pack]
+- Bouton : "Prendre Rendez-vous"
+
+Section Protocole & Sécurité :
+- Titre : "Notre protocole Misspo"
+- Étapes :
+  1️⃣ Diagnostic : Vérification minutieuse du cuir chevelu
+  2️⃣ Traitement : Aspirateur anti-poux professionnel + Peigne spécial anti-lentes
+  3️⃣ Hygiène : Matériel désinfecté après chaque enfant + Respect strict des normes
+  4️⃣ Prévention : Conseils personnalisés aux parents et écoles
+- Message : "Aucun produit agressif – méthode douce et efficace"
+
+Tableau Récapitulatif des Tarifs :
+┌─────────────────┬──────────────────────────────────┬─────────────┐
+│ Service         │ Contenu                          │ Prix        │
+├─────────────────┼──────────────────────────────────┼─────────────┤
+│ Pack École      │ Diagnostic + Aspirateur + Peigne │ Sur devis   │
+│ Pack Domicile   │ Traitement complet à domicile    │ 250 DH      │
+└─────────────────┴──────────────────────────────────┴─────────────┘
+Note : "Tarifs préférentiels pour les écoles et groupes"
+
+Design :
+- Cartes visuelles pour chaque pack
+- Icônes illustratives
+- Couleurs rassurantes et professionnelles
+- Boutons d'action clairs
+
+--------------------------------------------------------------------------------
+
+3.1.3. Page "Qui Sommes-nous"
+Objectif : Présenter MISSPO, ses valeurs et répondre aux questions fréquentes
+
+Section "À propos de MISSPO" :
+- Titre : "Qui sommes-nous ?"
+- Contenu :
+  * "Misspo est née d'un besoin réel : proposer une alternative professionnelle, 
+    propre et sécurisée au traitement des poux chez les enfants."
+  * "Nous accompagnons :"
+    - les écoles
+    - les parents
+    - les enfants
+  * "avec une approche bienveillante et non traumatisante."
+
+Section "Nos Valeurs" :
+- ✅ Hygiène irréprochable
+- ✅ Sécurité des enfants
+- ✅ Discrétion
+- ✅ Efficacité
+- ✅ Respect du cuir chevelu
+
+Section "Notre Approche" :
+- Description de la méthode professionnelle
+- Présentation de l'équipe formée
+- Matériel professionnel utilisé
+
+Section FAQ (Foire Aux Questions) :
+Questions suggérées :
+1. "Le traitement est-il douloureux pour l'enfant ?"
+   → Non, notre méthode est douce et non traumatisante. Nous utilisons uniquement 
+   des techniques mécaniques (aspirateur et peigne) sans produits chimiques agressifs.
+
+2. "Combien de temps dure une séance ?"
+   → [Durée selon le pack - à définir]
+
+3. "Intervenez-vous dans toutes les écoles ?"
+   → Oui, nous intervenons dans les écoles de Casablanca. Une autorisation 
+   parentale est obligatoire pour chaque enfant.
+
+4. "Le traitement est-il efficace dès la première séance ?"
+   → Notre méthode professionnelle permet d'éliminer les poux et lentes dès la 
+   première intervention. Nous fournissons également des conseils de prévention.
+
+5. "Quels sont vos horaires d'intervention ?"
+   → [Horaires définis par l'admin - affichage dynamique]
+
+6. "Comment prendre rendez-vous ?"
+   → Vous pouvez prendre rendez-vous directement via notre formulaire en ligne, 
+   nous appeler au 0622945571, ou nous contacter par WhatsApp.
+
+7. "Le paiement se fait comment ?"
+   → Le paiement se fait en espèces sur place, après la séance.
+
+8. "Faut-il préparer quelque chose avant votre intervention ?"
+   → Non, nous apportons tout le matériel nécessaire. Pour les interventions à 
+   domicile, assurez-vous simplement que l'enfant ait les cheveux secs.
+
+Note : L'admin peut gérer (ajouter/modifier/supprimer) les questions FAQ depuis 
+le panel d'administration.
+
+Design :
+- Mise en page claire et aérée
+- Accordéon pour les FAQ (questions cliquables)
+- Photos/illustrations professionnelles
+- Témoignages (optionnel pour version future)
+
+
+
+--------------------------------------------------------------------------------
+
+3.1.4. Page "Contact"
+Objectif : Permettre aux clients de contacter MISSPO facilement
+
+Informations de Contact :
+- 📍 Ville : Casablanca
+- 📞 Téléphone / WhatsApp : 0622945571
+- 📧 Email : wafaaoubouali91@gmail.com
+
+Formulaire de Contact Simple :
+Champs :
+- Nom complet (requis)
+- Téléphone (requis)
+- Email (requis)
+- Message (optionnel)
+- Bouton : "Envoyer"
+
+Note : Ce formulaire est différent du formulaire de prise de rendez-vous. 
+Il sert uniquement pour les questions générales.
+
+Carte/Localisation :
+- Indication de la zone d'intervention : Casablanca
+- (Optionnel) : Intégration Google Maps si adresse précise disponible
+
+Boutons d'Action Rapide :
+- Bouton "Appeler maintenant" (lien tel:)
+- Bouton "WhatsApp" (lien WhatsApp direct)
+- Bouton "Envoyer un email" (lien mailto:)
+
+Design :
+- Mise en page claire avec informations bien visibles
+- Icônes pour chaque moyen de contact
+- Formulaire simple et accessible
+
+--------------------------------------------------------------------------------
+
+3.1.5. Processus de Prise de Rendez-vous (Client)
+Objectif : Permettre aux clients de demander un rendez-vous facilement
+
+Déclenchement :
+- Bouton "Prendre Rendez-vous" présent sur :
+  * Page d'accueil
+  * Page "Nos Services"
+  * Menu de navigation
+
+Formulaire de Prise de Rendez-vous :
+Étape unique avec tous les champs :
+
+1. Choix du Pack (requis) :
+   - Radio button : Pack École / Pack Domicile
+   - Affichage du prix selon le choix
+
+2. Informations Client (requis) :
+   - Nom complet
+   - Numéro de téléphone
+   - Email
+   - Adresse (si Pack Domicile)
+   - Nom de l'école (si Pack École)
+
+3. Sélection Date et Heure (requis) :
+   - Calendrier interactif
+   - Affichage des créneaux disponibles selon :
+     * Les horaires de travail définis par l'admin
+     * Les jours de fermeture exceptionnels
+     * Les rendez-vous déjà confirmés
+   - Durée du créneau selon le pack choisi
+
+4. Message/Notes (optionnel) :
+   - Zone de texte libre pour précisions
+
+5. Validation :
+   - Bouton "Envoyer la demande"
+   - Message de confirmation : "Votre demande a été envoyée avec succès. 
+     Nous vous contacterons rapidement pour confirmer votre rendez-vous."
+
+Comportement après Envoi :
+- La demande est enregistrée avec le statut "En attente"
+- L'admin reçoit une notification dans son inbox
+- Le client reçoit un message de confirmation (optionnel)
+
+Validation Frontend :
+- Vérification de tous les champs requis
+- Format email valide
+- Format téléphone valide
+- Date/heure dans le futur
+- Créneau disponible
+
+Design :
+- Formulaire moderne et épuré
+- Indicateurs visuels pour les champs requis
+- Messages d'erreur clairs
+- Animations de validation
+- Responsive (mobile-friendly)
+
+
+
+--------------------------------------------------------------------------------
+
+3.1.6. Fonctionnalités Transversales (Site Client)
+
+Multilingue (Français / Arabe) :
+- Sélecteur de langue visible dans le header/footer
+- Langue par défaut : Français
+- Traduction complète de :
+  * Tous les textes du site
+  * Formulaires et messages
+  * Boutons et labels
+  * FAQ
+- Adaptation RTL (Right-to-Left) pour l'arabe
+- Stockage de la préférence linguistique (localStorage)
+
+Navigation :
+- Menu principal :
+  * Accueil
+  * Nos Services
+  * Qui Sommes-nous
+  * Contact
+  * Bouton "Prendre Rendez-vous" (mis en évidence)
+  * Sélecteur de langue
+
+- Menu mobile (hamburger) :
+  * Même structure adaptée au mobile
+  * Animation fluide d'ouverture/fermeture
+
+Footer :
+- Liens rapides vers toutes les pages
+- Informations de contact
+- Réseaux sociaux (si applicable)
+- Mentions légales (optionnel)
+- Copyright MISSPO
+
+Design & Animations :
+- Design moderne, épuré et professionnel
+- Palette de couleurs MISSPO (#ED7A97, #F29CB1, #F6BDCB , #FBDEE5, #FFFFFF , #E5F4F9 , #CBE8F2 , #96D0E5 , #2DA1CA)
+- Logo MISSPO visible dans le header
+- Animations au scroll (fade-in, slide-in)
+- Transitions fluides entre les pages
+- Micro-interactions sur les boutons
+- Loading states élégants
+
+Responsive Design :
+- Adaptation parfaite sur :
+  * Desktop (1920px, 1440px, 1024px)
+  * Tablette (768px)
+  * Mobile (375px, 414px)
+- Images optimisées selon la taille d'écran
+- Touch-friendly sur mobile
+
+Performance :
+- Chargement rapide des pages
+- Lazy loading des images
+- Optimisation des assets
+- Code minifié en production
+
+SEO :
+- Meta tags optimisés
+- Structure HTML sémantique
+- URLs propres et descriptives
+- Sitemap.xml
+- Robots.txt
+
+Accessibilité :
+- Contraste suffisant des couleurs
+- Textes alternatifs pour les images
+- Navigation au clavier
+- Labels ARIA appropriés
+
+================================================================================
+3.2. INTERFACE ADMIN (PANEL D'ADMINISTRATION)
+================================================================================
+
+3.2.1. Authentification Admin
+Objectif : Sécuriser l'accès au panel d'administration
+
+Page de Connexion :
+- URL dédiée : /admin/login
+- Formulaire :
+  * Email
+  * Mot de passe
+  * Bouton "Se connecter"
+  * Option "Rester connecté" (optionnel)
+- Validation des identifiants
+- Gestion de session sécurisée
+- Redirection vers le dashboard après connexion
+
+Sécurité :
+- Mot de passe haché (bcrypt)
+- Protection CSRF
+- Limitation des tentatives de connexion
+- Session timeout après inactivité
+- Déconnexion manuelle
+
+Compte Admin :
+- Un seul compte admin
+- Email : wafaaoubouali91@gmail.com
+- Possibilité de modifier le mot de passe depuis le panel
+
+
+
+--------------------------------------------------------------------------------
+
+3.2.2. Dashboard (Tableau de Bord)
+Objectif : Vue d'ensemble de l'activité
+
+Statistiques Basiques :
+- Nombre total de rendez-vous
+- Rendez-vous en attente (avec badge de notification)
+- Rendez-vous confirmés aujourd'hui
+- Rendez-vous de la semaine
+- Rendez-vous terminés (ce mois)
+- Rendez-vous refusés (ce mois)
+
+Widgets :
+- Calendrier du jour avec les rendez-vous confirmés
+- Liste des dernières demandes en attente
+- Notifications récentes
+- Accès rapides :
+  * Voir tous les rendez-vous
+  * Gérer les horaires
+  * Gérer le contenu
+
+Design :
+- Cartes (cards) pour chaque statistique
+- Graphiques simples (optionnel)
+- Couleurs selon les statuts
+- Interface claire et intuitive
+
+--------------------------------------------------------------------------------
+
+3.2.3. Gestion des Rendez-vous
+Objectif : Gérer toutes les demandes et rendez-vous des clients
+
+3.2.3.1. Liste des Rendez-vous
+
+Affichage :
+- Tableau avec colonnes :
+  * ID
+  * Date et Heure
+  * Client (Nom)
+  * Téléphone
+  * Pack choisi
+  * Statut (badge coloré)
+  * Actions
+
+Filtres inteligent  :
+- Par statut : Tous / En attente / Confirmé / Terminé / Refusé
+- Par date : Aujourd'hui / Cette semaine / Ce mois / Personnalisé
+- Par pack : Tous / Pack École / Pack Domicile
+- Recherche par nom de client ou téléphone
+
+Tri :
+- Par date (croissant/décroissant)
+- Par statut
+- Par pack
+
+Pagination :
+- 20 rendez-vous par page
+- Navigation entre les pages
+
+Actions Rapides (sur chaque ligne) :
+- Voir les détails (icône œil)
+- Modifier (icône crayon)
+- Changer le statut (menu déroulant)
+- Supprimer (icône poubelle avec confirmation)
+
+Statuts et Couleurs :
+- 🟡 En attente (Jaune/Orange) : Nouvelle demande
+- 🟢 Confirmé (Vert) : Rendez-vous validé par l'admin
+- 🔵 Terminé (Bleu) : Séance effectuée et payée
+- 🔴 Refusé (Rouge) : Demande refusée par l'admin
+
+
+
+3.2.3.2. Détails d'un Rendez-vous
+
+Modal ou Page Dédiée affichant :
+
+Informations Client :
+- Nom complet
+- Téléphone (avec bouton d'appel direct)
+- Email (avec bouton d'envoi email)
+- Adresse (si Pack Domicile)
+- Nom de l'école (si Pack École)
+
+Informations Rendez-vous :
+- Pack choisi
+- Date et heure
+- Durée
+- Statut actuel
+- Date de création de la demande
+- Message/Notes du client (si renseigné)
+
+Historique :
+- Date de création : [date]
+- Dernière modification : [date]
+- Changements de statut avec horodatage
+
+Actions Disponibles :
+- Modifier le rendez-vous (date, heure, pack)
+- Changer le statut :
+  * En attente → Confirmé
+  * En attente → Refusé
+  * Confirmé → Terminé
+  * Confirmé → Refusé
+- Ajouter une note interne (optionnel)
+- Supprimer le rendez-vous (avec confirmation)
+
+Boutons :
+- "Appeler le client" (lien tel:)
+- "Envoyer un email" (lien mailto:)
+- "WhatsApp" (lien WhatsApp direct)
+- "Enregistrer les modifications"
+- "Fermer"
+
+--------------------------------------------------------------------------------
+
+3.2.3.3. Vue Calendrier
+
+Objectif : Visualiser les rendez-vous dans un calendrier depuis ce lien : https://shadcn-ui-big-calendar.vercel.app/
+
+Vues Disponibles :
+- Vue Jour : Tous les rendez-vous du jour sélectionné
+- Vue Semaine : Rendez-vous de la semaine
+- Vue Mois : Aperçu mensuel
+
+Affichage :
+- Rendez-vous confirmés affichés dans le calendrier
+- Couleur selon le pack (Pack École / Pack Domicile)
+- Clic sur un rendez-vous → Ouvre les détails
+- Indication visuelle des créneaux occupés
+
+Navigation :
+- Boutons Précédent / Suivant
+- Retour à aujourd'hui
+- Sélecteur de date
+
+Fonctionnalités :
+- Drag & drop pour déplacer un rendez-vous (optionnel pour MVP)
+- Clic sur un créneau vide → Ajouter un rendez-vous manuellement
+- Export du calendrier (optionnel)
+
+--------------------------------------------------------------------------------
+
+3.2.3.4. Inbox / Notifications
+
+Objectif : Alerter l'admin des nouvelles demandes
+
+Affichage :
+- Badge de notification sur l'icône inbox (nombre de demandes en attente)
+- Liste des notifications :
+  * "Nouvelle demande de rendez-vous de [Nom Client]"
+  * Date et heure de la demande
+  * Bouton "Voir la demande"
+
+Comportement :
+- Notification en temps réel (ou rafraîchissement automatique)
+- Marquer comme lu après consultation
+- Archivage des anciennes notifications
+
+Son/Alerte :
+- Notification sonore pour nouvelle demande (optionnel)
+- Notification desktop (optionnel)
+
+
+
+--------------------------------------------------------------------------------
+
+3.2.4. Gestion des Horaires de Travail
+Objectif : Définir les disponibilités pour les rendez-vous
+
+3.2.4.1. Horaires Réguliers
+
+Configuration par Jour :
+Pour chaque jour de la semaine :
+- Actif / Inactif (checkbox)
+- Heure d'ouverture (ex: 09:00)
+- Heure de fermeture (ex: 18:00)
+- Pause déjeuner (optionnel) :
+  * Heure début pause
+  * Heure fin pause
+
+Exemple de Configuration :
+┌──────────┬────────┬────────────┬──────────────┬─────────────────┐
+│ Jour     │ Actif  │ Ouverture  │ Fermeture    │ Pause           │
+├──────────┼────────┼────────────┼──────────────┼─────────────────┤
+│ Lundi    │ ✓      │ 09:00      │ 18:00        │ 12:00 - 14:00   │
+│ Mardi    │ ✓      │ 09:00      │ 18:00        │ 12:00 - 14:00   │
+│ Mercredi │ ✓      │ 09:00      │ 18:00        │ 12:00 - 14:00   │
+│ Jeudi    │ ✓      │ 09:00      │ 18:00        │ 12:00 - 14:00   │
+│ Vendredi │ ✓      │ 09:00      │ 18:00        │ 12:00 - 14:00   │
+│ Samedi   │ ✓      │ 09:00      │ 14:00        │ -               │
+│ Dimanche │ ✗      │ -          │ -            │ -               │
+└──────────┴────────┴────────────┴──────────────┴─────────────────┘
+
+Bouton : "Enregistrer les horaires"
+
+Impact :
+- Les créneaux disponibles dans le formulaire client sont calculés selon ces horaires
+- Les jours inactifs n'apparaissent pas dans le calendrier de réservation
+
+--------------------------------------------------------------------------------
+
+3.2.4.2. Fermetures Exceptionnelles
+
+Objectif : Bloquer des dates spécifiques (jours fériés, congés, etc.)
+
+Liste des Fermetures :
+- Tableau avec :
+  * Date
+  * Motif (ex: "Jour férié", "Congés", "Formation")
+  * Actions (Modifier / Supprimer)
+
+Ajouter une Fermeture :
+- Formulaire :
+  * Date (sélecteur de date)
+  * Motif (texte libre)
+  * Bouton "Ajouter"
+
+Comportement :
+- Les dates bloquées n'apparaissent pas dans le calendrier de réservation client
+- Les rendez-vous déjà confirmés pour ces dates sont signalés (alerte admin)
+
+Gestion :
+- Possibilité de supprimer une fermeture
+- Possibilité de modifier le motif
+
+--------------------------------------------------------------------------------
+
+3.2.5. Gestion du Contenu du Site
+Objectif : Modifier le contenu affiché sur le site public
+
+3.2.5.1. Gestion des Services (Packs)
+
+Pack École :
+- Nom (modifiable)
+- Description (éditeur de texte riche)
+- Contenu détaillé (liste des prestations)
+- Tarif (texte libre : "Sur devis")
+- Durée estimée (en minutes)
+- Actif / Inactif (pour masquer temporairement)
+
+Pack Domicile :
+- Nom (modifiable)
+- Description (éditeur de texte riche)
+- Contenu détaillé (liste des prestations)
+- Tarif (nombre : 250 DH)
+- Durée estimée (en minutes)
+- Actif / Inactif
+
+Bouton : "Enregistrer les modifications"
+
+Note : Les modifications sont immédiatement visibles sur le site public
+
+
+
+3.2.5.2. Gestion de la FAQ
+
+Liste des Questions :
+- Tableau avec :
+  * Question (FR)
+  * Question (AR)
+  * Ordre d'affichage
+  * Actif / Inactif
+  * Actions (Modifier / Supprimer / Réorganiser)
+
+Ajouter une Question :
+- Formulaire :
+  * Question (FR) - requis
+  * Réponse (FR) - requis (éditeur de texte riche)
+  * Question (AR) - requis
+  * Réponse (AR) - requis (éditeur de texte riche)
+  * Ordre d'affichage (nombre)
+  * Actif (checkbox)
+  * Bouton "Ajouter"
+
+Modifier une Question :
+- Même formulaire pré-rempli
+- Bouton "Enregistrer les modifications"
+
+Réorganiser :
+- Drag & drop pour changer l'ordre d'affichage
+- Ou boutons ↑ ↓ pour monter/descendre
+
+Supprimer :
+- Confirmation avant suppression
+- Suppression définitive
+
+Questions par Défaut (Pré-remplies) :
+Les 8 questions mentionnées dans la section 3.1.3 sont créées par défaut lors 
+de l'installation, avec leurs traductions en arabe.
+
+--------------------------------------------------------------------------------
+
+3.2.5.3. Gestion des Informations Générales (Optionnel pour MVP)
+
+Informations Modifiables :
+- Nom du service : MISSPO
+- Slogan
+- Description courte
+- Adresse complète
+- Téléphone
+- Email
+- Réseaux sociaux (liens)
+
+Note : Pour le MVP, ces informations peuvent être en dur dans le code et 
+modifiables uniquement par les développeurs.
+
+--------------------------------------------------------------------------------
+
+3.2.6. Statistiques Basiques
+Objectif : Fournir des indicateurs de performance simples
+
+Statistiques Disponibles :
+
+Rendez-vous :
+- Total des rendez-vous (tous statuts)
+- Rendez-vous par statut :
+  * En attente
+  * Confirmés
+  * Terminés
+  * Refusés
+- Rendez-vous par période :
+  * Aujourd'hui
+  * Cette semaine
+  * Ce mois
+  * Cette année
+
+Services :
+- Nombre de réservations par pack :
+  * Pack École
+  * Pack Domicile
+- Répartition en pourcentage
+
+Graphiques Simples :
+- Graphique en barres : Rendez-vous par mois
+- Graphique en camembert : Répartition par pack
+- Graphique linéaire : Évolution des rendez-vous
+
+Filtres :
+- Par période (date début - date fin)
+- Par statut
+- Par pack
+
+Export :
+- Bouton "Exporter en PDF" (optionnel)
+- Bouton "Exporter en Excel" (optionnel)
+
+Note MVP : Statistiques basiques suffisantes, pas besoin de tableaux de bord 
+complexes pour la première version.
+
+
+
+--------------------------------------------------------------------------------
+
+3.2.7. Paramètres du Compte Admin
+Objectif : Gérer le compte administrateur
+
+Informations du Compte :
+- Email (modifiable)
+- Nom complet (optionnel)
+- Photo de profil (optionnel)
+
+Sécurité :
+- Changer le mot de passe :
+  * Mot de passe actuel
+  * Nouveau mot de passe
+  * Confirmer le nouveau mot de passe
+  * Bouton "Modifier le mot de passe"
+
+Préférences :
+- Langue de l'interface admin (FR/AR)
+- Notifications activées/désactivées
+- Format de date (JJ/MM/AAAA ou MM/JJ/AAAA)
+
+Bouton : "Enregistrer les modifications"
+
+--------------------------------------------------------------------------------
+
+3.2.8. Navigation et Interface Admin
+
+Menu Principal (Sidebar) :
+- 📊 Dashboard
+- 📅 Rendez-vous
+  * Liste des rendez-vous
+  * Calendrier
+  * Inbox (avec badge de notification)
+- ⏰ Horaires
+  * Horaires réguliers
+  * Fermetures exceptionnelles
+- 📝 Contenu
+  * Gestion des services
+  * Gestion de la FAQ
+- 📈 Statistiques
+- ⚙️ Paramètres
+- 🚪 Déconnexion
+
+Header Admin :
+- Logo MISSPO
+- Titre de la page actuelle
+- Icône notifications (avec badge)
+- Icône profil admin (menu déroulant)
+- Bouton "Voir le site" (ouvre le site public dans un nouvel onglet)
+
+Design :
+- Interface moderne et professionnelle
+- Sidebar fixe ou collapsible avec fond #2DA1CA (Blue Green)
+- Couleurs cohérentes avec le site public (palette MISSPO)
+- Logo MISSPO dans le header
+- Boutons d'action en #ED7A97 (Petal Rouge)
+- Responsive (tablette et desktop)
+- Icônes claires et intuitives
+
+Responsive Admin :
+- Desktop : Sidebar visible
+- Tablette : Sidebar collapsible
+- Mobile : Menu hamburger (optionnel pour MVP, admin principalement sur desktop)
+
+================================================================================
+4. FLUX COMPLET DE GESTION D'UN RENDEZ-VOUS
+================================================================================
+
+Scénario Complet :
+
+1. Demande Client :
+   - Le client remplit le formulaire de prise de rendez-vous sur le site
+   - Choisit un pack, une date/heure, et renseigne ses informations
+   - Clique sur "Envoyer la demande"
+   - Reçoit un message de confirmation : "Votre demande a été envoyée"
+
+2. Réception Admin :
+   - Le rendez-vous est créé avec le statut "En attente"
+   - L'admin reçoit une notification dans l'inbox
+   - Badge de notification affiché sur l'icône inbox
+
+3. Traitement Admin :
+   - L'admin consulte l'inbox et voit la nouvelle demande
+   - Clique sur "Voir la demande" → Ouvre les détails du rendez-vous
+   - L'admin contacte le client par téléphone/WhatsApp pour confirmer
+   - L'admin change le statut de "En attente" à "Confirmé"
+   - Le rendez-vous apparaît maintenant dans le calendrier
+
+4. Jour du Rendez-vous :
+   - L'admin consulte le calendrier et voit les rendez-vous du jour
+   - Le spécialiste MISSPO se rend à l'école ou au domicile
+   - Effectue le traitement anti-poux
+
+5. Après la Séance :
+   - Le client paie en espèces sur place
+   - L'admin change le statut du rendez-vous de "Confirmé" à "Terminé"
+   - Le rendez-vous est archivé dans l'historique
+
+Cas Alternatif - Refus :
+   - Si l'admin ne peut pas honorer la demande (indisponibilité, problème, etc.)
+   - L'admin change le statut de "En attente" à "Refusé"
+   - L'admin contacte le client pour expliquer et proposer une alternative
+
+
+
+================================================================================
+5. EXIGENCES NON-FONCTIONNELLES
+================================================================================
+
+5.1. Performance
+--------------------------------------------------------------------------------
+- Temps de chargement des pages < 3 secondes
+- Temps de réponse des formulaires < 1 seconde
+- Optimisation des images (compression, formats modernes : WebP)
+- Lazy loading des images
+- Minification du CSS et JavaScript en production
+- Mise en cache des ressources statiques
+- Calcul optimisé des créneaux disponibles
+
+5.2. Sécurité
+--------------------------------------------------------------------------------
+- Authentification sécurisée pour l'admin :
+  * Mots de passe hachés avec bcrypt
+  * Sessions sécurisées avec tokens
+  * Protection contre les attaques par force brute
+  * Timeout de session après inactivité
+
+- Protection des données :
+  * Validation des entrées utilisateur (frontend et backend)
+  * Protection contre les injections SQL (utilisation de requêtes préparées)
+  * Protection contre les attaques XSS (échappement des données)
+  * Protection CSRF (tokens CSRF sur les formulaires)
+  * Sanitization des données avant stockage
+
+- HTTPS obligatoire :
+  * Certificat SSL/TLS valide
+  * Redirection automatique HTTP → HTTPS
+  * Sécurisation des cookies (Secure, HttpOnly, SameSite)
+
+- Sécurité des fichiers :
+  * Validation des types de fichiers uploadés (images uniquement)
+  * Limitation de la taille des fichiers
+  * Stockage sécurisé hors du webroot
+
+- Conformité RGPD (si applicable) :
+  * Consentement pour la collecte de données
+  * Droit d'accès et de suppression des données
+  * Politique de confidentialité
+
+5.3. Fiabilité et Disponibilité
+--------------------------------------------------------------------------------
+- Haute disponibilité de l'application (uptime > 99%)
+- Gestion des erreurs gracieuse :
+  * Messages d'erreur clairs pour l'utilisateur
+  * Logging des erreurs côté serveur
+  * Pages d'erreur personnalisées (404, 500)
+
+- Sauvegarde des données :
+  * Backup automatique de la base de données (quotidien)
+  * Possibilité de restauration en cas de problème
+
+- Monitoring :
+  * Surveillance de l'état du serveur
+  * Alertes en cas de problème
+
+5.4. Ergonomie et UX/UI
+--------------------------------------------------------------------------------
+- Interface intuitive et facile à utiliser pour tous les utilisateurs
+- Design moderne, épuré et professionnel
+- Typographie lisible et hiérarchisée
+- Espacement et aération suffisants
+- Feedback visuel pour toutes les actions (loading, succès, erreur)
+- Messages d'erreur clairs et constructifs
+- Animations fluides et non intrusives
+- Cohérence visuelle entre toutes les pages
+
+Identité Visuelle MISSPO :
+
+Logo :
+- Logo principal : "MISSPO" en rose avec illustration de pou en bleu
+- Baseline : "Traitement Anti-Poux & Lentes" en bleu
+- Le logo doit être utilisé sur toutes les pages du site
+- Versions : couleur, blanc (pour fonds sombres si nécessaire)
+
+Palette de Couleurs Officielle :
+
+Couleurs Principales (Roses) :
+- #ED7A97 : Petal Rouge (couleur primaire - logo, boutons principaux)
+- #F29CB1 : Pink Mist (couleur secondaire - hover, accents)
+- #F6BDCB : Soft Blossom (couleur tertiaire - backgrounds légers)
+- #FBDEE5 : Petal Frost (couleur très claire - sections, cards)
+
+Couleurs Neutres :
+- #FFFFFF : White (backgrounds principaux, texte sur fonds colorés)
+
+Couleurs Complémentaires (Bleus) :
+- #E5F4F9 : Azure Mist (backgrounds légers, sections alternées)
+- #CBE8F2 : Pale Sky (backgrounds, cards)
+- #96D0E5 : Sky Blue Light (accents, liens)
+- #2DA1CA : Blue Green (couleur d'action secondaire, icônes)
+
+Utilisation des Couleurs :
+
+Site Public :
+- Header/Navigation : Fond blanc avec logo MISSPO
+- Boutons principaux : #ED7A97 (Petal Rouge) avec hover #F29CB1
+- Sections alternées : Blanc / #E5F4F9 (Azure Mist) / #FBDEE5 (Petal Frost)
+- Liens : #2DA1CA (Blue Green)
+- Texte principal : Gris foncé (#333333) sur fond clair
+- Accents et icônes : Alternance roses et bleus selon le contexte
+
+Panel Admin :
+- Sidebar : #2DA1CA (Blue Green) avec texte blanc
+- Header : Blanc avec logo
+- Boutons d'action : #ED7A97 (Petal Rouge)
+- Statuts :
+  * En attente : #F29CB1 (Pink Mist)
+  * Confirmé : #2DA1CA (Blue Green)
+  * Terminé : #96D0E5 (Sky Blue Light)
+  * Refusé : #ED7A97 (Petal Rouge)
+- Cards/Widgets : Fond blanc avec bordures #CBE8F2
+
+Accessibilité des Couleurs :
+- Assurer un contraste suffisant entre texte et fond (WCAG AA)
+- Utiliser des couleurs plus foncées pour le texte si nécessaire
+- Ne pas se baser uniquement sur la couleur pour transmettre l'information
+
+5.5. Responsive Design
+--------------------------------------------------------------------------------
+- Adaptation parfaite sur tous les appareils :
+  * Desktop : 1920px, 1440px, 1366px, 1024px
+  * Tablette : 768px, 1024px
+  * Mobile : 320px, 375px, 414px, 428px
+
+- Interface Client (Site Public) :
+  * Priorité mobile-first
+  * Navigation tactile optimisée
+  * Formulaires adaptés au mobile
+  * Images responsive
+
+- Interface Admin :
+  * Optimisé pour desktop et tablette
+  * Sidebar adaptative
+  * Tableaux scrollables sur petits écrans
+
+5.6. Accessibilité
+--------------------------------------------------------------------------------
+- Contraste suffisant des couleurs (WCAG AA minimum)
+- Textes alternatifs pour toutes les images
+- Navigation au clavier possible
+- Labels ARIA pour les éléments interactifs
+- Taille de police lisible (minimum 16px)
+- Focus visible sur les éléments interactifs
+- Structure HTML sémantique
+
+5.7. Compatibilité Navigateurs
+--------------------------------------------------------------------------------
+- Support des navigateurs modernes :
+  * Chrome (dernières versions)
+  * Firefox (dernières versions)
+  * Safari (dernières versions)
+  * Edge (dernières versions)
+  * Opera (dernières versions)
+
+- Support mobile :
+  * Safari iOS
+  * Chrome Android
+
+5.8. Multilingue
+--------------------------------------------------------------------------------
+- Support complet du français et de l'arabe
+- Traduction de tous les éléments de l'interface
+- Adaptation RTL (Right-to-Left) pour l'arabe :
+  * Inversion de la mise en page
+  * Alignement du texte à droite
+  * Inversion des icônes directionnelles
+
+- Gestion des traductions :
+  * Fichiers de traduction séparés (JSON ou PHP)
+  * Facilité d'ajout de nouvelles langues
+  * Traductions gérables depuis le code
+
+5.9. Maintenabilité
+--------------------------------------------------------------------------------
+- Code propre et bien structuré
+- Respect des conventions de codage (PSR pour PHP, ESLint pour JS)
+- Commentaires dans le code pour les parties complexes
+- Architecture modulaire et réutilisable
+- Séparation des responsabilités (MVC)
+- Documentation technique :
+  * Guide d'installation
+  * Guide de déploiement
+  * Documentation de l'API (si applicable)
+  * Guide d'utilisation admin
+
+5.10. Évolutivité
+--------------------------------------------------------------------------------
+- Architecture permettant l'ajout de nouvelles fonctionnalités
+- Base de données normalisée et extensible
+- Code modulaire facilitant les modifications
+- Possibilité d'ajouter de nouveaux packs de services
+- Possibilité d'ajouter de nouvelles langues
+- Possibilité d'intégrer des paiements en ligne (future version)
+
+
+
+================================================================================
+6. TECHNOLOGIES PROPOSÉES
+================================================================================
+
+6.1. Frontend
+--------------------------------------------------------------------------------
+Framework Principal :
+- React.js (v18+) : Bibliothèque JavaScript pour construire l'interface utilisateur
+- Next.js (v14+) : Framework React pour le rendu côté serveur (SSR) et 
+  l'optimisation SEO
+
+Bibliothèques et Outils :
+- TypeScript : Pour un code plus robuste et maintenable (optionnel mais recommandé)
+- Tailwind CSS : Framework CSS utility-first pour un design rapide et responsive
+- Framer Motion : Pour les animations fluides
+- React Hook Form : Gestion des formulaires avec validation
+- Axios : Client HTTP pour les appels API
+- React Query : Gestion du state et du cache des données
+- React Calendar / FullCalendar : Composant calendrier pour la sélection de dates
+- React Toastify : Notifications toast élégantes
+- i18next : Gestion du multilingue (FR/AR)
+
+UI Components :
+- Headless UI ou Radix UI : Composants accessibles
+- Heroicons ou Lucide React : Icônes modernes
+- Swiper : Carrousel pour la galerie d'images
+
+6.2. Backend
+--------------------------------------------------------------------------------
+Framework :
+- Laravel (v10+) : Framework PHP moderne et robuste
+
+Fonctionnalités Laravel Utilisées :
+- Eloquent ORM : Gestion de la base de données
+- Migrations : Versioning de la structure de la base de données
+- Seeders : Données initiales (admin, FAQ par défaut)
+- Validation : Validation des données côté serveur
+- Authentication : Système d'authentification pour l'admin
+- API Resources : Transformation des données pour l'API
+- Middleware : Protection des routes admin
+- Notifications : Système de notifications (inbox admin)
+- Storage : Gestion des fichiers uploadés
+
+API :
+- API RESTful pour la communication frontend/backend
+- Routes API protégées par authentification (Sanctum)
+- Réponses JSON standardisées
+
+Packages Laravel Recommandés :
+- Laravel Sanctum : Authentification API
+- Spatie Laravel Permission : Gestion des rôles (si extension future)
+- Laravel Backup : Sauvegarde automatique de la base de données
+
+6.3. Base de Données
+--------------------------------------------------------------------------------
+SGBD :
+- MySQL (v8+) ou MariaDB (v10.6+)
+
+Structure des Tables Principales :
+
+1. users (Admin)
+   - id
+   - name
+   - email (unique)
+   - password (hashed)
+   - created_at, updated_at
+
+2. appointments (Rendez-vous)
+   - id
+   - pack_id (foreign key)
+   - client_name
+   - client_phone
+   - client_email
+   - client_address (nullable)
+   - school_name (nullable)
+   - appointment_date
+   - appointment_time
+   - duration (minutes)
+   - status (enum: pending, confirmed, completed, refused)
+   - notes (text, nullable)
+   - created_at, updated_at
+
+3. packs (Services)
+   - id
+   - name_fr
+   - name_ar
+   - description_fr
+   - description_ar
+   - content_fr (text)
+   - content_ar (text)
+   - price (decimal, nullable)
+   - price_text_fr (ex: "Sur devis")
+   - price_text_ar
+   - duration (minutes)
+   - is_active (boolean)
+   - order (integer)
+   - created_at, updated_at
+
+4. working_hours (Horaires de travail)
+   - id
+   - day_of_week (0-6, 0=Dimanche)
+   - is_active (boolean)
+   - open_time (time)
+   - close_time (time)
+   - break_start (time, nullable)
+   - break_end (time, nullable)
+   - created_at, updated_at
+
+5. closures (Fermetures exceptionnelles)
+   - id
+   - date
+   - reason_fr
+   - reason_ar
+   - created_at, updated_at
+
+6. faqs (Questions fréquentes)
+   - id
+   - question_fr
+   - answer_fr (text)
+   - question_ar
+   - answer_ar (text)
+   - order (integer)
+   - is_active (boolean)
+   - created_at, updated_at
+
+7. notifications (Notifications admin)
+   - id
+   - type (ex: "new_appointment")
+   - data (json)
+   - read_at (timestamp, nullable)
+   - created_at, updated_at
+
+8. settings (Paramètres généraux - optionnel)
+   - id
+   - key (unique)
+   - value (text)
+   - created_at, updated_at
+
+Relations :
+- appointments → packs (many-to-one)
+- Indexes sur les colonnes fréquemment recherchées (email, phone, date, status)
+
+
+
+6.4. Hébergement et Déploiement
+--------------------------------------------------------------------------------
+Options d'Hébergement :
+- VPS (Serveur Privé Virtuel) :
+  * DigitalOcean Droplet
+  * Linode
+  * Vultr
+  * OVH VPS
+  
+- Hébergement Mutualisé (pour MVP) :
+  * Hostinger
+  * o2switch
+  * PlanetHoster
+
+Configuration Serveur Recommandée :
+- OS : Ubuntu 22.04 LTS
+- Serveur Web : Nginx ou Apache
+- PHP : 8.1+
+- MySQL : 8.0+
+- Node.js : 18+ (pour build Next.js)
+- SSL/TLS : Let's Encrypt (gratuit)
+
+Déploiement :
+- Git pour le versioning
+- GitHub/GitLab pour le repository
+- CI/CD (optionnel) : GitHub Actions, GitLab CI
+- Déploiement manuel ou automatisé
+
+6.5. Outils de Développement
+--------------------------------------------------------------------------------
+Versionnement :
+- Git
+- GitHub ou GitLab
+
+Environnement de Développement :
+- Visual Studio Code ou PhpStorm
+- Extensions recommandées :
+  * ESLint
+  * Prettier
+  * PHP Intelephense
+  * Tailwind CSS IntelliSense
+
+Gestion des Dépendances :
+- npm ou yarn (Frontend)
+- Composer (Backend PHP)
+
+Testing (Optionnel pour MVP) :
+- Jest + React Testing Library (Frontend)
+- PHPUnit (Backend)
+
+Documentation :
+- README.md détaillé
+- Documentation API (Postman ou Swagger)
+
+6.6. Services Tiers (Optionnels)
+--------------------------------------------------------------------------------
+Email :
+- SMTP (Gmail, SendGrid, Mailgun) pour l'envoi d'emails
+- Configuration dans Laravel (.env)
+
+Monitoring :
+- Google Analytics : Suivi du trafic
+- Sentry : Monitoring des erreurs
+
+Backup :
+- Backup automatique de la base de données
+- Stockage sur cloud (Google Drive, Dropbox) ou serveur distant
+
+================================================================================
+7. ARCHITECTURE DE L'APPLICATION
+================================================================================
+
+7.1. Architecture Globale
+--------------------------------------------------------------------------------
+
+Frontend (Next.js + React)
+    ↕ (API REST)
+Backend (Laravel)
+    ↕
+Base de Données (MySQL)
+
+7.2. Structure Frontend
+--------------------------------------------------------------------------------
+
+/frontend
+├── /public
+│   ├── /images
+│   ├── /fonts
+│   └── favicon.ico
+├── /src
+│   ├── /app                    # Next.js App Router
+│   │   ├── /[locale]          # Routes multilingues
+│   │   │   ├── page.tsx       # Page d'accueil
+│   │   │   ├── /services      # Page services
+│   │   │   ├── /about         # Page qui sommes-nous
+│   │   │   ├── /contact       # Page contact
+│   │   │   └── /booking       # Page réservation
+│   │   └── /admin             # Routes admin
+│   │       ├── /login
+│   │       ├── /dashboard
+│   │       ├── /appointments
+│   │       ├── /calendar
+│   │       ├── /schedule
+│   │       ├── /content
+│   │       └── /settings
+│   ├── /components
+│   │   ├── /client            # Composants site public
+│   │   ├── /admin             # Composants admin
+│   │   └── /shared            # Composants partagés
+│   ├── /lib
+│   │   ├── api.ts             # Client API
+│   │   ├── utils.ts           # Fonctions utilitaires
+│   │   └── i18n.ts            # Configuration i18n
+│   ├── /hooks                 # Custom React hooks
+│   ├── /types                 # Types TypeScript
+│   ├── /styles                # Styles globaux
+│   └── /locales               # Fichiers de traduction
+│       ├── fr.json
+│       └── ar.json
+├── package.json
+├── next.config.js
+├── tailwind.config.js
+└── tsconfig.json
+
+
+
+7.3. Structure Backend
+--------------------------------------------------------------------------------
+
+/backend
+├── /app
+│   ├── /Http
+│   │   ├── /Controllers
+│   │   │   ├── /Api
+│   │   │   │   ├── AppointmentController.php
+│   │   │   │   ├── PackController.php
+│   │   │   │   ├── WorkingHourController.php
+│   │   │   │   ├── ClosureController.php
+│   │   │   │   ├── FaqController.php
+│   │   │   │   └── NotificationController.php
+│   │   │   └── /Auth
+│   │   │       └── AuthController.php
+│   │   ├── /Middleware
+│   │   │   └── AdminAuth.php
+│   │   └── /Requests
+│   │       ├── AppointmentRequest.php
+│   │       ├── PackRequest.php
+│   │       └── FaqRequest.php
+│   ├── /Models
+│   │   ├── User.php
+│   │   ├── Appointment.php
+│   │   ├── Pack.php
+│   │   ├── WorkingHour.php
+│   │   ├── Closure.php
+│   │   ├── Faq.php
+│   │   └── Notification.php
+│   └── /Services
+│       ├── AppointmentService.php
+│       └── AvailabilityService.php
+├── /database
+│   ├── /migrations
+│   │   ├── create_users_table.php
+│   │   ├── create_appointments_table.php
+│   │   ├── create_packs_table.php
+│   │   ├── create_working_hours_table.php
+│   │   ├── create_closures_table.php
+│   │   ├── create_faqs_table.php
+│   │   └── create_notifications_table.php
+│   └── /seeders
+│       ├── AdminSeeder.php
+│       ├── PackSeeder.php
+│       └── FaqSeeder.php
+├── /routes
+│   ├── api.php                # Routes API
+│   └── web.php                # Routes web (si nécessaire)
+├── /config
+├── /storage
+├── .env.example
+├── composer.json
+└── artisan
+
+7.4. Routes API Principales
+--------------------------------------------------------------------------------
+
+Authentification :
+POST   /api/auth/login          # Connexion admin
+POST   /api/auth/logout         # Déconnexion admin
+GET    /api/auth/user           # Infos utilisateur connecté
+
+Rendez-vous (Public) :
+POST   /api/appointments         # Créer une demande de rendez-vous
+GET    /api/appointments/available-slots  # Obtenir les créneaux disponibles
+
+Rendez-vous (Admin - Protégé) :
+GET    /api/admin/appointments              # Liste des rendez-vous
+GET    /api/admin/appointments/{id}         # Détails d'un rendez-vous
+PUT    /api/admin/appointments/{id}         # Modifier un rendez-vous
+DELETE /api/admin/appointments/{id}         # Supprimer un rendez-vous
+PATCH  /api/admin/appointments/{id}/status  # Changer le statut
+
+Packs (Public) :
+GET    /api/packs                # Liste des packs actifs
+
+Packs (Admin - Protégé) :
+GET    /api/admin/packs          # Liste de tous les packs
+PUT    /api/admin/packs/{id}     # Modifier un pack
+
+Horaires (Public) :
+GET    /api/working-hours        # Horaires de travail
+
+Horaires (Admin - Protégé) :
+GET    /api/admin/working-hours  # Liste des horaires
+PUT    /api/admin/working-hours  # Mettre à jour les horaires
+
+Fermetures (Admin - Protégé) :
+GET    /api/admin/closures       # Liste des fermetures
+POST   /api/admin/closures       # Ajouter une fermeture
+DELETE /api/admin/closures/{id}  # Supprimer une fermeture
+
+FAQ (Public) :
+GET    /api/faqs                 # Liste des FAQ actives
+
+FAQ (Admin - Protégé) :
+GET    /api/admin/faqs           # Liste de toutes les FAQ
+POST   /api/admin/faqs           # Ajouter une FAQ
+PUT    /api/admin/faqs/{id}      # Modifier une FAQ
+DELETE /api/admin/faqs/{id}      # Supprimer une FAQ
+PUT    /api/admin/faqs/reorder   # Réorganiser les FAQ
+
+Notifications (Admin - Protégé) :
+GET    /api/admin/notifications  # Liste des notifications
+PATCH  /api/admin/notifications/{id}/read  # Marquer comme lu
+
+Statistiques (Admin - Protégé) :
+GET    /api/admin/statistics     # Statistiques basiques
+
+
+
+================================================================================
+8. LOGIQUE MÉTIER IMPORTANTE
+================================================================================
+
+8.1. Calcul des Créneaux Disponibles
+--------------------------------------------------------------------------------
+
+Algorithme de Calcul :
+
+Entrées :
+- Date sélectionnée par le client
+- Pack choisi (avec sa durée)
+- Horaires de travail du jour
+- Fermetures exceptionnelles
+- Rendez-vous déjà confirmés
+
+Processus :
+1. Vérifier si la date n'est pas dans les fermetures exceptionnelles
+2. Récupérer les horaires de travail pour le jour de la semaine
+3. Vérifier si le jour est actif (ouvert)
+4. Générer tous les créneaux possibles :
+   - De l'heure d'ouverture à l'heure de fermeture
+   - Par intervalles de 30 minutes (ou durée du pack)
+   - En excluant la pause déjeuner
+5. Pour chaque créneau :
+   - Vérifier qu'il n'y a pas de chevauchement avec un rendez-vous confirmé
+   - Vérifier que le créneau + durée du pack ne dépasse pas l'heure de fermeture
+6. Retourner la liste des créneaux disponibles
+
+Exemple :
+- Horaires : 09:00 - 18:00 (pause 12:00 - 14:00)
+- Pack Domicile : 60 minutes
+- Rendez-vous confirmé : 10:00 - 11:00
+
+Créneaux disponibles :
+09:00, 09:30, 11:00, 11:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30, 17:00
+
+Note : Le créneau 10:00 et 10:30 sont exclus car chevauchement avec le RDV existant.
+
+8.2. Gestion des Statuts
+--------------------------------------------------------------------------------
+
+Transitions de Statuts Autorisées :
+
+En attente → Confirmé   (Admin accepte la demande)
+En attente → Refusé     (Admin refuse la demande)
+Confirmé → Terminé      (Séance effectuée et payée)
+Confirmé → Refusé       (Annulation par l'admin)
+
+Transitions Interdites :
+- Terminé → autre statut (un rendez-vous terminé ne peut plus être modifié)
+- Refusé → Confirmé (un rendez-vous refusé ne peut pas être réactivé)
+
+Actions selon le Statut :
+
+En attente :
+- Visible dans l'inbox admin
+- Notification active
+- Peut être modifié/supprimé
+- N'apparaît pas dans le calendrier client (créneau reste disponible)
+
+Confirmé :
+- Apparaît dans le calendrier admin
+- Bloque le créneau horaire (non disponible pour d'autres clients)
+- Peut être modifié (date, heure)
+- Peut être annulé (passe à Refusé)
+
+Terminé :
+- Archivé dans l'historique
+- Comptabilisé dans les statistiques
+- Non modifiable
+- Créneau libéré pour de nouvelles réservations
+
+Refusé :
+- Archivé
+- Créneau libéré
+- Non modifiable
+
+8.3. Validation des Données
+--------------------------------------------------------------------------------
+
+Validation Formulaire Client (Frontend + Backend) :
+
+Nom complet :
+- Requis
+- Minimum 3 caractères
+- Maximum 100 caractères
+- Lettres, espaces, tirets uniquement
+
+Téléphone :
+- Requis
+- Format marocain : 06XXXXXXXX ou 07XXXXXXXX
+- 10 chiffres
+
+Email :
+- Requis
+- Format email valide
+- Maximum 255 caractères
+
+Adresse (si Pack Domicile) :
+- Requis pour Pack Domicile
+- Minimum 10 caractères
+- Maximum 255 caractères
+
+Nom de l'école (si Pack École) :
+- Requis pour Pack École
+- Minimum 3 caractères
+- Maximum 100 caractères
+
+Date :
+- Requis
+- Date dans le futur (pas de réservation dans le passé)
+- Date non fermée exceptionnellement
+- Jour ouvert selon les horaires de travail
+
+Heure :
+- Requis
+- Créneau disponible
+- Dans les horaires d'ouverture
+
+Pack :
+- Requis
+- Pack existant et actif
+
+Validation Admin :
+
+Email admin :
+- Format email valide
+- Unique
+
+Mot de passe :
+- Minimum 8 caractères
+- Au moins une majuscule
+- Au moins un chiffre
+- Au moins un caractère spécial (recommandé)
+
+
+
+================================================================================
+9. PHASES DE DÉVELOPPEMENT (ROADMAP)
+================================================================================
+
+9.1. Phase 1 : Setup et Configuration (Semaine 1)
+--------------------------------------------------------------------------------
+Backend :
+- Installation de Laravel
+- Configuration de la base de données
+- Création des migrations
+- Création des modèles
+- Seeders pour les données initiales (admin, packs, FAQ)
+
+Frontend :
+- Installation de Next.js + React
+- Configuration de Tailwind CSS
+- Configuration de i18next (multilingue)
+- Structure des dossiers
+- Configuration de l'API client (Axios)
+
+DevOps :
+- Configuration Git
+- Configuration des environnements (dev, prod)
+- Documentation initiale
+
+9.2. Phase 2 : Interface Client - Site Public (Semaines 2-3)
+--------------------------------------------------------------------------------
+Pages :
+- Page d'accueil
+- Page "Nos Services"
+- Page "Qui Sommes-nous" (avec FAQ)
+- Page "Contact"
+
+Fonctionnalités :
+- Navigation et menu
+- Multilingue (FR/AR)
+- Responsive design
+- Animations
+
+Formulaire de Réservation :
+- Interface du formulaire
+- Validation frontend
+- Intégration API
+- Calcul des créneaux disponibles
+
+9.3. Phase 3 : Backend API (Semaine 4)
+--------------------------------------------------------------------------------
+API Publique :
+- Endpoint création de rendez-vous
+- Endpoint liste des packs
+- Endpoint créneaux disponibles
+- Endpoint FAQ
+
+API Admin :
+- Authentification (login/logout)
+- CRUD rendez-vous
+- CRUD packs
+- CRUD FAQ
+- Gestion horaires
+- Gestion fermetures
+- Notifications
+- Statistiques
+
+Sécurité :
+- Validation des données
+- Protection CSRF
+- Authentification Sanctum
+- Middleware admin
+
+9.4. Phase 4 : Interface Admin (Semaines 5-6)
+--------------------------------------------------------------------------------
+Authentification :
+- Page de login
+- Gestion de session
+
+Dashboard :
+- Statistiques basiques
+- Vue d'ensemble
+
+Gestion des Rendez-vous :
+- Liste des rendez-vous
+- Détails d'un rendez-vous
+- Modification/Suppression
+- Changement de statut
+- Vue calendrier
+- Inbox notifications
+
+Gestion du Contenu :
+- Gestion des packs
+- Gestion de la FAQ
+- Gestion des horaires
+- Gestion des fermetures
+
+Paramètres :
+- Modification du compte admin
+- Changement de mot de passe
+
+9.5. Phase 5 : Tests et Optimisation (Semaine 7)
+--------------------------------------------------------------------------------
+Tests :
+- Tests fonctionnels (toutes les fonctionnalités)
+- Tests de validation des formulaires
+- Tests de sécurité
+- Tests de performance
+- Tests responsive (tous les appareils)
+- Tests multilingue (FR/AR)
+- Tests de compatibilité navigateurs
+
+Optimisation :
+- Optimisation des images
+- Minification du code
+- Optimisation des requêtes SQL
+- Mise en cache
+- Amélioration des performances
+
+Corrections :
+- Correction des bugs identifiés
+- Ajustements UX/UI
+- Amélioration de l'accessibilité
+
+9.6. Phase 6 : Déploiement et Documentation (Semaine 8)
+--------------------------------------------------------------------------------
+Déploiement :
+- Configuration du serveur de production
+- Installation SSL/TLS
+- Déploiement du backend
+- Déploiement du frontend
+- Configuration de la base de données de production
+- Migration des données initiales
+
+Documentation :
+- Guide d'installation
+- Guide de déploiement
+- Documentation API
+- Guide d'utilisation admin
+- README complet
+
+Formation :
+- Formation de l'admin à l'utilisation du panel
+- Documentation utilisateur
+
+Livraison :
+- Livraison du code source
+- Livraison de la documentation
+- Mise en production
+
+================================================================================
+10. LIVRABLES
+================================================================================
+
+10.1. Code Source
+--------------------------------------------------------------------------------
+- Repository Git complet (frontend + backend)
+- Code commenté et documenté
+- Fichiers de configuration (.env.example)
+- Scripts de déploiement
+
+10.2. Base de Données
+--------------------------------------------------------------------------------
+- Schéma de la base de données
+- Migrations Laravel
+- Seeders pour les données initiales
+
+10.3. Documentation
+--------------------------------------------------------------------------------
+- README.md détaillé
+- Guide d'installation (étape par étape)
+- Guide de déploiement
+- Documentation de l'API (endpoints, paramètres, réponses)
+- Guide d'utilisation du panel admin (avec captures d'écran)
+- Documentation technique (architecture, choix techniques)
+
+10.4. Accès et Identifiants
+--------------------------------------------------------------------------------
+- Identifiants admin par défaut
+- Accès au repository Git
+- Accès au serveur (si hébergement inclus)
+- Accès à la base de données
+
+10.5. Support
+--------------------------------------------------------------------------------
+- Support technique pendant X jours/mois après livraison
+- Correction des bugs critiques
+- Assistance au déploiement
+
+
+
+================================================================================
+11. FONCTIONNALITÉS FUTURES (POST-MVP)
+================================================================================
+
+Ces fonctionnalités ne sont pas incluses dans le MVP mais peuvent être ajoutées 
+dans les versions futures :
+
+11.1. Notifications Automatiques par Email
+--------------------------------------------------------------------------------
+- Email de confirmation automatique au client après demande de rendez-vous
+- Email de confirmation après validation par l'admin
+- Email de rappel 24h avant le rendez-vous
+- Email de remerciement après la séance
+
+11.2. Notifications SMS
+--------------------------------------------------------------------------------
+- SMS de confirmation
+- SMS de rappel
+- Intégration avec un service SMS (Twilio, Nexmo)
+
+11.3. Paiement en Ligne
+--------------------------------------------------------------------------------
+- Intégration d'une passerelle de paiement (Stripe, PayPal, CMI)
+- Paiement partiel ou total en ligne
+- Gestion des remboursements
+
+11.4. Système de Réservation Multi-Spécialistes
+--------------------------------------------------------------------------------
+- Gestion de plusieurs spécialistes
+- Calendrier par spécialiste
+- Assignation automatique ou manuelle
+
+11.5. Programme de Fidélité
+--------------------------------------------------------------------------------
+- Carte de fidélité virtuelle
+- Points de fidélité
+- Réductions pour clients réguliers
+
+11.6. Avis et Témoignages
+--------------------------------------------------------------------------------
+- Système d'avis clients
+- Affichage des témoignages sur le site
+- Modération des avis par l'admin
+
+11.7. Blog/Actualités
+--------------------------------------------------------------------------------
+- Section blog pour articles sur les poux, prévention, etc.
+- Gestion des articles depuis le panel admin
+
+11.8. Espace Client
+--------------------------------------------------------------------------------
+- Compte client avec historique des rendez-vous
+- Possibilité de modifier/annuler un rendez-vous
+- Gestion du profil
+
+11.9. Statistiques Avancées
+--------------------------------------------------------------------------------
+- Tableaux de bord détaillés
+- Graphiques avancés
+- Export de rapports
+- Analyse du chiffre d'affaires
+
+11.10. Application Mobile
+--------------------------------------------------------------------------------
+- Application mobile native (iOS/Android)
+- Notifications push
+- Réservation depuis l'app
+
+11.11. Intégration Réseaux Sociaux
+--------------------------------------------------------------------------------
+- Partage sur les réseaux sociaux
+- Connexion via Facebook/Google
+- Affichage du feed Instagram
+
+11.12. Chat en Direct
+--------------------------------------------------------------------------------
+- Chat en temps réel avec l'admin
+- Support client instantané
+
+11.13. Gestion des Stocks
+--------------------------------------------------------------------------------
+- Gestion des produits utilisés
+- Suivi des stocks
+- Alertes de réapprovisionnement
+
+11.14. Facturation
+--------------------------------------------------------------------------------
+- Génération automatique de factures
+- Envoi par email
+- Archivage des factures
+
+================================================================================
+12. CONTRAINTES ET HYPOTHÈSES
+================================================================================
+
+12.1. Contraintes
+--------------------------------------------------------------------------------
+- Budget : [À définir]
+- Délai : 8 semaines pour le MVP
+- Ressources : [Nombre de développeurs]
+- Hébergement : [Type d'hébergement choisi]
+- Langues : Français et Arabe uniquement pour le MVP
+
+12.2. Hypothèses
+--------------------------------------------------------------------------------
+- L'admin a accès à un ordinateur/tablette pour gérer le panel
+- Les clients ont accès à Internet (mobile ou desktop)
+- Le paiement se fait uniquement en espèces sur place (pas de paiement en ligne)
+- Un seul spécialiste pour le MVP (pas de gestion multi-utilisateurs côté personnel)
+- Les rendez-vous sont gérés manuellement par l'admin (pas d'acceptation automatique)
+- Les créneaux horaires sont de 30 minutes minimum
+- La durée des packs est fixe
+
+12.3. Risques
+--------------------------------------------------------------------------------
+- Risque technique : Complexité du calcul des créneaux disponibles
+  → Mitigation : Tests approfondis, algorithme bien documenté
+
+- Risque de sécurité : Attaques sur le panel admin
+  → Mitigation : Authentification robuste, protection CSRF, HTTPS obligatoire
+
+- Risque de performance : Lenteur du site avec beaucoup de rendez-vous
+  → Mitigation : Optimisation des requêtes, pagination, mise en cache
+
+- Risque d'adoption : Les clients préfèrent appeler plutôt que réserver en ligne
+  → Mitigation : Interface très simple et intuitive, possibilité de contact direct
+
+================================================================================
+13. CRITÈRES D'ACCEPTATION
+================================================================================
+
+Le projet sera considéré comme terminé et accepté si :
+
+13.1. Fonctionnalités
+--------------------------------------------------------------------------------
+✓ Toutes les fonctionnalités décrites dans ce cahier des charges sont implémentées
+✓ Le site public est accessible et fonctionnel en français et en arabe
+✓ Le formulaire de réservation fonctionne correctement
+✓ Les créneaux disponibles sont calculés correctement
+✓ Le panel admin est accessible et sécurisé
+✓ L'admin peut gérer tous les rendez-vous (voir, modifier, changer statut)
+✓ L'admin peut gérer les horaires et fermetures
+✓ L'admin peut gérer le contenu (services, FAQ)
+✓ Les notifications fonctionnent correctement
+
+13.2. Qualité
+--------------------------------------------------------------------------------
+✓ Le site est responsive sur mobile, tablette et desktop
+✓ Le site fonctionne sur tous les navigateurs modernes
+✓ Les temps de chargement sont acceptables (< 3 secondes)
+✓ Aucun bug critique
+✓ Le code est propre et documenté
+✓ La sécurité est assurée (HTTPS, authentification, validation)
+
+13.3. Documentation
+--------------------------------------------------------------------------------
+✓ Documentation technique complète
+✓ Guide d'utilisation admin
+✓ Guide d'installation et de déploiement
+
+13.4. Tests
+--------------------------------------------------------------------------------
+✓ Tests fonctionnels réussis
+✓ Tests de sécurité réussis
+✓ Tests de performance réussis
+✓ Tests responsive réussis
+✓ Tests multilingue réussis
+
+================================================================================
+14. GLOSSAIRE
+================================================================================
+
+Admin : Gestionnaire du site MISSPO, dispose d'un accès au panel d'administration
+
+Client : Visiteur du site (parent, école) qui souhaite prendre rendez-vous
+
+Pack : Service proposé par MISSPO (Pack École ou Pack Domicile)
+
+Rendez-vous : Demande de réservation faite par un client
+
+Statut : État d'un rendez-vous (En attente, Confirmé, Terminé, Refusé)
+
+Créneau : Plage horaire disponible pour un rendez-vous
+
+Horaires de travail : Jours et heures d'ouverture de MISSPO
+
+Fermeture exceptionnelle : Jour où MISSPO est fermé (férié, congé)
+
+FAQ : Foire Aux Questions (Questions fréquemment posées)
+
+MVP : Minimum Viable Product (Produit Minimum Viable)
+
+API : Application Programming Interface (Interface de programmation)
+
+CRUD : Create, Read, Update, Delete (Créer, Lire, Mettre à jour, Supprimer)
+
+RTL : Right-to-Left (De droite à gauche, pour l'arabe)
+
+SSR : Server-Side Rendering (Rendu côté serveur)
+
+SEO : Search Engine Optimization (Optimisation pour les moteurs de recherche)
+
+HTTPS : HyperText Transfer Protocol Secure (Protocole sécurisé)
+
+CSRF : Cross-Site Request Forgery (Falsification de requête inter-sites)
+
+XSS : Cross-Site Scripting (Injection de script inter-sites)
+
+RGPD : Règlement Général sur la Protection des Données
+
+================================================================================
+15. CONTACTS ET INFORMATIONS
+================================================================================
+
+Client : MISSPO
+Contact Client : 
+- Téléphone : 0622945571
+- Email : wafaaoubouali91@gmail.com
+- Ville : Casablanca
+
+Équipe de Développement : [À compléter]
+Chef de Projet : [À compléter]
+Développeur Frontend : [À compléter]
+Développeur Backend : [À compléter]
+Designer UI/UX : [À compléter]
+
+================================================================================
+FIN DU CAHIER DES CHARGES
+================================================================================
+
+Document créé le : 14 Février 2026
+Version : 1.0
+Statut : Draft
+
+Ce cahier des charges est un document évolutif qui peut être modifié et complété 
+en fonction des besoins et des retours du client.
+
+
+================================================================================
+ANNEXE : CHARTE GRAPHIQUE MISSPO
+================================================================================
+
+Logo MISSPO
+--------------------------------------------------------------------------------
+Description :
+- Nom "MISSPO" en lettres majuscules roses (#F29CB1)
+- Illustration d'un pou stylisé en bleu (#2DA1CA) intégré dans le "O"
+- Baseline "Traitement Anti-Poux & Lentes" en bleu (#2DA1CA)
+
+Fichiers Logo :
+- logo-misspo-couleur.png (fond transparent)
+- logo-misspo-blanc.png (pour fonds sombres si nécessaire)
+- logo-misspo.svg (format vectoriel)
+
+Utilisation :
+- Toujours respecter les proportions du logo
+- Espace de respiration minimum autour du logo : 20px
+- Taille minimum : 120px de largeur
+- Ne pas déformer, modifier les couleurs ou ajouter d'effets
+
+Palette de Couleurs Complète
+--------------------------------------------------------------------------------
+
+COULEURS PRINCIPALES (Roses) :
+
+#ED7A97 - Petal Rouge
+- Usage : Boutons principaux, CTA, éléments importants
+- RGB : 237, 122, 151
+- Utilisation : 30% du design
+
+#F29CB1 - Pink Mist  
+- Usage : Hover states, accents secondaires, statut "En attente"
+- RGB : 242, 156, 177
+- Utilisation : 20% du design
+
+#F6BDCB - Soft Blossom
+- Usage : Backgrounds légers, cards, sections
+- RGB : 246, 189, 203
+- Utilisation : 15% du design
+
+#FBDEE5 - Petal Frost
+- Usage : Backgrounds très légers, sections alternées
+- RGB : 251, 222, 229
+- Utilisation : 15% du design
+
+COULEUR NEUTRE :
+
+#FFFFFF - White
+- Usage : Backgrounds principaux, texte sur fonds colorés
+- RGB : 255, 255, 255
+- Utilisation : 40% du design
+
+COULEURS COMPLÉMENTAIRES (Bleus) :
+
+#E5F4F9 - Azure Mist
+- Usage : Backgrounds légers, sections alternées
+- RGB : 229, 244, 249
+- Utilisation : 15% du design
+
+#CBE8F2 - Pale Sky
+- Usage : Backgrounds cards, bordures
+- RGB : 203, 232, 242
+- Utilisation : 15% du design
+
+#96D0E5 - Sky Blue (Light)
+- Usage : Accents, liens, icônes, statut "Terminé"
+- RGB : 150, 208, 229
+- Utilisation : 20% du design
+
+#2DA1CA - Blue Green
+- Usage : Sidebar admin, boutons secondaires, liens, statut "Confirmé"
+- RGB : 45, 161, 202
+- Utilisation : 30% du design
+
+Combinaisons de Couleurs Recommandées
+--------------------------------------------------------------------------------
+
+Site Public :
+
+Hero Section :
+- Background : #FBDEE5 (Petal Frost) ou dégradé rose léger
+- Texte : #333333 (gris foncé)
+- Bouton CTA : #ED7A97 (Petal Rouge) avec hover #F29CB1
+
+Sections Alternées :
+- Section 1 : Fond #FFFFFF (White)
+- Section 2 : Fond #E5F4F9 (Azure Mist)
+- Section 3 : Fond #FBDEE5 (Petal Frost)
+- Section 4 : Fond #FFFFFF (White)
+
+Boutons :
+- Primaire : Fond #ED7A97, texte blanc, hover #F29CB1
+- Secondaire : Fond #2DA1CA, texte blanc, hover #96D0E5
+- Tertiaire : Bordure #ED7A97, texte #ED7A97, hover fond #FBDEE5
+
+Cards Services :
+- Fond : #FFFFFF
+- Bordure : #CBE8F2
+- Hover : Bordure #ED7A97 + ombre légère
+
+Panel Admin :
+
+Sidebar :
+- Fond : #2DA1CA (Blue Green)
+- Texte : #FFFFFF
+- Item actif : Fond #96D0E5
+- Hover : Fond rgba(255,255,255,0.1)
+
+Dashboard Cards :
+- Fond : #FFFFFF
+- Bordure : #CBE8F2
+- Icônes : Alternance #ED7A97 et #2DA1CA
+
+Statuts Rendez-vous :
+- En attente : Badge #F29CB1 (Pink Mist) avec texte blanc
+- Confirmé : Badge #2DA1CA (Blue Green) avec texte blanc
+- Terminé : Badge #96D0E5 (Sky Blue Light) avec texte blanc
+- Refusé : Badge #ED7A97 (Petal Rouge) avec texte blanc
+
+Boutons Admin :
+- Action principale : #ED7A97 (Petal Rouge)
+- Action secondaire : #2DA1CA (Blue Green)
+- Annuler/Retour : Gris #6B7280
+
+Typographie
+--------------------------------------------------------------------------------
+
+Polices Recommandées :
+
+Titres :
+- Police : Poppins (Google Fonts) ou Montserrat
+- Poids : 600 (Semi-Bold) à 700 (Bold)
+- Couleur : #333333 ou #ED7A97 pour les titres importants
+
+Corps de texte :
+- Police : Inter (Google Fonts) ou Open Sans
+- Poids : 400 (Regular) à 500 (Medium)
+- Couleur : #4B5563 (gris moyen)
+- Taille : 16px minimum
+
+Hiérarchie :
+- H1 : 48px (mobile: 32px) - Poppins Bold
+- H2 : 36px (mobile: 28px) - Poppins Semi-Bold
+- H3 : 28px (mobile: 24px) - Poppins Semi-Bold
+- H4 : 24px (mobile: 20px) - Poppins Medium
+- Body : 16px - Inter Regular
+- Small : 14px - Inter Regular
+
+Iconographie
+--------------------------------------------------------------------------------
+
+Style d'Icônes :
+- Style : Outline (contour) ou Rounded
+- Bibliothèque : Heroicons, Lucide React, ou Font Awesome
+- Couleurs : #ED7A97 (rose) ou #2DA1CA (bleu) selon le contexte
+- Taille : 24px standard, 20px pour les petites, 32px pour les grandes
+
+Icônes Principales :
+- 🏫 École : Icône building/school
+- 🏠 Domicile : Icône home
+- 📅 Calendrier : Icône calendar
+- ⏰ Horloge : Icône clock
+- ✓ Validation : Icône check-circle
+- ✗ Refus : Icône x-circle
+- 📧 Email : Icône mail
+- 📞 Téléphone : Icône phone
+- 💬 Message : Icône chat
+
+Espacement et Grille
+--------------------------------------------------------------------------------
+
+Système d'Espacement (basé sur 8px) :
+- xs : 4px
+- sm : 8px
+- md : 16px
+- lg : 24px
+- xl : 32px
+- 2xl : 48px
+- 3xl : 64px
+
+Marges et Paddings :
+- Entre sections : 64px (desktop), 48px (mobile)
+- Entre éléments : 24px
+- Padding cards : 24px
+- Padding boutons : 12px 24px
+
+Grille :
+- Container max-width : 1280px
+- Gutter : 24px
+- Colonnes : 12 colonnes (desktop), 4 colonnes (mobile)
+
+Bordures et Ombres
+--------------------------------------------------------------------------------
+
+Border Radius :
+- Petits éléments (boutons, badges) : 8px
+- Cards : 12px
+- Modals : 16px
+
+Ombres :
+- Légère : 0 1px 3px rgba(0,0,0,0.1)
+- Moyenne : 0 4px 6px rgba(0,0,0,0.1)
+- Forte : 0 10px 15px rgba(0,0,0,0.1)
+- Hover : 0 20px 25px rgba(0,0,0,0.15)
+
+Bordures :
+- Épaisseur standard : 1px
+- Couleur : #CBE8F2 (Pale Sky) ou #E5E7EB (gris clair)
+- Bordures actives : 2px #ED7A97 (Petal Rouge)
+
+Animations et Transitions
+--------------------------------------------------------------------------------
+
+Durées :
+- Rapide : 150ms (hover, focus)
+- Standard : 300ms (transitions, modals)
+- Lente : 500ms (animations complexes)
+
+Easing :
+- ease-in-out : Transitions standard
+- ease-out : Entrées d'éléments
+- ease-in : Sorties d'éléments
+
+Animations Recommandées :
+- Fade in : Opacité 0 → 1
+- Slide up : Transform translateY(20px) → 0
+- Scale : Transform scale(0.95) → 1
+- Hover boutons : Transform scale(1.05) + ombre
+
+Images et Médias
+--------------------------------------------------------------------------------
+
+Formats :
+- Photos : WebP (avec fallback JPG)
+- Illustrations : SVG
+- Icônes : SVG
+
+Optimisation :
+- Compression : 80% qualité
+- Lazy loading : Activé
+- Responsive images : srcset avec plusieurs tailles
+
+Style Photos :
+- Luminosité : Légèrement augmentée
+- Saturation : Légèrement augmentée
+- Filtre : Léger overlay rose (#FBDEE5 à 10% d'opacité) pour cohérence
+
+Accessibilité des Couleurs
+--------------------------------------------------------------------------------
+
+Contrastes Minimum (WCAG AA) :
+- Texte normal : 4.5:1
+- Texte large (18px+) : 3:1
+- Éléments UI : 3:1
+
+Vérifications :
+✓ #333333 sur #FFFFFF : 12.6:1 (Excellent)
+✓ #ED7A97 sur #FFFFFF : 3.8:1 (Bon pour texte large)
+✓ #2DA1CA sur #FFFFFF : 3.2:1 (Bon pour texte large)
+✓ #FFFFFF sur #ED7A97 : 3.8:1 (Bon)
+✓ #FFFFFF sur #2DA1CA : 3.2:1 (Bon)
+
+Recommandations :
+- Utiliser #333333 ou #4B5563 pour le texte principal
+- Utiliser les couleurs vives (#ED7A97, #2DA1CA) pour les boutons et accents
+- Toujours tester le contraste avec un outil (ex: WebAIM Contrast Checker)
+
+================================================================================
+FIN DE LA CHARTE GRAPHIQUE
+================================================================================

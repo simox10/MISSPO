@@ -23,7 +23,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-misspo-rose-pale" dir={dir}>
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-misspo-rose-pale/50 shadow-sm" dir={dir}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -79,7 +79,7 @@ export function Header() {
 
       {/* Mobile Nav */}
       {mobileOpen && (
-        <div className="border-t border-misspo-rose-pale bg-background lg:hidden animate-fade-in-up" dir={dir}>
+        <div className="border-t border-misspo-rose-pale/50 bg-white/90 backdrop-blur-lg lg:hidden animate-fade-in-up" dir={dir}>
           <nav className="flex flex-col gap-1 px-4 py-4">
             {navLinks.map((link) => (
               <Link

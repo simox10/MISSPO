@@ -222,6 +222,30 @@ export const translations = {
       closed: "Ferm\u00e9",
       unavailable: "Indisponible",
     },
+    // Treatment Process
+    treatmentProcess: {
+      title: "Notre Processus",
+      subtitle: "Un traitement en 3 étapes simples",
+      step1: {
+        title: "Diagnostic Précis",
+        description: "Nous passons notre machine brevetée sur l'ensemble de la chevelure afin d'éradiquer les poux. Cette étape est sans douleur et n'abîme pas les cheveux.",
+      },
+      step2: {
+        title: "Application de la Lotion",
+        description: "Nous appliquons notre lotion traitante 100% naturelle et efficace sans insecticides chimiques. La lotion est aussi adaptée aux bébés et femmes enceintes. À la fin du traitement les cheveux sont propres et secs.",
+      },
+      step3: {
+        title: "Vérification au Peigne Fin",
+        description: "Nous vérifions mèche par mèche que rien ne subsiste afin de vous garantir 100% d'efficacité. Vous pouvez, si vous le souhaitez à la fin du traitement, voir la petite récolte :)",
+      },
+    },
+    // Mission
+    mission: {
+      title: "Notre Mission",
+      subtitle: "Protéger les enfants avec une méthode douce et naturelle",
+      description: "Notre méthode vous débarrasse des poux et des lentes en une seule fois. Le temps de traitement varie de 30m à 1H en fonction de la longueur des cheveux et de la contamination. Équipés d'un matériel professionnel dernier cri, nous disposons de l'aspirateur à poux et l'efficacité de notre lotion aux actifs naturels est garantie. Notre équipe de professionnelles est à votre écoute pour vous accompagner dans cette épreuve avec bienveillance et expertise.",
+      cta: "Découvrir nos services",
+    },
     // Footer
     footer: {
       description: "Sp\u00e9cialiste du traitement anti-poux professionnel \u00e0 Casablanca.",
@@ -441,6 +465,30 @@ export const translations = {
       afternoon: "\u0628\u0639\u062f \u0627\u0644\u0638\u0647\u0631",
       closed: "\u0645\u063a\u0644\u0642",
       unavailable: "\u063a\u064a\u0631 \u0645\u062a\u0627\u062d",
+    },
+    // Treatment Process
+    treatmentProcess: {
+      title: "\u0639\u0645\u0644\u064a\u062a\u0646\u0627",
+      subtitle: "\u0639\u0644\u0627\u062c \u0641\u064a 3 \u062e\u0637\u0648\u0627\u062a \u0628\u0633\u064a\u0637\u0629",
+      step1: {
+        title: "\u062a\u0634\u062e\u064a\u0635 \u062f\u0642\u064a\u0642",
+        description: "\u0646\u0645\u0631\u0631 \u0622\u0644\u062a\u0646\u0627 \u0627\u0644\u0645\u0633\u062c\u0644\u0629 \u0639\u0644\u0649 \u0643\u0627\u0645\u0644 \u0627\u0644\u0634\u0639\u0631 \u0644\u0644\u0642\u0636\u0627\u0621 \u0639\u0644\u0649 \u0627\u0644\u0642\u0645\u0644. \u0647\u0630\u0647 \u0627\u0644\u062e\u0637\u0648\u0629 \u063a\u064a\u0631 \u0645\u0624\u0644\u0645\u0629 \u0648\u0644\u0627 \u062a\u0636\u0631 \u0627\u0644\u0634\u0639\u0631.",
+      },
+      step2: {
+        title: "\u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u0644\u0648\u0634\u0646",
+        description: "\u0646\u0637\u0628\u0642 \u0644\u0648\u0634\u0646\u0646\u0627 \u0627\u0644\u0639\u0644\u0627\u062c\u064a 100% \u0637\u0628\u064a\u0639\u064a \u0648\u0641\u0639\u0627\u0644 \u0628\u062f\u0648\u0646 \u0645\u0628\u064a\u062f\u0627\u062a \u062d\u0634\u0631\u064a\u0629. \u0645\u0646\u0627\u0633\u0628 \u0644\u0644\u0631\u0636\u0639 \u0648\u0627\u0644\u062d\u0648\u0627\u0645\u0644. \u0641\u064a \u0646\u0647\u0627\u064a\u0629 \u0627\u0644\u0639\u0644\u0627\u062c \u064a\u0643\u0648\u0646 \u0627\u0644\u0634\u0639\u0631 \u0646\u0638\u064a\u0641\u0627 \u0648\u062c\u0627\u0641\u0627.",
+      },
+      step3: {
+        title: "\u0627\u0644\u062a\u062d\u0642\u0642 \u0628\u0627\u0644\u0645\u0634\u0637 \u0627\u0644\u062f\u0642\u064a\u0642",
+        description: "\u0646\u062a\u062d\u0642\u0642 \u062e\u0635\u0644\u0629 \u0628\u062e\u0635\u0644\u0629 \u0644\u0636\u0645\u0627\u0646 100% \u0641\u0639\u0627\u0644\u064a\u0629. \u064a\u0645\u0643\u0646\u0643\u0645 \u0631\u0624\u064a\u0629 \u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0646\u0647\u0627\u064a\u0629 \u0627\u0644\u0639\u0644\u0627\u062c :)",
+      },
+    },
+    // Mission
+    mission: {
+      title: "\u0645\u0647\u0645\u062a\u0646\u0627",
+      subtitle: "\u062d\u0645\u0627\u064a\u0629 \u0627\u0644\u0623\u0637\u0641\u0627\u0644 \u0628\u0637\u0631\u064a\u0642\u0629 \u0644\u0637\u064a\u0641\u0629 \u0648\u0637\u0628\u064a\u0639\u064a\u0629",
+      description: "\u0637\u0631\u064a\u0642\u062a\u0646\u0627 \u062a\u062a\u062e\u0644\u0635 \u0645\u0646 \u0627\u0644\u0642\u0645\u0644 \u0648\u0627\u0644\u0635\u0626\u0628\u0627\u0646 \u0641\u064a \u062c\u0644\u0633\u0629 \u0648\u0627\u062d\u062f\u0629. \u064a\u062a\u0631\u0627\u0648\u062d \u0648\u0642\u062a \u0627\u0644\u0639\u0644\u0627\u062c \u0628\u064a\u0646 30 \u062f\u0642\u064a\u0642\u0629 \u0648\u0633\u0627\u0639\u0629 \u062d\u0633\u0628 \u0637\u0648\u0644 \u0627\u0644\u0634\u0639\u0631 \u0648\u0645\u0633\u062a\u0648\u0649 \u0627\u0644\u0625\u0635\u0627\u0628\u0629. \u0645\u062c\u0647\u0632\u0648\u0646 \u0628\u0645\u0639\u062f\u0627\u062a \u0645\u0647\u0646\u064a\u0629 \u062d\u062f\u064a\u062b\u0629\u060c \u0646\u0645\u062a\u0644\u0643 \u0634\u0641\u0627\u0637 \u0627\u0644\u0642\u0645\u0644 \u0648\u0641\u0639\u0627\u0644\u064a\u0629 \u0644\u0648\u0634\u0646\u0646\u0627 \u0627\u0644\u0637\u0628\u064a\u0639\u064a \u0645\u0636\u0645\u0648\u0646\u0629. \u0641\u0631\u064a\u0642\u0646\u0627 \u0627\u0644\u0645\u062d\u062a\u0631\u0641 \u0641\u064a \u062e\u062f\u0645\u062a\u0643\u0645.",
+      cta: "\u0627\u0643\u062a\u0634\u0641 \u062e\u062f\u0645\u0627\u062a\u0646\u0627",
     },
     footer: {
       description: "\u0645\u062a\u062e\u0635\u0635 \u0641\u064a \u0639\u0644\u0627\u062c \u0627\u0644\u0642\u0645\u0644 \u0627\u0644\u0645\u0647\u0646\u064a \u0628\u0627\u0644\u062f\u0627\u0631 \u0627\u0644\u0628\u064a\u0636\u0627\u0621.",

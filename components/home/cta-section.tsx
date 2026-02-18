@@ -12,28 +12,28 @@ export function CtaSection() {
 
   return (
     <section
-      className="relative overflow-hidden bg-gradient-to-br from-misspo-rose-dark via-misspo-rose to-misspo-blue-dark py-20"
+      className="relative overflow-hidden bg-gradient-to-br from-misspo-rose-pale via-misspo-blue-pale to-white py-20"
       dir={dir}
       ref={ref}
     >
       {/* Decorative */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-white blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 h-48 w-48 rounded-full bg-white blur-3xl" />
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-misspo-rose blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-48 w-48 rounded-full bg-misspo-blue blur-3xl" />
       </div>
 
       <div className={`relative mx-auto max-w-3xl px-4 text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-        <h2 className="text-balance text-3xl font-bold text-white md:text-4xl">
+        <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
           {t.ctaSection.title}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base text-white/80 leading-relaxed md:text-lg">
+        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground leading-relaxed md:text-lg">
           {t.ctaSection.description}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link href="/booking">
             <Button
               size="lg"
-              className="bg-white text-misspo-rose-dark shadow-xl transition-all hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-2xl"
+              className="bg-misspo-rose-dark text-white shadow-xl transition-all hover:bg-misspo-rose hover:-translate-y-0.5 hover:shadow-2xl"
             >
               {t.ctaSection.cta}
             </Button>
@@ -46,7 +46,7 @@ export function CtaSection() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white/40 text-white hover:bg-white/10 bg-transparent"
+              className="border-misspo-blue text-misspo-blue-dark hover:bg-misspo-blue-pale bg-white"
             >
               <MessageCircle className="h-4 w-4" />
               WhatsApp
@@ -56,7 +56,7 @@ export function CtaSection() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white/40 text-white hover:bg-white/10 bg-transparent"
+              className="border-misspo-blue text-misspo-blue-dark hover:bg-misspo-blue-pale bg-white"
             >
               <Phone className="h-4 w-4" />
               0622945571

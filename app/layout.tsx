@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" dir="ltr">
+    <html lang="fr" dir="ltr" suppressHydrationWarning>
       <body className={`${poppins.variable} ${cairo.variable} font-sans antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>

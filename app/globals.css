@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  @keyframes bounce-horizontal {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-8px);
+    }
+  }
+  
+  .animate-bounce-horizontal {
+    animation: bounce-horizontal 1.5s ease-in-out infinite;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -70,7 +93,165 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 3D Flip Card Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.group:hover .group-hover\:rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 /* Animation utilities */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+@keyframes envelope {
+  0%, 100% {
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    transform: scaleY(0.7) translateY(-3px);
+  }
+}
+
+@keyframes ring {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-8deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(8deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(-8deg) scale(1.05);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-envelope {
+  animation: envelope 0.6s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.animate-ring {
+  animation: ring 1.2s ease-in-out infinite;
+}
+
+.group:hover .group-hover\:animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.group:hover .group-hover\:animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.group:hover .group-hover\:animate-envelope {
+  animation: envelope 0.6s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.group:hover .group-hover\:animate-ring {
+  animation: ring 1.2s ease-in-out infinite;
+}
+
+.group:hover .group-hover\:animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.group:hover .group-hover\:animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes send-arrow {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(-100px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(290px);
+    opacity: 0;
+  }
+}
+
+@keyframes blur-in {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.animate-send-arrow {
+  animation: send-arrow 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.group:hover .group-hover\:animate-send-arrow {
+  animation: send-arrow 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.group:hover .group-hover\:animate-blur-in {
+  animation: blur-in 0.5s ease-out 0.7s forwards;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;

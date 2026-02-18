@@ -57,13 +57,14 @@ export function ServicesPreview() {
               }`}
               style={{ transitionDelay: `${(index + 1) * 200}ms` }}
             >
-              {/* Image */}
-              <div className="relative h-52 overflow-hidden">
+              {/* Image - Plus grande */}
+              <div className="relative h-64 overflow-hidden">
                 <Image
                   src={pack.image}
                   alt={pack.imageAlt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ objectPosition: index === 1 ? '80% 70%' : 'center 70%' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
@@ -73,26 +74,31 @@ export function ServicesPreview() {
                 <h3 className="text-xl font-bold text-foreground">{pack.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{pack.subtitle}</p>
 
-                <ul className="mt-4 flex flex-col gap-2">
-                  {pack.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
-                      <Check className="h-4 w-4 shrink-0 text-misspo-blue-dark" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                {/* Features + Price & Button */}
+                <div className="mt-4 flex items-start justify-between gap-6">
+                  {/* Features à gauche */}
+                  <ul className="flex flex-1 flex-col gap-2">
+                    {pack.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
+                        <Check className="h-4 w-4 shrink-0 text-misspo-blue-dark" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
 
-                <div className="mt-5 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-muted-foreground">{"Tarif"}</span>
-                    <p className="text-2xl font-bold text-foreground">{pack.price}</p>
+                  {/* Price & Button à droite */}
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="text-right">
+                      <span className="text-xs text-muted-foreground">{"Tarif"}</span>
+                      <p className="text-xl font-bold text-foreground whitespace-nowrap">{pack.price}</p>
+                    </div>
+                    <Link href={pack.href}>
+                      <Button className={`${pack.btnClass} shadow-md transition-all hover:shadow-lg whitespace-nowrap`}>
+                        {pack.cta}
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
-                  <Link href={pack.href}>
-                    <Button className={`${pack.btnClass} shadow-md transition-all hover:shadow-lg`}>
-                      {pack.cta}
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </div>

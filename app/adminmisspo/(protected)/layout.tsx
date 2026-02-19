@@ -54,6 +54,7 @@ export default function ProtectedLayout({
           ${isCollapsed ? 'w-20' : 'w-64'} bg-white border-r
           transform transition-all duration-200 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          flex flex-col
         `}>
           <div className="p-6 flex items-center justify-between">
             {!isCollapsed && (
@@ -72,7 +73,7 @@ export default function ProtectedLayout({
             </Button>
           </div>
 
-          <nav className="px-4 space-y-2">
+          <nav className="px-4 space-y-2 flex-1 overflow-y-auto">
             {menuItems.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -97,7 +98,7 @@ export default function ProtectedLayout({
             })}
           </nav>
 
-          <div className="absolute bottom-0 left-0 right-0 p-4">
+          <div className="sticky bottom-0 bg-white p-4 border-t">
             <Button
               onClick={handleLogout}
               variant="outline"

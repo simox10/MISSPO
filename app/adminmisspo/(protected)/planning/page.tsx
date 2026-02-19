@@ -5,6 +5,12 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, User, Phone, MapPi
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Dialog,
   DialogContent,
@@ -185,28 +191,25 @@ export default function PlanningPage() {
                 )}
               </div>
             </div>
-            <div className="flex gap-2 w-full md:w-auto justify-center">
-              <Button variant="outline" size="icon" onClick={previousDay} className="h-8 w-8 md:h-10 md:w-10">
-                <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={nextDay} className="h-8 w-8 md:h-10 md:w-10">
-                <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
-              </Button>
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full md:w-auto">
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  Choisir une date
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </CardHeader>
         <CardContent>
-          {/* Résumé du jour */}
-          <div className="mb-6 p-4 bg-misspo-blue-pale/30 rounded-lg">
-            <p className="text-sm font-medium text-gray-700">
-              {dayReservations.length === 0 ? (
-                "Aucune réservation ce jour"
-              ) : (
-                `${dayReservations.length} réservation${dayReservations.length > 1 ? 's' : ''} prévue${dayReservations.length > 1 ? 's' : ''}`
-              )}
-            </p>
-          </div>
-
           {/* Grille horaire */}
           <div className="space-y-2">
             {hours.map((hour) => {

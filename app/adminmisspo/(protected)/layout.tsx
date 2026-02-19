@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function ProtectedLayout({
@@ -31,6 +31,7 @@ export default function ProtectedLayout({
   const menuItems = [
     { icon: LayoutDashboard, label: "Tableau", href: "/adminmisspo/dashboard" },
     { icon: Calendar, label: "Planning", href: "/adminmisspo/planning" },
+    { icon: Clock, label: "Horaires", href: "/adminmisspo/horaires" },
   ]
 
   return (

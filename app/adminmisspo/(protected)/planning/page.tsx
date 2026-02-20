@@ -389,7 +389,7 @@ export default function PlanningPage() {
                   {/* Créneaux */}
                   <div className="flex-1 min-h-[60px] border-l-2 border-gray-200 pl-4">
                     {hasReservations ? (
-                      <div className="space-y-2">
+                      <div className={`grid gap-2 ${hourReservations.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
                         {hourReservations.map((res) => (
                           <div
                             key={res.id}

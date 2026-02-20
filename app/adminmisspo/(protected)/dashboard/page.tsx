@@ -67,9 +67,9 @@ export default function DashboardPage() {
     statut: true,
     actions: true,
   })
-  const [availableHours, setAvailableHours] = useState<{openTime: string, closeTime: string, available: boolean} | null>(null)
+  const [availableHours, setAvailableHours] = useState<{openTime: string, closeTime: string, available: boolean, bookedSlots?: string[]} | null>(null)
   const [selectedDateForNew, setSelectedDateForNew] = useState("")
-  const [availableHoursEdit, setAvailableHoursEdit] = useState<{openTime: string, closeTime: string, available: boolean} | null>(null)
+  const [availableHoursEdit, setAvailableHoursEdit] = useState<{openTime: string, closeTime: string, available: boolean, bookedSlots?: string[]} | null>(null)
   const [selectedDateForEdit, setSelectedDateForEdit] = useState("")
   
   // CHANGER CE NUMÉRO POUR TESTER LES DESIGNS : 1, 2 ou 3
@@ -104,7 +104,8 @@ export default function DashboardPage() {
         setAvailableHours({
           available: data.available,
           openTime: data.openTime || "09:00",
-          closeTime: data.closeTime || "18:00"
+          closeTime: data.closeTime || "18:00",
+          bookedSlots: data.bookedSlots || []
         })
       }
     } catch (error) {
@@ -121,7 +122,8 @@ export default function DashboardPage() {
         setAvailableHoursEdit({
           available: data.available,
           openTime: data.openTime || "09:00",
-          closeTime: data.closeTime || "18:00"
+          closeTime: data.closeTime || "18:00",
+          bookedSlots: data.bookedSlots || []
         })
       }
     } catch (error) {
@@ -129,25 +131,29 @@ export default function DashboardPage() {
     }
   }
 
-  // Générer les créneaux horaires disponibles
-  const generateTimeSlots = (openTime: string, closeTime: string) => {
+  // Générer les créneaux horaires disponibles (en excluant les créneaux réservés)
+  const generateTimeSlots = (openTime: string, closeTime: string, bookedSlots: string[] = []) => {
     const slots = []
     const [openHour, openMinute] = openTime.split(':').map(Number)
     const [closeHour, closeMinute] = closeTime.split(':').map(Number)
     
     let currentHour = openHour
-    let currentMinute = openMinute
     
-    while (currentHour < closeHour || (currentHour === closeHour && currentMinute < closeMinute)) {
-      const timeStr = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`
-      slots.push(timeStr)
+    // Commencer à l'heure pleine suivante si l'ouverture n'est pas à l'heure pleine
+    if (openMinute > 0) {
+      currentHour += 1
+    }
+    
+    while (currentHour < closeHour) {
+      const timeStr = `${String(currentHour).padStart(2, '0')}:00`
       
-      // Incrémenter de 30 minutes
-      currentMinute += 30
-      if (currentMinute >= 60) {
-        currentMinute = 0
-        currentHour += 1
+      // Ajouter seulement si le créneau n'est pas réservé
+      if (!bookedSlots.includes(timeStr)) {
+        slots.push(timeStr)
       }
+      
+      // Incrémenter d'1 heure
+      currentHour += 1
     }
     
     return slots
@@ -1098,7 +1104,7 @@ _L'équipe MISSPO_`
                       </SelectTrigger>
                       <SelectContent>
                         {availableHoursEdit ? (
-                          generateTimeSlots(availableHoursEdit.openTime, availableHoursEdit.closeTime).map((time) => (
+                          generateTimeSlots(availableHoursEdit.openTime, availableHoursEdit.closeTime, availableHoursEdit.bookedSlots).map((time) => (
                             <SelectItem key={time} value={time}>
                               {time}
                             </SelectItem>
@@ -1367,7 +1373,7 @@ _L'équipe MISSPO_`
                     </SelectTrigger>
                     <SelectContent>
                       {availableHours ? (
-                        generateTimeSlots(availableHours.openTime, availableHours.closeTime).map((time) => (
+                        generateTimeSlots(availableHours.openTime, availableHours.closeTime, availableHours.bookedSlots).map((time) => (
                           <SelectItem key={time} value={time}>
                             {time}
                           </SelectItem>

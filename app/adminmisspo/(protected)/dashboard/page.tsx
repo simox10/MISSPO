@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Eye, Settings2, ChevronLeft, ChevronRight, Edit, MessageCircle, Plus } from "lucide-react"
+import { Search, Eye, Settings2, ChevronLeft, ChevronRight, Edit, MessageCircle, Plus, User, Calendar as CalendarIcon, Phone, MapPin, School } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
 import {
   Select,
   SelectContent,
@@ -32,9 +33,17 @@ export default function DashboardPage() {
   const [search, setSearch] = useState("")
   const [filterPack, setFilterPack] = useState<string>("all")
   const [filterStatut, setFilterStatut] = useState<string>("all")
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
-  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null)
+  const [selectedReservation, setSelectedReservation] = useState<any | null>(null)
+  const [editingReservation, setEditingReservation] = useState<any | null>(null)
   const [isAddingNew, setIsAddingNew] = useState(false)
+  const [reservations, setReservations] = useState<any[]>([])
+  const [stats, setStats] = useState({
+    total: 0,
+    confirmees: 0,
+    en_attente: 0,
+    refusees: 0,
+  })
+  const [loading, setLoading] = useState(true)
   const [newReservation, setNewReservation] = useState({
     prenom: "",
     nom: "",
@@ -58,6 +67,118 @@ export default function DashboardPage() {
     statut: true,
     actions: true,
   })
+  const [availableHours, setAvailableHours] = useState<{openTime: string, closeTime: string, available: boolean} | null>(null)
+  const [selectedDateForNew, setSelectedDateForNew] = useState("")
+  const [availableHoursEdit, setAvailableHoursEdit] = useState<{openTime: string, closeTime: string, available: boolean} | null>(null)
+  const [selectedDateForEdit, setSelectedDateForEdit] = useState("")
+  
+  // CHANGER CE NUMÉRO POUR TESTER LES DESIGNS : 1, 2 ou 3
+  const [dialogDesign, setDialogDesign] = useState(1)
+
+  // Charger les statistiques et les rendez-vous
+  useEffect(() => {
+    fetchStats()
+    fetchAppointments()
+  }, [])
+
+  // Charger les horaires disponibles quand la date change
+  useEffect(() => {
+    if (selectedDateForNew) {
+      fetchAvailableHours(selectedDateForNew)
+    }
+  }, [selectedDateForNew])
+
+  // Charger les horaires pour le formulaire d'édition
+  useEffect(() => {
+    if (selectedDateForEdit) {
+      fetchAvailableHoursEdit(selectedDateForEdit)
+    }
+  }, [selectedDateForEdit])
+
+  const fetchAvailableHours = async (date: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const data = await response.json()
+      
+      if (data.success) {
+        setAvailableHours({
+          available: data.available,
+          openTime: data.openTime || "09:00",
+          closeTime: data.closeTime || "18:00"
+        })
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des horaires:", error)
+    }
+  }
+
+  const fetchAvailableHoursEdit = async (date: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const data = await response.json()
+      
+      if (data.success) {
+        setAvailableHoursEdit({
+          available: data.available,
+          openTime: data.openTime || "09:00",
+          closeTime: data.closeTime || "18:00"
+        })
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des horaires:", error)
+    }
+  }
+
+  // Générer les créneaux horaires disponibles
+  const generateTimeSlots = (openTime: string, closeTime: string) => {
+    const slots = []
+    const [openHour, openMinute] = openTime.split(':').map(Number)
+    const [closeHour, closeMinute] = closeTime.split(':').map(Number)
+    
+    let currentHour = openHour
+    let currentMinute = openMinute
+    
+    while (currentHour < closeHour || (currentHour === closeHour && currentMinute < closeMinute)) {
+      const timeStr = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`
+      slots.push(timeStr)
+      
+      // Incrémenter de 30 minutes
+      currentMinute += 30
+      if (currentMinute >= 60) {
+        currentMinute = 0
+        currentHour += 1
+      }
+    }
+    
+    return slots
+  }
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/admin/stats')
+      const data = await response.json()
+      if (data.success) {
+        setStats(data.stats)
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des statistiques:", error)
+    }
+  }
+
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('http://localhost:8000/api/admin/appointments')
+      const data = await response.json()
+      if (data.success) {
+        setReservations(data.appointments)
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des rendez-vous:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const toggleColumn = (column: keyof typeof visibleColumns) => {
     setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }))
@@ -113,24 +234,26 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
           <p className="text-sm" style={{ color: '#2da1ca' }}>Total</p>
-          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>{reservations.length}</p>
+          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : stats.total}
+          </p>
         </div>
         <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
           <p className="text-sm" style={{ color: '#2da1ca' }}>Confirmées</p>
           <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {reservations.filter(r => r.statut === "Confirmée").length}
+            {loading ? "..." : stats.confirmees}
           </p>
         </div>
         <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
           <p className="text-sm" style={{ color: '#2da1ca' }}>En attente</p>
           <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {reservations.filter(r => r.statut === "En attente").length}
+            {loading ? "..." : stats.en_attente}
           </p>
         </div>
         <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
-          <p className="text-sm" style={{ color: '#2da1ca' }}>Annulées</p>
+          <p className="text-sm" style={{ color: '#2da1ca' }}>Refusées</p>
           <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {reservations.filter(r => r.statut === "Annulée").length}
+            {loading ? "..." : stats.refusees}
           </p>
         </div>
       </div>
@@ -215,25 +338,25 @@ export default function DashboardPage() {
                 En attente
               </SelectItem>
               <SelectItem 
-                value="Confirmé" 
+                value="Confirmée" 
                 className="data-[highlighted]:font-bold focus:font-bold"
                 style={{ backgroundColor: '#FBDEE5' }}
               >
-                Confirmé
+                Confirmée
               </SelectItem>
               <SelectItem 
-                value="Terminé" 
+                value="Terminée" 
                 className="data-[highlighted]:font-bold focus:font-bold"
                 style={{ backgroundColor: '#FBDEE5' }}
               >
-                Terminé
+                Terminée
               </SelectItem>
               <SelectItem 
-                value="Refusé" 
+                value="Refusée" 
                 className="data-[highlighted]:font-bold focus:font-bold"
                 style={{ backgroundColor: '#FBDEE5' }}
               >
-                Refusé
+                Refusée
               </SelectItem>
             </SelectContent>
           </Select>
@@ -437,7 +560,10 @@ export default function DashboardPage() {
                           size="sm"
                           variant="ghost"
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          onClick={() => setEditingReservation(reservation)}
+                          onClick={() => {
+                            setEditingReservation(reservation)
+                            setSelectedDateForEdit(reservation.date)
+                          }}
                           title="Modifier"
                         >
                           <Edit className="h-4 w-4" />
@@ -447,9 +573,41 @@ export default function DashboardPage() {
                           variant="ghost"
                           className="text-green-600 hover:text-green-700 hover:bg-green-50"
                           onClick={() => {
-                            const message = `Bonjour ${reservation.prenom} ${reservation.nom}, concernant votre réservation du ${new Date(reservation.date).toLocaleDateString('fr-FR')} à ${reservation.heure}...`
-                            const whatsappUrl = `https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`
-                            window.open(whatsappUrl, '_blank')
+                            const date = new Date(reservation.date)
+                            const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+                            const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+                            
+                            const jourSemaine = joursSemaine[date.getDay()]
+                            const jour = date.getDate()
+                            const moisNom = mois[date.getMonth()]
+                            const annee = date.getFullYear()
+                            
+                            const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
+                            
+                            const message = `Bonjour ${reservation.prenom},
+
+*CONFIRMATION DE RENDEZ-VOUS REQUISE*
+
+*Rendez-vous MISSPO :*
+━━━━━━━━━━━━━━━━━━━━━
+• *Date :* ${dateFormatee}
+• *Heure :* ${reservation.heure}
+• *Pack :* ${reservation.pack}${reservation.adresse ? `
+• *Adresse :* ${reservation.adresse}` : ''}${reservation.ecole ? `
+• *École :* ${reservation.ecole}` : ''}
+━━━━━━━━━━━━━━━━━━━━━
+
+Merci de confirmer votre présence en répondant à ce message.
+
+*Réponses possibles :*
+CONFIRMER
+ANNULER
+REPORTER
+
+Cordialement,
+_L'équipe MISSPO_`
+                            
+                            window.open(`https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
                           }}
                           title="Contacter via WhatsApp"
                         >
@@ -562,7 +720,10 @@ export default function DashboardPage() {
                 size="sm"
                 variant="outline"
                 className="text-blue-600 hover:text-blue-700"
-                onClick={() => setEditingReservation(reservation)}
+                onClick={() => {
+                  setEditingReservation(reservation)
+                  setSelectedDateForEdit(reservation.date)
+                }}
               >
                 <Edit className="h-4 w-4" />
               </Button>
@@ -571,9 +732,41 @@ export default function DashboardPage() {
                 variant="outline"
                 className="text-green-600 hover:text-green-700"
                 onClick={() => {
-                  const message = `Bonjour ${reservation.prenom} ${reservation.nom}, concernant votre réservation du ${new Date(reservation.date).toLocaleDateString('fr-FR')} à ${reservation.heure}...`
-                  const whatsappUrl = `https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`
-                  window.open(whatsappUrl, '_blank')
+                  const date = new Date(reservation.date)
+                  const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+                  const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+                  
+                  const jourSemaine = joursSemaine[date.getDay()]
+                  const jour = date.getDate()
+                  const moisNom = mois[date.getMonth()]
+                  const annee = date.getFullYear()
+                  
+                  const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
+                  
+                  const message = `Bonjour ${reservation.prenom},
+
+*CONFIRMATION DE RENDEZ-VOUS REQUISE*
+
+*Rendez-vous MISSPO :*
+━━━━━━━━━━━━━━━━━━━━━
+• *Date :* ${dateFormatee}
+• *Heure :* ${reservation.heure}
+• *Pack :* ${reservation.pack}${reservation.adresse ? `
+• *Adresse :* ${reservation.adresse}` : ''}${reservation.ecole ? `
+• *École :* ${reservation.ecole}` : ''}
+━━━━━━━━━━━━━━━━━━━━━
+
+Merci de confirmer votre présence en répondant à ce message.
+
+*Réponses possibles :*
+CONFIRMER
+ANNULER
+REPORTER
+
+Cordialement,
+_L'équipe MISSPO_`
+                  
+                  window.open(`https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
                 }}
               >
                 <MessageCircle className="h-4 w-4" />
@@ -619,61 +812,156 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Dialog Détails */}
+      {/* Dialog Détails - Design Simple */}
       <Dialog open={!!selectedReservation} onOpenChange={() => setSelectedReservation(null)}>
         <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Détails de la réservation</DialogTitle>
-          </DialogHeader>
           {selectedReservation && (
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Client</p>
-                <p className="text-base font-semibold">
+            <div className="space-y-5">
+              {/* Nom du client */}
+              <div className="text-center pb-4 border-b">
+                <h2 className="text-2xl font-bold text-gray-900">
                   {selectedReservation.prenom} {selectedReservation.nom}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Date & Heure</p>
-                <p className="text-base">
-                  {new Date(selectedReservation.date).toLocaleDateString('fr-FR')} à {selectedReservation.heure}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Contact</p>
-                <p className="text-base">{selectedReservation.telephone}</p>
-                <p className="text-sm text-gray-600">{selectedReservation.email}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Pack</p>
-                <Badge className={getPackBadge(selectedReservation.pack)}>
-                  {selectedReservation.pack}
-                </Badge>
-              </div>
-              {selectedReservation.adresse && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Adresse</p>
-                  <p className="text-base">{selectedReservation.adresse}</p>
+                </h2>
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <Badge className={getStatutBadge(selectedReservation.statut)}>
+                    {selectedReservation.statut}
+                  </Badge>
+                  <Badge className={getPackBadge(selectedReservation.pack)}>
+                    {selectedReservation.pack}
+                  </Badge>
                 </div>
-              )}
-              {selectedReservation.ecole && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">École</p>
-                  <p className="text-base">{selectedReservation.ecole}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-sm font-medium text-gray-500">Statut</p>
-                <Badge className={getStatutBadge(selectedReservation.statut)}>
-                  {selectedReservation.statut}
-                </Badge>
               </div>
-              {selectedReservation.notes && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Notes</p>
-                  <p className="text-base">{selectedReservation.notes}</p>
+
+              {/* Informations */}
+              <div className="space-y-4">
+                {/* Date & Heure */}
+                <div className="flex items-start gap-3">
+                  <CalendarIcon className="h-5 w-5 mt-0.5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Date & Heure</p>
+                    <p className="text-base font-medium text-gray-900 capitalize">
+                      {new Date(selectedReservation.date).toLocaleDateString('fr-FR', { 
+                        weekday: 'long', 
+                        day: 'numeric', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                    <p className="text-lg font-bold" style={{ color: '#ED7A97' }}>
+                      {selectedReservation.heure}
+                    </p>
+                  </div>
                 </div>
-              )}
+
+                {/* Téléphone */}
+                <div className="flex items-start gap-3">
+                  <Phone className="h-5 w-5 mt-0.5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Téléphone</p>
+                    <p className="text-base font-medium text-gray-900">{selectedReservation.telephone}</p>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="flex items-start gap-3">
+                  <User className="h-5 w-5 mt-0.5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-base text-gray-900">{selectedReservation.email}</p>
+                  </div>
+                </div>
+
+                {/* Adresse */}
+                {selectedReservation.adresse && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 mt-0.5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Adresse</p>
+                      <p className="text-base text-gray-900">{selectedReservation.adresse}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* École */}
+                {selectedReservation.ecole && (
+                  <div className="flex items-start gap-3">
+                    <School className="h-5 w-5 mt-0.5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">École</p>
+                      <p className="text-base text-gray-900">{selectedReservation.ecole}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes */}
+                {selectedReservation.notes && (
+                  <div className="pt-3 border-t">
+                    <p className="text-sm text-gray-500 mb-2">Notes</p>
+                    <p className="text-sm text-gray-700 italic">{selectedReservation.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button
+                  className="flex-1"
+                  style={{ backgroundColor: '#ED7A97', color: 'white' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F29CB1'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ED7A97'}
+                  onClick={() => {
+                    setEditingReservation(selectedReservation)
+                    setSelectedReservation(null)
+                    setSelectedDateForEdit(selectedReservation.date)
+                  }}
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Modifier
+                </Button>
+                <Button
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => {
+                    const date = new Date(selectedReservation.date)
+                    const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+                    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+                    
+                    const jourSemaine = joursSemaine[date.getDay()]
+                    const jour = date.getDate()
+                    const moisNom = mois[date.getMonth()]
+                    const annee = date.getFullYear()
+                    
+                    const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
+                    
+                    const message = `Bonjour ${selectedReservation.prenom},
+
+*CONFIRMATION DE RENDEZ-VOUS REQUISE*
+
+*Rendez-vous MISSPO :*
+━━━━━━━━━━━━━━━━━━━━━
+• *Date :* ${dateFormatee}
+• *Heure :* ${selectedReservation.heure}
+• *Pack :* ${selectedReservation.pack}${selectedReservation.adresse ? `
+• *Adresse :* ${selectedReservation.adresse}` : ''}${selectedReservation.ecole ? `
+• *École :* ${selectedReservation.ecole}` : ''}
+━━━━━━━━━━━━━━━━━━━━━
+
+Merci de confirmer votre présence en répondant à ce message.
+
+*Réponses possibles :*
+CONFIRMER
+ANNULER
+REPORTER
+
+Cordialement,
+_L'équipe MISSPO_`
+                    
+                    window.open(`https://wa.me/${selectedReservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
+                  }}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  WhatsApp
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
@@ -686,11 +974,51 @@ export default function DashboardPage() {
             <DialogTitle>Modifier la réservation</DialogTitle>
           </DialogHeader>
           {editingReservation && (
-            <form className="space-y-4" onSubmit={(e) => {
+            <form className="space-y-4" onSubmit={async (e) => {
               e.preventDefault()
-              // Logique de sauvegarde à implémenter
-              console.log("Sauvegarder", editingReservation)
-              setEditingReservation(null)
+              
+              try {
+                const response = await fetch(`http://localhost:8000/api/admin/appointments/${editingReservation.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(editingReservation),
+                })
+
+                const data = await response.json()
+
+                if (data.success) {
+                  toast.success('Rendez-vous modifié avec succès !', {
+                    style: {
+                      background: '#E5F4F9',
+                      color: '#2da1ca',
+                      border: '2px solid #2da1ca',
+                    },
+                  })
+                  setEditingReservation(null)
+                  // Recharger les données
+                  fetchStats()
+                  fetchAppointments()
+                } else {
+                  toast.error('Erreur lors de la modification', {
+                    style: {
+                      background: '#FBDEE5',
+                      color: '#ED7A97',
+                      border: '2px solid #ED7A97',
+                    },
+                  })
+                }
+              } catch (error) {
+                console.error("Erreur:", error)
+                toast.error('Erreur de connexion au serveur', {
+                  style: {
+                    background: '#FBDEE5',
+                    color: '#ED7A97',
+                    border: '2px solid #ED7A97',
+                  },
+                })
+              }
             }}>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -742,19 +1070,52 @@ export default function DashboardPage() {
                     id="edit-date"
                     type="date"
                     value={editingReservation.date}
-                    onChange={(e) => setEditingReservation({...editingReservation, date: e.target.value})}
+                    onChange={(e) => {
+                      setEditingReservation({...editingReservation, date: e.target.value})
+                      setSelectedDateForEdit(e.target.value)
+                    }}
                     className="mt-1"
                   />
                 </div>
                 <div>
                   <Label htmlFor="edit-heure">Heure</Label>
-                  <Input
-                    id="edit-heure"
-                    type="time"
-                    value={editingReservation.heure}
-                    onChange={(e) => setEditingReservation({...editingReservation, heure: e.target.value})}
-                    className="mt-1"
-                  />
+                  {availableHoursEdit && !availableHoursEdit.available ? (
+                    <div className="mt-1">
+                      <Input
+                        disabled
+                        value="Fermé ce jour"
+                        className="bg-gray-100"
+                      />
+                    </div>
+                  ) : (
+                    <Select 
+                      value={editingReservation.heure} 
+                      onValueChange={(value) => setEditingReservation({...editingReservation, heure: value})}
+                      disabled={!editingReservation.date}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Sélectionner une heure" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableHoursEdit ? (
+                          generateTimeSlots(availableHoursEdit.openTime, availableHoursEdit.closeTime).map((time) => (
+                            <SelectItem key={time} value={time}>
+                              {time}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="loading" disabled>
+                            Chargement...
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {availableHoursEdit && availableHoursEdit.available && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Horaires: {availableHoursEdit.openTime} - {availableHoursEdit.closeTime}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -785,9 +1146,9 @@ export default function DashboardPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="En attente">En attente</SelectItem>
-                      <SelectItem value="Confirmé">Confirmé</SelectItem>
-                      <SelectItem value="Terminé">Terminé</SelectItem>
-                      <SelectItem value="Refusé">Refusé</SelectItem>
+                      <SelectItem value="Confirmée">Confirmée</SelectItem>
+                      <SelectItem value="Terminée">Terminée</SelectItem>
+                      <SelectItem value="Refusée">Refusée</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -862,25 +1223,65 @@ export default function DashboardPage() {
           <DialogHeader>
             <DialogTitle>Nouveau rendez-vous</DialogTitle>
           </DialogHeader>
-          <form className="space-y-4" onSubmit={(e) => {
+          <form className="space-y-4" onSubmit={async (e) => {
             e.preventDefault()
-            // Logique d'ajout à implémenter
-            console.log("Ajouter", newReservation)
-            setIsAddingNew(false)
-            // Reset form
-            setNewReservation({
-              prenom: "",
-              nom: "",
-              email: "",
-              telephone: "",
-              date: "",
-              heure: "",
-              pack: "Domicile",
-              statut: "En attente",
-              adresse: "",
-              ecole: "",
-              notes: "",
-            })
+            
+            try {
+              const response = await fetch('http://localhost:8000/api/admin/appointments', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newReservation),
+              })
+
+              const data = await response.json()
+
+              if (data.success) {
+                toast.success('Rendez-vous créé avec succès !', {
+                  style: {
+                    background: '#E5F4F9',
+                    color: '#2da1ca',
+                    border: '2px solid #2da1ca',
+                  },
+                })
+                setIsAddingNew(false)
+                // Reset form
+                setNewReservation({
+                  prenom: "",
+                  nom: "",
+                  email: "",
+                  telephone: "",
+                  date: "",
+                  heure: "",
+                  pack: "Domicile",
+                  statut: "En attente",
+                  adresse: "",
+                  ecole: "",
+                  notes: "",
+                })
+                // Recharger les données
+                fetchStats()
+                fetchAppointments()
+              } else {
+                toast.error('Erreur lors de la création du rendez-vous', {
+                  style: {
+                    background: '#FBDEE5',
+                    color: '#ED7A97',
+                    border: '2px solid #ED7A97',
+                  },
+                })
+              }
+            } catch (error) {
+              console.error("Erreur:", error)
+              toast.error('Erreur de connexion au serveur', {
+                style: {
+                  background: '#FBDEE5',
+                  color: '#ED7A97',
+                  border: '2px solid #ED7A97',
+                },
+              })
+            }
           }}>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -937,21 +1338,53 @@ export default function DashboardPage() {
                   id="new-date"
                   type="date"
                   value={newReservation.date}
-                  onChange={(e) => setNewReservation({...newReservation, date: e.target.value})}
+                  onChange={(e) => {
+                    setNewReservation({...newReservation, date: e.target.value})
+                    setSelectedDateForNew(e.target.value)
+                  }}
                   className="mt-1"
                   required
                 />
               </div>
               <div>
                 <Label htmlFor="new-heure">Heure *</Label>
-                <Input
-                  id="new-heure"
-                  type="time"
-                  value={newReservation.heure}
-                  onChange={(e) => setNewReservation({...newReservation, heure: e.target.value})}
-                  className="mt-1"
-                  required
-                />
+                {availableHours && !availableHours.available ? (
+                  <div className="mt-1">
+                    <Input
+                      disabled
+                      value="Fermé ce jour"
+                      className="bg-gray-100"
+                    />
+                  </div>
+                ) : (
+                  <Select 
+                    value={newReservation.heure} 
+                    onValueChange={(value) => setNewReservation({...newReservation, heure: value})}
+                    disabled={!newReservation.date}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Sélectionner une heure" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableHours ? (
+                        generateTimeSlots(availableHours.openTime, availableHours.closeTime).map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="placeholder" disabled>
+                          Sélectionnez d'abord une date
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
+                {availableHours && availableHours.available && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Horaires: {availableHours.openTime} - {availableHours.closeTime}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -982,9 +1415,9 @@ export default function DashboardPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="En attente">En attente</SelectItem>
-                    <SelectItem value="Confirmé">Confirmé</SelectItem>
-                    <SelectItem value="Terminé">Terminé</SelectItem>
-                    <SelectItem value="Refusé">Refusé</SelectItem>
+                    <SelectItem value="Confirmée">Confirmée</SelectItem>
+                    <SelectItem value="Terminée">Terminée</SelectItem>
+                    <SelectItem value="Refusée">Refusée</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

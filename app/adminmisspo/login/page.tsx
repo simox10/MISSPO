@@ -1,27 +1,71 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { LogIn } from "lucide-react"
+import { LogIn, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Charger les identifiants sauvegardés au montage du composant
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail")
+    const savedPassword = localStorage.getItem("rememberedPassword")
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail)
+      setPassword(savedPassword)
+      setRememberMe(true)
+    }
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
     
-    // Credentials statiques
-    if (email === "admin@misspo.com" && password === "misspo2026") {
-      localStorage.setItem("adminAuth", "true")
-      router.push("/adminmisspo/dashboard")
-    } else {
-      setError("Email ou mot de passe incorrect")
+    try {
+      // Appel à l'API Laravel
+      const response = await fetch('http://localhost:8000/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Sauvegarder ou supprimer les identifiants selon la checkbox
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email)
+          localStorage.setItem("rememberedPassword", password)
+        } else {
+          localStorage.removeItem("rememberedEmail")
+          localStorage.removeItem("rememberedPassword")
+        }
+        
+        // Stocker les infos de l'admin
+        localStorage.setItem("adminAuth", "true")
+        localStorage.setItem("adminData", JSON.stringify(data.admin))
+        router.push("/adminmisspo/dashboard")
+      } else {
+        setError(data.message || "Email ou mot de passe incorrect")
+      }
+    } catch (error) {
+      console.error("Erreur de connexion:", error)
+      setError("Erreur de connexion au serveur")
     }
   }
 
@@ -95,15 +139,42 @@ export default function LoginPage() {
 
                 <div>
                   <Label htmlFor="password" className="text-gray-700 font-medium">Mot de passe</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Entrez votre mot de passe"
-                    required
-                    className="mt-2 h-11 border-2 border-gray-200 focus:border-[#ED7A97] rounded-lg"
+                  <div className="relative mt-2">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Entrez votre mot de passe"
+                      required
+                      className="h-11 border-2 border-gray-200 focus:border-[#ED7A97] rounded-lg pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                   />
+                  <label
+                    htmlFor="remember"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  >
+                    Se souvenir de moi
+                  </label>
                 </div>
 
                 {error && (

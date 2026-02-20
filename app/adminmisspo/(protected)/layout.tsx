@@ -5,6 +5,17 @@ import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function ProtectedLayout({
   children,
@@ -15,6 +26,7 @@ export default function ProtectedLayout({
   const pathname = usePathname()
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
 
   useEffect(() => {
     const auth = localStorage.getItem("adminAuth")
@@ -25,6 +37,7 @@ export default function ProtectedLayout({
 
   const handleLogout = () => {
     localStorage.removeItem("adminAuth")
+    localStorage.removeItem("adminData")
     router.push("/adminmisspo/login")
   }
 
@@ -36,6 +49,7 @@ export default function ProtectedLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster position="top-right" />
       {/* Header Mobile */}
       <div className="lg:hidden bg-white border-b px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold text-misspo-rose-dark">MISSPO Admin</h1>
@@ -101,7 +115,7 @@ export default function ProtectedLayout({
 
           <div className="sticky bottom-0 bg-white p-4 border-t">
             <Button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutDialog(true)}
               variant="outline"
               className={`w-full text-red-600 hover:text-red-700 hover:bg-red-50 ${isCollapsed ? 'px-2' : 'justify-start'}`}
               title={isCollapsed ? "Déconnexion" : undefined}
@@ -125,6 +139,27 @@ export default function ProtectedLayout({
           {children}
         </main>
       </div>
+
+      {/* Dialog de confirmation de déconnexion */}
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la déconnexion</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder au panneau d'administration.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Se déconnecter
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

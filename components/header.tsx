@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { Menu, X, Globe } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button"
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { locale, setLocale, t, dir } = useLanguage()
+  const pathname = usePathname()
 
   const navLinks = [
     { href: "/", label: t.nav.home },
@@ -39,15 +41,20 @@ export function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-misspo-rose-dark"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors hover:text-misspo-rose-dark ${
+                  isActive ? "text-misspo-rose-dark" : "text-foreground/80"
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Actions */}
@@ -81,16 +88,21 @@ export function Header() {
       {mobileOpen && (
         <div className="border-t border-misspo-rose-pale/50 bg-white/90 backdrop-blur-lg lg:hidden animate-fade-in-up" dir={dir}>
           <nav className="flex flex-col gap-1 px-4 py-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-4 py-3 text-sm font-medium text-foreground/80 transition-colors hover:bg-misspo-rose-pale hover:text-misspo-rose-dark"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-misspo-rose-pale hover:text-misspo-rose-dark ${
+                    isActive ? "bg-misspo-rose-pale text-misspo-rose-dark" : "text-foreground/80"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
             <div className="mt-3 flex flex-col gap-2 border-t border-misspo-rose-pale pt-3">
               <button
                 onClick={() => { toggleLang(); setMobileOpen(false) }}

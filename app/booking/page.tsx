@@ -14,6 +14,9 @@ import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { api, WorkingHours } from "@/lib/api"
+import { getRealtimeManager } from "@/lib/realtime-manager"
+import { RealtimeStatus } from "@/components/realtime-status"
+import { toast } from "sonner"
 
 type Pack = "school" | "home" | ""
 
@@ -70,7 +73,49 @@ export default function BookingPage() {
         setLoadingSlots(false)
       }
     }
+    
     fetchSlots()
+    
+    // Hybrid WebSocket/Polling subscription for real-time slot updates
+    if (selectedDate && pack) {
+      const manager = getRealtimeManager()
+      const dateStr = selectedDate.toLocaleDateString('en-CA')
+      const packValue = pack === 'school' ? 'ecole' : 'domicile' // Sanitized for channel names
+      const channelName = `slots.${dateStr}.${packValue}`
+      
+      console.log('Subscribing to channel:', channelName)
+      
+      manager.subscribe(
+        channelName,
+        '.slots.updated',
+        (data: any) => {
+          console.log('Slots updated:', data)
+          setAvailableSlots(data.slots)
+          
+          // Clear selected time if it's no longer available
+          if (selectedTime && !data.slots.includes(selectedTime)) {
+            setSelectedTime("")
+            toast.info("Le créneau sélectionné n'est plus disponible")
+          }
+        },
+        // Polling callback
+        async () => {
+          const slots = await api.getAvailableSlots(dateStr, packValue)
+          setAvailableSlots(slots)
+          
+          // Clear selected time if it's no longer available
+          if (selectedTime && !slots.includes(selectedTime)) {
+            setSelectedTime("")
+            toast.info("Le créneau sélectionné n'est plus disponible")
+          }
+        }
+      )
+      
+      // Cleanup
+      return () => {
+        manager.unsubscribe(channelName)
+      }
+    }
   }, [selectedDate, pack])
 
   const isDayDisabled = (date: Date): boolean => {
@@ -165,6 +210,9 @@ export default function BookingPage() {
 
   return (
     <div dir={dir}>
+      {/* Realtime Status Indicator - Development Only */}
+      {process.env.NODE_ENV === 'development' && <RealtimeStatus />}
+      
       <section className="bg-gradient-to-br from-misspo-rose-pale via-white to-misspo-blue-pale py-16">
         <div className="mx-auto max-w-7xl px-4 text-center">
           <span className="text-sm font-semibold uppercase tracking-wider text-misspo-blue-dark">MISSPO</span>

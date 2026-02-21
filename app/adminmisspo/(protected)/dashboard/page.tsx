@@ -9,6 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
+import { getRealtimeManager } from "@/lib/realtime-manager"
+import { RealtimeStatus } from "@/components/realtime-status"
+import { NotificationBell } from "@/components/notification-bell"
 import {
   Select,
   SelectContent,
@@ -75,10 +78,133 @@ export default function DashboardPage() {
   // CHANGER CE NUMÉRO POUR TESTER LES DESIGNS : 1, 2 ou 3
   const [dialogDesign, setDialogDesign] = useState(1)
 
+  // Fonction pour envoyer un message WhatsApp
+  const handleWhatsAppClick = (reservation: any) => {
+    // Nettoyer le numéro (supprimer tous les caractères non-numériques)
+    let phone = reservation.telephone.replace(/[^0-9]/g, '')
+    
+    // Si le numéro commence par 0, le remplacer par 212 (code pays Maroc)
+    if (phone.startsWith('0')) {
+      phone = '212' + phone.substring(1)
+    }
+    
+    const date = new Date(reservation.date)
+    const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+    
+    const jourSemaine = joursSemaine[date.getDay()]
+    const jour = date.getDate()
+    const moisNom = mois[date.getMonth()]
+    const annee = date.getFullYear()
+    
+    const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
+    
+    const message = `Bonjour ${reservation.prenom},
+
+*CONFIRMATION DE RENDEZ-VOUS REQUISE*
+
+*Rendez-vous MISSPO :*
+━━━━━━━━━━━━━━━━━━━━━
+• *Date :* ${dateFormatee}
+• *Heure :* ${reservation.heure}
+• *Pack :* ${reservation.pack}${reservation.adresse ? `
+• *Adresse :* ${reservation.adresse}` : ''}${reservation.ecole ? `
+• *École :* ${reservation.ecole}` : ''}
+━━━━━━━━━━━━━━━━━━━━━
+
+Merci de confirmer votre présence en répondant à ce message.
+
+*Réponses possibles :*
+CONFIRMER
+ANNULER
+REPORTER
+
+Cordialement,
+_L'équipe MISSPO_`
+    
+    window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, '_blank')
+  }
+
+  // Fonction pour formater la date pour l'input date (YYYY-MM-DD)
+  const formatDateForInput = (dateString: string) => {
+    if (!dateString) return ''
+    // Si la date contient 'T', c'est un format ISO - extraire seulement la partie date
+    if (dateString.includes('T')) {
+      return dateString.split('T')[0]
+    }
+    return dateString
+  }
+
   // Charger les statistiques et les rendez-vous
   useEffect(() => {
     fetchStats()
     fetchAppointments()
+  }, [])
+
+  // Hybrid WebSocket/Polling subscription for real-time updates
+  useEffect(() => {
+    const manager = getRealtimeManager()
+    
+    // Initialize manager
+    manager.initialize({
+      pollingInterval: parseInt(process.env.NEXT_PUBLIC_POLLING_INTERVAL || '60000'),
+      statusCheckInterval: parseInt(process.env.NEXT_PUBLIC_STATUS_CHECK_INTERVAL || '300000'),
+      onModeChange: (mode, reason) => {
+        if (mode === 'polling') {
+          toast.info('Mode économie activé - Mises à jour toutes les 60 secondes')
+        } else {
+          toast.success('Connexion temps réel rétablie')
+        }
+      },
+    })
+    
+    // Subscribe to appointments channel
+    manager.subscribe(
+      'appointments',
+      '.appointment.created',
+      (data: any) => {
+        console.log('New appointment received:', data)
+        
+        // Add new appointment to the list
+        setReservations(prev => [data, ...prev])
+        
+        // Refresh statistics
+        fetchStats()
+        
+        // Show notification
+        toast.success('Nouvelle réservation reçue!')
+      },
+      // Polling callback
+      async () => {
+        await fetchAppointments()
+        await fetchStats()
+      }
+    )
+    
+    // Subscribe to appointment updates
+    manager.subscribe(
+      'appointments',
+      '.appointment.updated',
+      (data: any) => {
+        console.log('Appointment updated:', data)
+        
+        // Update appointment in the list
+        setReservations(prev => 
+          prev.map(r => r.id === data.id ? data : r)
+        )
+        
+        // Refresh statistics
+        fetchStats()
+        
+        // Show notification
+        toast.info('Rendez-vous mis à jour')
+      }
+    )
+    
+    // Cleanup on unmount
+    return () => {
+      manager.unsubscribe('appointments')
+    }
   }, [])
 
   // Charger les horaires disponibles quand la date change
@@ -230,10 +356,16 @@ export default function DashboardPage() {
 
   return (
     <div>
+      {/* Realtime Status Indicator - Development Only */}
+      {process.env.NODE_ENV === 'development' && <RealtimeStatus />}
+      
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
-        <p className="text-muted-foreground mt-1">Gérez toutes vos réservations</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
+          <p className="text-muted-foreground mt-1">Gérez toutes vos réservations</p>
+        </div>
+        <NotificationBell />
       </div>
 
       {/* Stats - En haut */}
@@ -567,8 +699,11 @@ export default function DashboardPage() {
                           variant="ghost"
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           onClick={() => {
-                            setEditingReservation(reservation)
-                            setSelectedDateForEdit(reservation.date)
+                            setEditingReservation({
+                              ...reservation,
+                              date: formatDateForInput(reservation.date)
+                            })
+                            setSelectedDateForEdit(formatDateForInput(reservation.date))
                           }}
                           title="Modifier"
                         >
@@ -578,43 +713,7 @@ export default function DashboardPage() {
                           size="sm"
                           variant="ghost"
                           className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                          onClick={() => {
-                            const date = new Date(reservation.date)
-                            const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
-                            const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
-                            
-                            const jourSemaine = joursSemaine[date.getDay()]
-                            const jour = date.getDate()
-                            const moisNom = mois[date.getMonth()]
-                            const annee = date.getFullYear()
-                            
-                            const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
-                            
-                            const message = `Bonjour ${reservation.prenom},
-
-*CONFIRMATION DE RENDEZ-VOUS REQUISE*
-
-*Rendez-vous MISSPO :*
-━━━━━━━━━━━━━━━━━━━━━
-• *Date :* ${dateFormatee}
-• *Heure :* ${reservation.heure}
-• *Pack :* ${reservation.pack}${reservation.adresse ? `
-• *Adresse :* ${reservation.adresse}` : ''}${reservation.ecole ? `
-• *École :* ${reservation.ecole}` : ''}
-━━━━━━━━━━━━━━━━━━━━━
-
-Merci de confirmer votre présence en répondant à ce message.
-
-*Réponses possibles :*
-CONFIRMER
-ANNULER
-REPORTER
-
-Cordialement,
-_L'équipe MISSPO_`
-                            
-                            window.open(`https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
-                          }}
+                          onClick={() => handleWhatsAppClick(reservation)}
                           title="Contacter via WhatsApp"
                         >
                           <MessageCircle className="h-4 w-4" />
@@ -727,8 +826,11 @@ _L'équipe MISSPO_`
                 variant="outline"
                 className="text-blue-600 hover:text-blue-700"
                 onClick={() => {
-                  setEditingReservation(reservation)
-                  setSelectedDateForEdit(reservation.date)
+                  setEditingReservation({
+                    ...reservation,
+                    date: formatDateForInput(reservation.date)
+                  })
+                  setSelectedDateForEdit(formatDateForInput(reservation.date))
                 }}
               >
                 <Edit className="h-4 w-4" />
@@ -737,43 +839,7 @@ _L'équipe MISSPO_`
                 size="sm"
                 variant="outline"
                 className="text-green-600 hover:text-green-700"
-                onClick={() => {
-                  const date = new Date(reservation.date)
-                  const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
-                  const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
-                  
-                  const jourSemaine = joursSemaine[date.getDay()]
-                  const jour = date.getDate()
-                  const moisNom = mois[date.getMonth()]
-                  const annee = date.getFullYear()
-                  
-                  const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
-                  
-                  const message = `Bonjour ${reservation.prenom},
-
-*CONFIRMATION DE RENDEZ-VOUS REQUISE*
-
-*Rendez-vous MISSPO :*
-━━━━━━━━━━━━━━━━━━━━━
-• *Date :* ${dateFormatee}
-• *Heure :* ${reservation.heure}
-• *Pack :* ${reservation.pack}${reservation.adresse ? `
-• *Adresse :* ${reservation.adresse}` : ''}${reservation.ecole ? `
-• *École :* ${reservation.ecole}` : ''}
-━━━━━━━━━━━━━━━━━━━━━
-
-Merci de confirmer votre présence en répondant à ce message.
-
-*Réponses possibles :*
-CONFIRMER
-ANNULER
-REPORTER
-
-Cordialement,
-_L'équipe MISSPO_`
-                  
-                  window.open(`https://wa.me/${reservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
-                }}
+                onClick={() => handleWhatsAppClick(reservation)}
               >
                 <MessageCircle className="h-4 w-4" />
               </Button>
@@ -916,9 +982,12 @@ _L'équipe MISSPO_`
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F29CB1'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ED7A97'}
                   onClick={() => {
-                    setEditingReservation(selectedReservation)
+                    setEditingReservation({
+                      ...selectedReservation,
+                      date: formatDateForInput(selectedReservation.date)
+                    })
                     setSelectedReservation(null)
-                    setSelectedDateForEdit(selectedReservation.date)
+                    setSelectedDateForEdit(formatDateForInput(selectedReservation.date))
                   }}
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -926,43 +995,7 @@ _L'équipe MISSPO_`
                 </Button>
                 <Button
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => {
-                    const date = new Date(selectedReservation.date)
-                    const joursSemaine = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
-                    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
-                    
-                    const jourSemaine = joursSemaine[date.getDay()]
-                    const jour = date.getDate()
-                    const moisNom = mois[date.getMonth()]
-                    const annee = date.getFullYear()
-                    
-                    const dateFormatee = `${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)} ${jour} ${moisNom} ${annee}`
-                    
-                    const message = `Bonjour ${selectedReservation.prenom},
-
-*CONFIRMATION DE RENDEZ-VOUS REQUISE*
-
-*Rendez-vous MISSPO :*
-━━━━━━━━━━━━━━━━━━━━━
-• *Date :* ${dateFormatee}
-• *Heure :* ${selectedReservation.heure}
-• *Pack :* ${selectedReservation.pack}${selectedReservation.adresse ? `
-• *Adresse :* ${selectedReservation.adresse}` : ''}${selectedReservation.ecole ? `
-• *École :* ${selectedReservation.ecole}` : ''}
-━━━━━━━━━━━━━━━━━━━━━
-
-Merci de confirmer votre présence en répondant à ce message.
-
-*Réponses possibles :*
-CONFIRMER
-ANNULER
-REPORTER
-
-Cordialement,
-_L'équipe MISSPO_`
-                    
-                    window.open(`https://wa.me/${selectedReservation.telephone.replace(/\s/g, '')}?text=${encodeURIComponent(message)}`, '_blank')
-                  }}
+                  onClick={() => handleWhatsAppClick(selectedReservation)}
                 >
                   <MessageCircle className="h-4 w-4 mr-2" />
                   WhatsApp

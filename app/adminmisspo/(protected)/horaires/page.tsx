@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 type DaySchedule = {
   id: number
   day: string
@@ -31,7 +33,7 @@ export default function HorairesPage() {
   const fetchHoraires = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:8000/api/admin/horaires')
+      const response = await fetch(`${API_URL}/admin/horaires`)
       const data = await response.json()
       
       if (data.success) {
@@ -60,7 +62,7 @@ export default function HorairesPage() {
   const saveSchedule = async () => {
     try {
       setSaving(true)
-      const response = await fetch('http://localhost:8000/api/admin/horaires', {
+      const response = await fetch(`${API_URL}/admin/horaires`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

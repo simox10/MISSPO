@@ -29,6 +29,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 type Reservation = {
   id: number
   client_id: number
@@ -68,7 +70,7 @@ export default function PlanningPage() {
 
   const fetchAvailableHoursEdit = async (date: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const response = await fetch(`${API_URL}/admin/appointments/available-hours?date=${date}`)
       const data = await response.json()
       
       if (data.success) {
@@ -117,7 +119,7 @@ export default function PlanningPage() {
       setLoading(true)
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
       
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/by-date?date=${dateStr}`)
+      const response = await fetch(`${API_URL}/admin/appointments/by-date?date=${dateStr}`)
       
       // Vérifier si la réponse est bien du JSON
       const contentType = response.headers.get("content-type")
@@ -226,7 +228,7 @@ export default function PlanningPage() {
       for (const day of weekDays) {
         const dateStr = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`
         try {
-          const response = await fetch(`http://localhost:8000/api/admin/appointments/by-date?date=${dateStr}`)
+          const response = await fetch(`${API_URL}/admin/appointments/by-date?date=${dateStr}`)
           
           // Vérifier si la réponse est bien du JSON
           const contentType = response.headers.get("content-type")
@@ -619,7 +621,7 @@ _L'équipe MISSPO_`
               e.preventDefault()
               
               try {
-                const response = await fetch(`http://localhost:8000/api/admin/appointments/${editingReservation.id}`, {
+                const response = await fetch(`${API_URL}/admin/appointments/${editingReservation.id}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',

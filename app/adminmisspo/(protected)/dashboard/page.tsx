@@ -32,6 +32,8 @@ import {
 } from "@/components/ui/popover"
 import { reservations, type Reservation } from "../../data/reservations"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
   const [filterPack, setFilterPack] = useState<string>("all")
@@ -223,7 +225,7 @@ _L'équipe MISSPO_`
 
   const fetchAvailableHours = async (date: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const response = await fetch(`${API_URL}/admin/appointments/available-hours?date=${date}`)
       const data = await response.json()
       
       if (data.success) {
@@ -241,7 +243,7 @@ _L'équipe MISSPO_`
 
   const fetchAvailableHoursEdit = async (date: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const response = await fetch(`${API_URL}/admin/appointments/available-hours?date=${date}`)
       const data = await response.json()
       
       if (data.success) {
@@ -287,7 +289,7 @@ _L'équipe MISSPO_`
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin/stats')
+      const response = await fetch(`${API_URL}/admin/stats`)
       const data = await response.json()
       if (data.success) {
         setStats(data.stats)
@@ -300,7 +302,7 @@ _L'équipe MISSPO_`
   const fetchAppointments = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:8000/api/admin/appointments')
+      const response = await fetch(`${API_URL}/admin/appointments`)
       const data = await response.json()
       if (data.success) {
         setReservations(data.appointments)
@@ -1017,7 +1019,7 @@ _L'équipe MISSPO_`
               e.preventDefault()
               
               try {
-                const response = await fetch(`http://localhost:8000/api/admin/appointments/${editingReservation.id}`, {
+                const response = await fetch(`${API_URL}/admin/appointments/${editingReservation.id}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -1266,7 +1268,7 @@ _L'équipe MISSPO_`
             e.preventDefault()
             
             try {
-              const response = await fetch('http://localhost:8000/api/admin/appointments', {
+              const response = await fetch(`${API_URL}/admin/appointments`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Heart, Shield, Users } from "lucide-react"
+import { ArrowRight, Heart, Shield, Users, Clock } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { useInView } from "@/hooks/use-in-view"
 import { Parallax } from "react-scroll-parallax"
@@ -13,45 +13,41 @@ export function MissionSection() {
   const { ref, isInView } = useInView()
 
   const highlights = [
-    { icon: Heart, label: "Méthode douce" },
-    { icon: Shield, label: "100% naturel" },
-    { icon: Users, label: "Équipe experte" },
+    { icon: Heart, label: t.mission.highlights.gentle, showIcon: true },
+    { icon: Clock, label: t.mission.highlights.fast, showIcon: true },
+    { icon: Users, label: t.mission.highlights.expert, showIcon: true },
   ]
 
   return (
-    <section className="relative py-20 bg-white overflow-hidden" dir={dir} ref={ref}>
+    <section className="relative py-8 md:py-20 bg-white overflow-hidden" dir={dir} ref={ref}>
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Image Side with Parallax */}
+          {/* Image Side */}
           <div className={`relative transition-all duration-700 ${isInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"}`}>
-            <Parallax speed={-10}>
-              <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/hero-misspo.jpg" // Placeholder - remplacer par image de famille/enfants
-                  alt="Notre Mission MISSPO"
-                  fill
-                  className="object-cover"
-                />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-misspo-blue-dark/20 via-transparent to-misspo-rose-dark/20" />
-                
-                {/* Floating Badge */}
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-                    <div className="flex items-center justify-around">
-                      {highlights.map((item, index) => (
-                        <div key={index} className="flex flex-col items-center gap-2">
-                          <div className="w-10 h-10 rounded-xl bg-misspo-blue-pale flex items-center justify-center">
-                            <item.icon className="h-5 w-5 text-misspo-blue-dark" />
-                          </div>
-                          <span className="text-xs font-semibold text-foreground">{item.label}</span>
-                        </div>
-                      ))}
+            <div className="relative h-[320px] rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src="/hero-misspo.jpg"
+                alt="Notre Mission MISSPO"
+                fill
+                className="object-cover"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-misspo-blue-dark/20 via-transparent to-misspo-rose-dark/20" />
+            </div>
+
+            {/* Floating Badge - Outside Image */}
+            <div className="mt-6">
+              <div className="flex items-center justify-around">
+                {highlights.map((item, index) => (
+                  <div key={index} className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-misspo-blue-pale flex items-center justify-center">
+                      <item.icon className="h-5 w-5 text-misspo-blue-dark" />
                     </div>
+                    <span className="text-xs font-semibold text-foreground">{item.label}</span>
                   </div>
-                </div>
+                ))}
               </div>
-            </Parallax>
+            </div>
 
             {/* Decorative Elements */}
             <Parallax speed={5}>
@@ -79,29 +75,6 @@ export function MissionSection() {
                   </p>
                 </div>
 
-                {/* Key Points */}
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-misspo-blue-pale/50 border border-misspo-blue-light">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
-                      <span className="text-lg font-bold text-misspo-blue-dark">30m</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-misspo-blue-dark">Traitement rapide</p>
-                      <p className="text-xs text-muted-foreground">30min à 1h</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-misspo-rose-pale/50 border border-misspo-rose-light">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
-                      <span className="text-lg font-bold text-misspo-rose-dark">1x</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-misspo-rose-dark">Une seule séance</p>
-                      <p className="text-xs text-muted-foreground">Efficacité garantie</p>
-                    </div>
-                  </div>
-                </div>
-
                 {/* CTA */}
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link href="/services">
@@ -119,7 +92,7 @@ export function MissionSection() {
                       variant="outline"
                       className="border-misspo-rose text-misspo-rose-dark hover:bg-misspo-rose-pale"
                     >
-                      Nous Contacter
+                      {t.mission.contactBtn}
                     </Button>
                   </Link>
                 </div>

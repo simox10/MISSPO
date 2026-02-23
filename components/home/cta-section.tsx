@@ -12,7 +12,10 @@ export function CtaSection() {
 
   return (
     <section
-      className="relative overflow-hidden bg-gradient-to-br from-misspo-rose-pale via-misspo-blue-pale to-white py-20"
+      className="relative overflow-hidden py-20"
+      style={{
+        background: 'linear-gradient(to bottom, white 0%, rgba(232, 119, 165, 0.2) 30%, rgba(59, 159, 199, 0.2) 70%, white 100%)'
+      }}
       dir={dir}
       ref={ref}
     >

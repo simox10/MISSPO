@@ -23,15 +23,15 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-3">
           {/* Brand */}
           <Parallax speed={-2}>
-            <div className="flex flex-col gap-4 items-start" dir="ltr">
+            <div className="flex flex-col gap-4 items-center md:items-start" dir="ltr">
               <Image
-                src="/logo .jpg"
+                src="/logomisspocomplet.png"
                 alt="MISSPO Logo"
                 width={180}
                 height={64}
-                className="h-16 w-auto object-contain rounded bg-white px-2 py-1 shadow-sm -ml-2"
+                className="h-16 w-auto object-contain md:-ml-2"
               />
-              <p className="max-w-xs text-sm text-muted-foreground leading-relaxed">
+              <p className="max-w-xs text-sm text-muted-foreground leading-relaxed text-center md:text-left">
                 {t.footer.description}
               </p>
             </div>

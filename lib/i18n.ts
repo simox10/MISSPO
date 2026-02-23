@@ -14,6 +14,8 @@ export const translations = {
     hero: {
       title: "Misspo",
       subtitle: "Spécialiste du traitement anti-poux",
+      subtitle2: "Spécialiste du traitement",
+      antiPoux: "Anti-Poux",
       description: "Intervention professionnelle en milieu scolaire et à domicile. Une méthode douce, efficace et rassurante.",
       cta: "Prendre Rendez-vous",
       phone: "0622945571",
@@ -280,6 +282,12 @@ export const translations = {
       subtitle: "Protéger les enfants avec une méthode douce et naturelle",
       description: "Notre méthode vous débarrasse des poux et des lentes en une seule fois. Le temps de traitement varie de 30m à 1H en fonction de la longueur des cheveux et de la contamination. Équipés d'un matériel professionnel dernier cri, nous disposons de l'aspirateur à poux et l'efficacité de notre lotion aux actifs naturels est garantie. Notre équipe de professionnelles est à votre écoute pour vous accompagner dans cette épreuve avec bienveillance et expertise.",
       cta: "Découvrir nos services",
+      contactBtn: "Nous Contacter",
+      highlights: {
+        gentle: "Méthode douce",
+        fast: "Traitement rapide",
+        expert: "Équipe experte",
+      },
     },
     // Footer
     footer: {
@@ -305,6 +313,8 @@ export const translations = {
     hero: {
       title: "Misspo",
       subtitle: "متخصصون في علاج القمل",
+      subtitle2: "متخصصون في العلاج",
+      antiPoux: "ضد القمل",
       description: "تدخل مهني في المدارس وفي المنزل. طريقة لطيفة وفعالة ومطمئنة.",
       cta: "حجز موعد",
       phone: "0622945571",
@@ -557,6 +567,12 @@ export const translations = {
       subtitle: "\u062d\u0645\u0627\u064a\u0629 \u0627\u0644\u0623\u0637\u0641\u0627\u0644 \u0628\u0637\u0631\u064a\u0642\u0629 \u0644\u0637\u064a\u0641\u0629 \u0648\u0637\u0628\u064a\u0639\u064a\u0629",
       description: "\u0637\u0631\u064a\u0642\u062a\u0646\u0627 \u062a\u062a\u062e\u0644\u0635 \u0645\u0646 \u0627\u0644\u0642\u0645\u0644 \u0648\u0627\u0644\u0635\u0626\u0628\u0627\u0646 \u0641\u064a \u062c\u0644\u0633\u0629 \u0648\u0627\u062d\u062f\u0629. \u064a\u062a\u0631\u0627\u0648\u062d \u0648\u0642\u062a \u0627\u0644\u0639\u0644\u0627\u062c \u0628\u064a\u0646 30 \u062f\u0642\u064a\u0642\u0629 \u0648\u0633\u0627\u0639\u0629 \u062d\u0633\u0628 \u0637\u0648\u0644 \u0627\u0644\u0634\u0639\u0631 \u0648\u0645\u0633\u062a\u0648\u0649 \u0627\u0644\u0625\u0635\u0627\u0628\u0629. \u0645\u062c\u0647\u0632\u0648\u0646 \u0628\u0645\u0639\u062f\u0627\u062a \u0645\u0647\u0646\u064a\u0629 \u062d\u062f\u064a\u062b\u0629\u060c \u0646\u0645\u062a\u0644\u0643 \u0634\u0641\u0627\u0637 \u0627\u0644\u0642\u0645\u0644 \u0648\u0641\u0639\u0627\u0644\u064a\u0629 \u0644\u0648\u0634\u0646\u0646\u0627 \u0627\u0644\u0637\u0628\u064a\u0639\u064a \u0645\u0636\u0645\u0648\u0646\u0629. \u0641\u0631\u064a\u0642\u0646\u0627 \u0627\u0644\u0645\u062d\u062a\u0631\u0641 \u0641\u064a \u062e\u062f\u0645\u062a\u0643\u0645.",
       cta: "\u0627\u0643\u062a\u0634\u0641 \u062e\u062f\u0645\u0627\u062a\u0646\u0627",
+      contactBtn: "اتصل بنا",
+      highlights: {
+        gentle: "طريقة لطيفة",
+        fast: "علاج سريع",
+        expert: "فريق خبير",
+      },
     },
     footer: {
       description: "متخصص في علاج القمل المهني بالدار البيضاء.",

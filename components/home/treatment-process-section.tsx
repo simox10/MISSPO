@@ -145,6 +145,30 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Blurred Background Layer - Extended on bottom, left, right */}
+      <div 
+        className="absolute -z-10" 
+        style={{ 
+          left: '-20%',
+          right: '-20%',
+          top: '0',
+          bottom: '-30%',
+          width: '140%',
+          height: '130%'
+        }}
+      >
+        <div className="relative w-full h-full">
+          <Image
+            src={step.image}
+            alt={`${step.title} background`}
+            fill
+            className="object-cover"
+            style={{ filter: 'blur(60px)', opacity: 0.6 }}
+            quality={50}
+          />
+        </div>
+      </div>
+
       <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden h-full">
         {/* Image Background */}
         <div className="absolute inset-0">

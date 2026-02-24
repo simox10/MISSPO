@@ -89,7 +89,7 @@ export default function ProtectedLayout({
       <div className="flex">
         {/* Sidebar */}
         <aside className={`
-          fixed lg:static inset-y-0 left-0 z-50
+          fixed inset-y-0 left-0 z-50
           ${isCollapsed ? 'w-20' : 'w-64'} bg-white border-r
           transform transition-all duration-200 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -168,7 +168,7 @@ export default function ProtectedLayout({
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 lg:p-8">
+        <main className={`flex-1 p-4 lg:p-8 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'} transition-all duration-200`}>
           {children}
         </main>
       </div>

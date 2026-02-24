@@ -47,6 +47,7 @@ export default function DashboardPage() {
     confirmees: 0,
     en_attente: 0,
     refusees: 0,
+    total_mois: 0,
   })
   const [loading, setLoading] = useState(true)
   const [newReservation, setNewReservation] = useState({
@@ -372,28 +373,58 @@ _L'équipe MISSPO_`
 
       {/* Stats - En haut */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
-          <p className="text-sm" style={{ color: '#2da1ca' }}>Total</p>
-          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : stats.total}
+        <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+          <CalendarIcon className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} />
+          <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Aujourd'hui</p>
+          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : (
+              <>
+                <span className="font-bold">{stats.total}</span>
+                <span className="font-normal">/{stats.total_mois}</span>
+              </>
+            )}
           </p>
         </div>
-        <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
-          <p className="text-sm" style={{ color: '#2da1ca' }}>Confirmées</p>
-          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : stats.confirmees}
+        <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+          <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Confirmées</p>
+          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : (
+              <>
+                <span className="font-bold">{stats.confirmees}</span>
+                <span className="font-normal">/{stats.total_mois}</span>
+              </>
+            )}
           </p>
         </div>
-        <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
-          <p className="text-sm" style={{ color: '#2da1ca' }}>En attente</p>
-          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : stats.en_attente}
+        <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+          <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV En attente</p>
+          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : (
+              <>
+                <span className="font-bold">{stats.en_attente}</span>
+                <span className="font-normal">/{stats.total_mois}</span>
+              </>
+            )}
           </p>
         </div>
-        <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
-          <p className="text-sm" style={{ color: '#2da1ca' }}>Refusées</p>
-          <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : stats.refusees}
+        <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+          <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Refusées</p>
+          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : (
+              <>
+                <span className="font-bold">{stats.refusees}</span>
+                <span className="font-normal">/{stats.total_mois}</span>
+              </>
+            )}
           </p>
         </div>
       </div>

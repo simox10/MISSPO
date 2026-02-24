@@ -166,7 +166,7 @@ export function NotificationBell() {
           )}
         </div>
         <DropdownMenuSeparator />
-        <ScrollArea className="h-[400px]">
+        <ScrollArea className="h-[320px]">
           {notifications.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
               Aucune notification

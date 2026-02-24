@@ -45,7 +45,7 @@ export const translations = {
       description: "Des interventions professionnelles adaptées à vos besoins",
       discoverBtn: "Découvrir nos services",
       breadcrumb: "Accueil",
-      trustBadge: "500+ enfants traités avec succès",
+      trustBadge: "99+ enfants traités avec succès",
     },
     // Pack details
     packs: {

@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 import { ArrowRight, ChevronRight, Users, Shield, Clock, FileCheck, Home, Heart, MessageCircle, Zap, TrendingUp, Droplet, School, Timer, ArrowDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { useInView } from "@/hooks/use-in-view"
@@ -17,98 +18,79 @@ function PackCards() {
   const { t, dir } = useLanguage()
   const { ref, isInView } = useInView()
 
-  const schoolIcons = [Users, Shield, Clock, FileCheck]
-  const homeIcons = [Home, Heart, MessageCircle, Zap]
-
   const packs = [
     {
       ...t.packs.school,
       image: "/service-ecole.jpg",
-      imageAlt: "Service MISSPO en milieu scolaire - traitement anti-poux",
+      imageAlt: "Service MISSPO en milieu scolaire",
       borderColor: "border-misspo-blue-light",
       bgGradient: "from-misspo-blue-pale to-white",
       btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
       href: "/contact",
-      icons: schoolIcons,
-      recommended: undefined,
     },
     {
       ...t.packs.home,
       image: "/service-domicile.jpg",
-      imageAlt: "Service MISSPO a domicile - traitement anti-poux",
+      imageAlt: "Service MISSPO a domicile",
       borderColor: "border-misspo-rose-light",
       bgGradient: "from-misspo-rose-pale to-white",
       btnClass: "bg-misspo-rose-dark text-white hover:bg-misspo-rose",
       href: "/booking",
-      icons: homeIcons,
-      recommended: t.packs.home.recommended,
     },
   ]
 
   return (
-    <div ref={ref} className="grid gap-8 md:grid-cols-2" dir={dir}>
+    <div ref={ref} className="mt-12 hidden gap-8 md:grid md:grid-cols-2" dir={dir}>
       {packs.map((pack, index) => (
-        <div
-          key={pack.title}
-          className={`group relative overflow-hidden rounded-3xl border ${pack.borderColor} bg-gradient-to-br ${pack.bgGradient} shadow-sm transition-all duration-500 hover:shadow-xl flex flex-col ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-          style={{ transitionDelay: `${index * 200}ms` }}
-        >
-          {pack.recommended && (
-            <div className="absolute right-4 top-4 z-10 rounded-full bg-misspo-rose-dark px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
-              {pack.recommended}
+        <div key={pack.title} style={{ willChange: 'transform', transform: `translateY(${index % 2 === 0 ? -1.13856 : 1.13857}px)` }}>
+          <div
+            className={`group overflow-hidden rounded-3xl border ${pack.borderColor} bg-gradient-to-br ${pack.bgGradient} shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 ${
+              isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: `${(index + 1) * 200}ms` }}
+          >
+            {/* Image */}
+            <div className="relative h-64 overflow-hidden">
+              <Image
+                src={pack.image}
+                alt={pack.imageAlt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                style={{ objectPosition: index === 1 ? '80% 70%' : 'center 70%' }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
-          )}
-          <div className="relative h-48 md:h-52 overflow-hidden">
-            <Image
-              src={pack.image}
-              alt={pack.imageAlt}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          </div>
-          <div className="p-6 flex flex-col flex-1">
-            <h3 className="text-2xl font-bold text-foreground">{pack.title}</h3>
-            <p className="mt-1.5 text-sm text-muted-foreground">{pack.subtitle}</p>
-            
-            <div className="mt-4 flex gap-6">
-              <div className="flex-1">
-                <p className="text-xs font-semibold text-foreground/70 mb-2">{pack.included}</p>
-                <ul className="flex flex-col gap-2.5">
-                  {pack.features.map((feature, idx) => {
-                    const Icon = pack.icons[idx]
-                    return (
-                      <li key={feature} className="flex items-center gap-3 text-sm text-foreground/80">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-misspo-blue-pale flex-shrink-0">
-                          <Icon className="h-3 w-3 text-misspo-blue-dark" />
-                        </div>
-                        {feature}
-                      </li>
-                    )
-                  })}
-                </ul>
+
+            {/* Content */}
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-foreground">{pack.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{pack.subtitle}</p>
+
+              {/* Features */}
+              <ul className="mt-4 flex flex-col gap-2">
+                {pack.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
+                    <Check className="h-4 w-4 shrink-0 text-misspo-blue-dark" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Price & Button */}
+              <div className="mt-4 flex flex-col gap-3">
+                {/* Price Row */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Tarif</span>
+                  <p className="text-xl font-bold text-foreground">{pack.price}</p>
+                </div>
+                {/* Button Row */}
+                <Link href={pack.href} className="w-full">
+                  <Button className={`${pack.btnClass} shadow-md transition-all hover:shadow-lg w-full`}>
+                    {pack.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
-              
-              <div className="flex flex-col items-center justify-center px-4 py-3 rounded-xl bg-white/50 border border-border/30 min-w-[140px]">
-                <p className="text-3xl font-bold text-foreground text-center">{pack.price}</p>
-                {pack.priceContext && (
-                  <p className="text-xs text-muted-foreground mt-1 text-center">{pack.priceContext}</p>
-                )}
-                <p className="text-xs text-muted-foreground mt-0.5 text-center">{pack.priceUnit}</p>
-              </div>
-            </div>
-            
-            <div className="flex-1 min-h-[20px]"></div>
-            
-            <div className="mt-5 pt-4 border-t border-border/50">
-              <Link href={pack.href} className="block">
-                <Button className={`w-full ${pack.btnClass} shadow-md`}>
-                  {pack.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -120,13 +102,62 @@ function PackCards() {
 function TrustIndicators() {
   const { t, dir } = useLanguage()
   const { ref, isInView } = useInView()
+  const [counts, setCounts] = useState({ children: 0, chemicals: 0, schools: 0, time: 5 })
 
   const indicators = [
-    { icon: TrendingUp, value: "500+", label: t.trustIndicators.childrenTreated },
-    { icon: Droplet, value: "100%", label: t.trustIndicators.noChemicals },
-    { icon: School, value: "20+", label: t.trustIndicators.schoolPartners },
-    { icon: Timer, value: "<1h", label: t.trustIndicators.avgDuration },
+    { icon: TrendingUp, value: "99+", target: 99, label: t.trustIndicators.childrenTreated, type: "children" },
+    { icon: Droplet, value: "100%", target: 100, label: t.trustIndicators.noChemicals, type: "chemicals" },
+    { icon: School, value: "20+", target: 20, label: t.trustIndicators.schoolPartners, type: "schools" },
+    { icon: Timer, value: "<1h", target: 60, label: t.trustIndicators.avgDuration, type: "time" },
   ]
+
+  useEffect(() => {
+    if (!isInView) return
+
+    const duration = 2500 // 2.5 seconds for smoother animation
+    const frameRate = 1000 / 60 // 60fps
+    const totalFrames = Math.round(duration / frameRate)
+    let frame = 0
+
+    const easeOutQuart = (x: number): number => {
+      return 1 - Math.pow(1 - x, 4)
+    }
+
+    const timer = setInterval(() => {
+      frame++
+      const progress = easeOutQuart(frame / totalFrames)
+
+      setCounts({
+        children: Math.round(progress * 99),
+        chemicals: Math.round(progress * 100),
+        schools: Math.round(progress * 20),
+        time: Math.round(5 + progress * 55), // from 5 to 60
+      })
+
+      if (frame >= totalFrames) {
+        clearInterval(timer)
+        setCounts({ children: 99, chemicals: 100, schools: 20, time: 60 })
+      }
+    }, frameRate)
+
+    return () => clearInterval(timer)
+  }, [isInView])
+
+  const formatValue = (type: string, count: number) => {
+    switch(type) {
+      case "children":
+        return count >= 99 ? "99+" : count.toString()
+      case "chemicals":
+        return `${count}%`
+      case "schools":
+        return count >= 20 ? "20+" : count.toString()
+      case "time":
+        if (count >= 60) return "<1h"
+        return `${count}min`
+      default:
+        return count.toString()
+    }
+  }
 
   return (
     <section className="py-12 bg-misspo-blue-pale/30" dir={dir} ref={ref}>
@@ -134,6 +165,7 @@ function TrustIndicators() {
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           {indicators.map((item, index) => {
             const Icon = item.icon
+            const count = counts[item.type as keyof typeof counts]
             return (
               <div
                 key={item.label}
@@ -143,7 +175,7 @@ function TrustIndicators() {
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-misspo-blue-pale mb-3">
                   <Icon className="h-6 w-6 text-misspo-blue-dark" />
                 </div>
-                <p className="text-3xl font-bold text-foreground">{item.value}</p>
+                <p className="text-3xl font-bold text-foreground">{formatValue(item.type, count)}</p>
                 <p className="text-sm text-muted-foreground mt-1">{item.label}</p>
               </div>
             )
@@ -296,13 +328,6 @@ function PricingCards() {
               </Link>
             </div>
           ))}
-        </div>
-
-        <div className={`mt-6 text-center transition-all duration-700 delay-400 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <p className="inline-flex items-center gap-2 text-sm font-semibold text-foreground bg-white px-4 py-2 rounded-full shadow-sm">
-            <span className="text-lg">💡</span>
-            {t.pricingTable.note}
-          </p>
         </div>
       </div>
     </section>

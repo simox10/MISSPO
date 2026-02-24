@@ -42,7 +42,7 @@ function ContactInfo() {
       label: "Instagram",
       value: "@misspo_casablanca",
       href: "https://www.instagram.com/misspo_casablanca",
-      color: "bg-misspo-rose-pale text-misspo-rose-dark",
+      color: "bg-misspo-blue-pale text-misspo-blue-dark",
       animation: "animate-wiggle",
     },
   ]
@@ -115,13 +115,13 @@ function ContactInfo() {
           rel="noopener noreferrer"
           className="flex-1"
         >
-          <Button className="w-full bg-green-600 text-white hover:bg-green-700 shadow-md">
+          <Button className="w-full bg-misspo-rose-dark text-white hover:bg-misspo-rose shadow-md">
             <MessageCircle className="h-4 w-4" />
             {t.contact.whatsappBtn}
           </Button>
         </a>
         <a href="mailto:wafaaoubouali91@gmail.com" className="flex-1">
-          <Button className="w-full bg-misspo-rose-dark text-white hover:bg-misspo-rose shadow-md">
+          <Button className="w-full bg-misspo-blue-dark text-white hover:bg-misspo-blue shadow-md">
             <Mail className="h-4 w-4" />
             {t.contact.emailBtn}
           </Button>

@@ -208,8 +208,42 @@ function ContactForm() {
       return
     }
 
-    setErrors({})
-    setSent(true)
+    // Call API to save contact message
+    fetch('http://localhost:8000/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nom: values.lastName,
+        prenom: values.firstName,
+        telephone: values.phone,
+        email: values.email,
+        message: values.message
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          setErrors({})
+          setSent(true)
+          // Reset form
+          setValues({
+            lastName: "",
+            firstName: "",
+            phone: "",
+            email: "",
+            message: ""
+          })
+          setTouched({})
+        } else {
+          setErrors({ submit: 'Erreur lors de l\'envoi du message' })
+        }
+      })
+      .catch(error => {
+        console.error("Erreur:", error)
+        setErrors({ submit: 'Erreur de connexion au serveur' })
+      })
   }
 
   if (sent) {

@@ -29,6 +29,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 type Reservation = {
   id: number
   client_id: number
@@ -68,7 +70,7 @@ export default function PlanningPage() {
 
   const fetchAvailableHoursEdit = async (date: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/available-hours?date=${date}`)
+      const response = await fetch(`${API_URL}/admin/appointments/available-hours?date=${date}`)
       const data = await response.json()
       
       if (data.success) {
@@ -117,7 +119,7 @@ export default function PlanningPage() {
       setLoading(true)
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
       
-      const response = await fetch(`http://localhost:8000/api/admin/appointments/by-date?date=${dateStr}`)
+      const response = await fetch(`${API_URL}/admin/appointments/by-date?date=${dateStr}`)
       
       // Vérifier si la réponse est bien du JSON
       const contentType = response.headers.get("content-type")
@@ -226,7 +228,7 @@ export default function PlanningPage() {
       for (const day of weekDays) {
         const dateStr = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`
         try {
-          const response = await fetch(`http://localhost:8000/api/admin/appointments/by-date?date=${dateStr}`)
+          const response = await fetch(`${API_URL}/admin/appointments/by-date?date=${dateStr}`)
           
           // Vérifier si la réponse est bien du JSON
           const contentType = response.headers.get("content-type")
@@ -389,7 +391,11 @@ export default function PlanningPage() {
                   {/* Créneaux */}
                   <div className="flex-1 min-h-[60px] border-l-2 border-gray-200 pl-4">
                     {hasReservations ? (
-                      <div className={`grid gap-2 ${hourReservations.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                      <div className={`grid gap-2 ${
+                        hourReservations.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 
+                        hourReservations.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 
+                        'grid-cols-1'
+                      }`}>
                         {hourReservations.map((res) => (
                           <div
                             key={res.id}
@@ -554,6 +560,8 @@ export default function PlanningPage() {
                     setEditingReservation(selectedReservation)
                     setSelectedReservation(null)
                     setSelectedDateForEdit(selectedReservation.date)
+                    // Force refresh available hours immediately
+                    fetchAvailableHoursEdit(selectedReservation.date)
                   }}
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -619,7 +627,7 @@ _L'équipe MISSPO_`
               e.preventDefault()
               
               try {
-                const response = await fetch(`http://localhost:8000/api/admin/appointments/${editingReservation.id}`, {
+                const response = await fetch(`${API_URL}/admin/appointments/${editingReservation.id}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -628,6 +636,20 @@ _L'équipe MISSPO_`
                 })
 
                 const data = await response.json()
+
+                // Check for slot capacity error (409 Conflict)
+                if (response.status === 409) {
+                  toast.error(data.message || 'Ce créneau est complet', {
+                    duration: 6000,
+                    style: {
+                      background: '#FBDEE5',
+                      color: '#ED7A97',
+                      border: '2px solid #ED7A97',
+                    },
+                  })
+                  // Keep form open with data preserved - admin can change time/date
+                  return
+                }
 
                 if (data.success) {
                   toast.success('Rendez-vous modifié avec succès !', {
@@ -641,13 +663,16 @@ _L'équipe MISSPO_`
                   // Recharger les rendez-vous
                   fetchReservationsForDate(selectedDate)
                 } else {
-                  toast.error('Erreur lors de la modification', {
+                  // Show specific error message from API
+                  toast.error(data.message || 'Erreur lors de la modification', {
+                    duration: 5000,
                     style: {
                       background: '#FBDEE5',
                       color: '#ED7A97',
                       border: '2px solid #ED7A97',
                     },
                   })
+                  // Keep form open with data preserved
                 }
               } catch (error) {
                 console.error("Erreur:", error)
@@ -658,6 +683,7 @@ _L'équipe MISSPO_`
                     border: '2px solid #ED7A97',
                   },
                 })
+                // Keep form open on connection error
               }
             }}>
               <div className="grid grid-cols-2 gap-4">

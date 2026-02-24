@@ -362,7 +362,7 @@ _L'équipe MISSPO_`
       {process.env.NODE_ENV === 'development' && <RealtimeStatus />}
       
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
           <p className="text-muted-foreground mt-1">Gérez toutes vos réservations</p>
@@ -371,7 +371,7 @@ _L'équipe MISSPO_`
       </div>
 
       {/* Stats - En haut */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-lg shadow-sm p-4" style={{ backgroundColor: '#E5F4F9' }}>
           <p className="text-sm" style={{ color: '#2da1ca' }}>Total</p>
           <p className="text-2xl font-bold" style={{ color: '#2da1ca' }}>
@@ -786,7 +786,7 @@ _L'équipe MISSPO_`
         {paginatedReservations.map((reservation) => (
           <div
             key={reservation.id}
-            className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
+            className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 min-h-[280px]"
           >
             <div className="flex items-start justify-between mb-3">
               <div>

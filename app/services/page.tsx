@@ -334,48 +334,7 @@ function PricingCards() {
   )
 }
 
-function FAQPreview() {
-  const { t, dir } = useLanguage()
-  const { ref, isInView } = useInView()
 
-  const topQuestions = t.faq.questions.slice(0, 3)
-
-  return (
-    <section className="py-16 bg-white" dir={dir} ref={ref}>
-      <div className="mx-auto max-w-3xl px-4">
-        <div className={`text-center mb-10 transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
-            {t.faqPreview.title}
-          </h2>
-        </div>
-
-        <div className={`transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Accordion type="single" collapsible className="w-full">
-            {topQuestions.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-base font-semibold">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-
-        <div className={`mt-8 text-center transition-all duration-700 delay-400 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Link href="/about#faq">
-            <Button variant="outline" className="gap-2">
-              {t.faqPreview.seeAll}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-  )
-}
 
 function Check({ className }: { className?: string }) {
   return (
@@ -473,7 +432,6 @@ export default function ServicesPage() {
       <TrustIndicators />
       <ProtocolSection />
       <PricingCards />
-      <FAQPreview />
     </div>
   )
 }

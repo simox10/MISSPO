@@ -268,12 +268,12 @@ export const translations = {
         description: "Nous passons notre machine brevetée sur l'ensemble de la chevelure afin d'éradiquer les poux. Cette étape est sans douleur et n'abîme pas les cheveux.",
       },
       step2: {
-        title: "Application de la Lotion",
-        description: "Nous appliquons notre lotion traitante 100% naturelle et efficace sans insecticides chimiques. La lotion est aussi adaptée aux bébés et femmes enceintes. À la fin du traitement les cheveux sont propres et secs.",
+        title: "Passage du Peigne Cranté",
+        description: "Le peigne cranté nous permet de retirer minutieusement les lentes une par une. Cette technique mécanique garantit un traitement 100% sans produits chimiques.",
       },
       step3: {
-        title: "Vérification au Peigne Fin",
-        description: "Nous vérifions mèche par mèche que rien ne subsiste afin de vous garantir 100% d'efficacité. Vous pouvez, si vous le souhaitez à la fin du traitement, voir la petite récolte :)",
+        title: "Vérification Finale",
+        description: "Nous vérifions mèche par mèche que rien ne subsiste afin de vous garantir 100% d'efficacité. Vous pouvez, si vous le souhaitez, voir le résultat de notre travail à la fin du traitement.",
       },
     },
     // Mission
@@ -553,12 +553,12 @@ export const translations = {
         description: "\u0646\u0645\u0631\u0631 \u0622\u0644\u062a\u0646\u0627 \u0627\u0644\u0645\u0633\u062c\u0644\u0629 \u0639\u0644\u0649 \u0643\u0627\u0645\u0644 \u0627\u0644\u0634\u0639\u0631 \u0644\u0644\u0642\u0636\u0627\u0621 \u0639\u0644\u0649 \u0627\u0644\u0642\u0645\u0644. \u0647\u0630\u0647 \u0627\u0644\u062e\u0637\u0648\u0629 \u063a\u064a\u0631 \u0645\u0624\u0644\u0645\u0629 \u0648\u0644\u0627 \u062a\u0636\u0631 \u0627\u0644\u0634\u0639\u0631.",
       },
       step2: {
-        title: "\u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u0644\u0648\u0634\u0646",
-        description: "\u0646\u0637\u0628\u0642 \u0644\u0648\u0634\u0646\u0646\u0627 \u0627\u0644\u0639\u0644\u0627\u062c\u064a 100% \u0637\u0628\u064a\u0639\u064a \u0648\u0641\u0639\u0627\u0644 \u0628\u062f\u0648\u0646 \u0645\u0628\u064a\u062f\u0627\u062a \u062d\u0634\u0631\u064a\u0629. \u0645\u0646\u0627\u0633\u0628 \u0644\u0644\u0631\u0636\u0639 \u0648\u0627\u0644\u062d\u0648\u0627\u0645\u0644. \u0641\u064a \u0646\u0647\u0627\u064a\u0629 \u0627\u0644\u0639\u0644\u0627\u062c \u064a\u0643\u0648\u0646 \u0627\u0644\u0634\u0639\u0631 \u0646\u0638\u064a\u0641\u0627 \u0648\u062c\u0627\u0641\u0627.",
+        title: "تمرير المشط المسنن",
+        description: "يسمح لنا المشط المسنن بإزالة الصئبان واحدة تلو الأخرى بدقة. هذه التقنية الميكانيكية تضمن علاجاً 100% بدون مواد كيميائية.",
       },
       step3: {
-        title: "\u0627\u0644\u062a\u062d\u0642\u0642 \u0628\u0627\u0644\u0645\u0634\u0637 \u0627\u0644\u062f\u0642\u064a\u0642",
-        description: "\u0646\u062a\u062d\u0642\u0642 \u062e\u0635\u0644\u0629 \u0628\u062e\u0635\u0644\u0629 \u0644\u0636\u0645\u0627\u0646 100% \u0641\u0639\u0627\u0644\u064a\u0629. \u064a\u0645\u0643\u0646\u0643\u0645 \u0631\u0624\u064a\u0629 \u0627\u0644\u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0646\u0647\u0627\u064a\u0629 \u0627\u0644\u0639\u0644\u0627\u062c :)",
+        title: "التحقق النهائي",
+        description: "نتحقق خصلة بخصلة لضمان 100% فعالية. يمكنكم، إذا أردتم، رؤية نتيجة عملنا في نهاية العلاج.",
       },
     },
     // Mission

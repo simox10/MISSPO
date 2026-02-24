@@ -229,22 +229,22 @@ export default function BookingPage() {
                 <FileText className="h-5 w-5" />
                 <h2 className="text-lg font-bold">{t.booking.packChoice}</h2>
               </div>
-              <RadioGroup value={pack} onValueChange={(v) => { setPack(v as Pack); setSelectedTime(""); }} className="mt-4 grid gap-4 sm:grid-cols-2">
-                <label htmlFor="pack-school" className={`flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 p-5 transition-all ${pack === "school" ? "border-misspo-blue-dark bg-misspo-blue-pale shadow-md" : "border-misspo-blue-light bg-white hover:border-misspo-blue hover:shadow-sm"}`}>
+              <RadioGroup value={pack} onValueChange={(v) => { setPack(v as Pack); setSelectedTime(""); }} className="mt-4 grid grid-cols-2 gap-3 md:gap-4">
+                <label htmlFor="pack-school" className={`flex cursor-pointer flex-col items-center gap-2 md:gap-3 rounded-2xl border-2 p-3 md:p-5 transition-all ${pack === "school" ? "border-misspo-blue-dark bg-misspo-blue-pale shadow-md" : "border-misspo-blue-light bg-white hover:border-misspo-blue hover:shadow-sm"}`}>
                   <RadioGroupItem value="school" id="pack-school" className="sr-only" />
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${pack === "school" ? "bg-misspo-blue-dark text-white" : "bg-misspo-blue-pale text-misspo-blue-dark"}`}>
-                    <School className="h-6 w-6" />
+                  <div className={`flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-xl ${pack === "school" ? "bg-misspo-blue-dark text-white" : "bg-misspo-blue-pale text-misspo-blue-dark"}`}>
+                    <School className="h-4 w-4 md:h-6 md:w-6" />
                   </div>
-                  <span className="text-sm font-bold text-foreground">{t.booking.packSchool}</span>
-                  <span className="text-xs text-muted-foreground">{t.booking.priceQuote}</span>
+                  <span className="text-xs md:text-sm font-bold text-foreground text-center">{t.booking.packSchool}</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground text-center">{t.booking.priceQuote}</span>
                 </label>
-                <label htmlFor="pack-home" className={`flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 p-5 transition-all ${pack === "home" ? "border-misspo-rose-dark bg-misspo-rose-pale shadow-md" : "border-misspo-rose-light bg-white hover:border-misspo-rose hover:shadow-sm"}`}>
+                <label htmlFor="pack-home" className={`flex cursor-pointer flex-col items-center gap-2 md:gap-3 rounded-2xl border-2 p-3 md:p-5 transition-all ${pack === "home" ? "border-misspo-rose-dark bg-misspo-rose-pale shadow-md" : "border-misspo-rose-light bg-white hover:border-misspo-rose hover:shadow-sm"}`}>
                   <RadioGroupItem value="home" id="pack-home" className="sr-only" />
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${pack === "home" ? "bg-misspo-rose-dark text-white" : "bg-misspo-rose-pale text-misspo-rose-dark"}`}>
-                    <Home className="h-6 w-6" />
+                  <div className={`flex h-8 w-8 md:h-12 md:w-12 items-center justify-center rounded-xl ${pack === "home" ? "bg-misspo-rose-dark text-white" : "bg-misspo-rose-pale text-misspo-rose-dark"}`}>
+                    <Home className="h-4 w-4 md:h-6 md:w-6" />
                   </div>
-                  <span className="text-sm font-bold text-foreground">{t.booking.packHome}</span>
-                  <span className="text-xs text-muted-foreground">{t.booking.priceHome}</span>
+                  <span className="text-xs md:text-sm font-bold text-foreground text-center">{t.booking.packHome}</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground text-center">{t.booking.priceHome}</span>
                 </label>
               </RadioGroup>
               {errors.pack && <p className="mt-2 text-xs text-red-500">{errors.pack}</p>}

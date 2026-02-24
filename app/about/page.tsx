@@ -204,7 +204,7 @@ function FaqSection() {
   const { ref, isInView } = useInView()
 
   return (
-    <section className="py-20 bg-white" dir={dir} ref={ref}>
+    <section id="faq" className="py-20 bg-white" dir={dir} ref={ref}>
       <div className="mx-auto max-w-3xl px-4">
         <div className={`text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <div className="flex items-center justify-center gap-2">
@@ -243,6 +243,8 @@ function FaqSection() {
     </section>
   )
 }
+
+
 
 export default function AboutPage() {
   return (

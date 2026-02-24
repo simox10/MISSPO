@@ -6,6 +6,7 @@ import { MissionSection } from "@/components/home/mission-section"
 import { TreatmentProcessSection } from "@/components/home/treatment-process-section"
 import { ServicesPreview } from "@/components/home/services-preview"
 import { ValuesSection } from "@/components/home/values-section"
+import { FaqSection } from "@/components/home/faq-section"
 import { CtaSection } from "@/components/home/cta-section"
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
       <TreatmentProcessSection />
       <ServicesPreview />
       <ValuesSection />
+      <FaqSection />
       <CtaSection />
     </>
   )

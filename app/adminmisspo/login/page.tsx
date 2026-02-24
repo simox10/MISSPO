@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { LogIn, Eye, EyeOff } from "lucide-react"
+import { LogIn, Eye, EyeOff, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
+  const [currentSlide, setCurrentSlide] = useState(0)
 
   // Charger les identifiants sauvegardés au montage du composant
   useEffect(() => {
@@ -74,7 +75,174 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FBDEE5] via-white to-[#E5F4F9] flex items-center justify-center p-4">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div className="flex flex-col lg:flex-row">
+        {/* Mobile Carousel */}
+        <div className="lg:hidden relative">
+          <div 
+            className="flex transition-transform duration-300 ease-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {/* Slide 1: Carte de bienvenue */}
+            <div className="min-w-full bg-gradient-to-br from-[#ED7A97] to-[#F29CB1] relative overflow-hidden p-12">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+              <div className="absolute bottom-0 left-0 w-56 h-56 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/3"></div>
+              
+              <div className="relative z-10 flex flex-col justify-center items-center min-h-[500px] text-white">
+                <div className="mb-8 text-center">
+                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span className="text-3xl font-bold text-[#ED7A97]">M</span>
+                  </div>
+                  <h1 className="text-4xl font-bold mb-2">MISSPO</h1>
+                  <p className="text-white/90">Administration</p>
+                </div>
+
+                <div className="text-center max-w-sm">
+                  <h2 className="text-2xl font-bold mb-3">Bienvenue !</h2>
+                  <p className="text-white/90 leading-relaxed">
+                    Connectez-vous pour accéder au panneau d'administration et gérer vos réservations
+                  </p>
+                </div>
+
+                <div className="mt-8 p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
+                  <p className="text-sm text-center text-white/90">
+                    <span className="font-semibold">Email:</span> admin@misspo.com<br />
+                    <span className="font-semibold">Mot de passe:</span> misspo2026
+                  </p>
+                </div>
+
+                {/* Swipe indicator */}
+                <button
+                  onClick={() => setCurrentSlide(1)}
+                  className="mt-8 flex items-center gap-2 text-white/90 hover:text-white transition-colors animate-pulse"
+                >
+                  <span className="text-sm font-medium">Swipez pour vous connecter</span>
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Slide 2: Formulaire de connexion */}
+            <div className="min-w-full p-12 flex items-center justify-center">
+              <div className="w-full max-w-sm">
+                <div className="text-center mb-6">
+                  <h1 className="text-2xl font-bold text-[#ED7A97]">MISSPO</h1>
+                  <p className="text-sm text-gray-600 mt-1">Panneau d'administration</p>
+                </div>
+
+                <div className="mb-6">
+                  <h2 className="text-3xl font-bold text-gray-800 mb-2">Connexion</h2>
+                  <p className="text-gray-600 text-sm">Connectez-vous à votre compte</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Entrez votre email"
+                      required
+                      className="mt-2 h-11 border-2 border-gray-200 focus:border-[#ED7A97] rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="password" className="text-gray-700 font-medium">Mot de passe</Label>
+                    <div className="relative mt-2">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Entrez votre mot de passe"
+                        required
+                        className="h-11 border-2 border-gray-200 focus:border-[#ED7A97] rounded-lg pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember"
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    />
+                    <label
+                      htmlFor="remember"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      Se souvenir de moi
+                    </label>
+                  </div>
+
+                  {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-sm text-red-600 text-center">{error}</p>
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full h-11 text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    style={{ 
+                      backgroundColor: '#ED7A97',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F29CB1'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ED7A97'
+                    }}
+                  >
+                    <LogIn className="h-5 w-5 mr-2" />
+                    Se connecter
+                  </Button>
+                </form>
+
+                <button
+                  onClick={() => setCurrentSlide(0)}
+                  className="mt-6 text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mx-auto"
+                >
+                  <ChevronRight className="h-4 w-4 rotate-180" />
+                  Retour
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Pagination dots */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            <button
+              onClick={() => setCurrentSlide(0)}
+              className={`h-2 rounded-full transition-all ${
+                currentSlide === 0 ? 'w-8 bg-white' : 'w-2 bg-white/50'
+              }`}
+              aria-label="Aller à la page 1"
+            />
+            <button
+              onClick={() => setCurrentSlide(1)}
+              className={`h-2 rounded-full transition-all ${
+                currentSlide === 1 ? 'w-8 bg-[#ED7A97]' : 'w-2 bg-gray-400'
+              }`}
+              aria-label="Aller à la page 2"
+            />
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex flex-row">
           {/* Section gauche - Rose */}
           <div className="lg:w-1/2 bg-gradient-to-br from-[#ED7A97] to-[#F29CB1] relative overflow-hidden p-12">
             {/* Forme décorative */}
@@ -112,12 +280,6 @@ export default function LoginPage() {
           {/* Section droite - Blanc */}
           <div className="lg:w-1/2 p-12 flex items-center justify-center">
             <div className="w-full max-w-sm">
-              {/* Logo mobile */}
-              <div className="lg:hidden text-center mb-6">
-                <h1 className="text-2xl font-bold text-[#ED7A97]">MISSPO</h1>
-                <p className="text-sm text-gray-600 mt-1">Panneau d'administration</p>
-              </div>
-
               {/* Titre */}
               <div className="mb-6">
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">Connexion</h2>
@@ -127,9 +289,9 @@ export default function LoginPage() {
               {/* Formulaire */}
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                  <Label htmlFor="email-desktop" className="text-gray-700 font-medium">Email</Label>
                   <Input
-                    id="email"
+                    id="email-desktop"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -140,10 +302,10 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-gray-700 font-medium">Mot de passe</Label>
+                  <Label htmlFor="password-desktop" className="text-gray-700 font-medium">Mot de passe</Label>
                   <div className="relative mt-2">
                     <Input
-                      id="password"
+                      id="password-desktop"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -167,12 +329,12 @@ export default function LoginPage() {
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="remember"
+                    id="remember-desktop"
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                   />
                   <label
-                    htmlFor="remember"
+                    htmlFor="remember-desktop"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                   >
                     Se souvenir de moi
@@ -202,14 +364,6 @@ export default function LoginPage() {
                   Se connecter
                 </Button>
               </form>
-
-              {/* Info mobile */}
-              <div className="lg:hidden mt-6 p-3 bg-[#FBDEE5] rounded-lg">
-                <p className="text-xs text-center text-gray-600">
-                  <span className="font-semibold">Email:</span> admin@misspo.com<br />
-                  <span className="font-semibold">Mot de passe:</span> misspo2026
-                </p>
-              </div>
             </div>
           </div>
         </div>

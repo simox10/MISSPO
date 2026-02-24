@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock } from "lucide-react"
+import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
 import {
@@ -27,6 +27,9 @@ export default function ProtectedLayout({
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
   useEffect(() => {
     const auth = localStorage.getItem("adminAuth")
@@ -34,6 +37,26 @@ export default function ProtectedLayout({
       router.push("/adminmisspo/login")
     }
   }, [router])
+
+  useEffect(() => {
+    // Fetch unread contacts count
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch(`${API_URL}/admin/contacts/unread-count`)
+        const data = await response.json()
+        if (data.success) {
+          setUnreadCount(data.count)
+        }
+      } catch (error) {
+        console.error("Erreur:", error)
+      }
+    }
+
+    fetchUnreadCount()
+    // Refresh count every 30 seconds
+    const interval = setInterval(fetchUnreadCount, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleLogout = () => {
     localStorage.removeItem("adminAuth")
@@ -45,6 +68,7 @@ export default function ProtectedLayout({
     { icon: LayoutDashboard, label: "Tableau", href: "/adminmisspo/dashboard" },
     { icon: Calendar, label: "Planning", href: "/adminmisspo/planning" },
     { icon: Clock, label: "Horaires", href: "/adminmisspo/horaires" },
+    { icon: MessageCircle, label: "Messages", href: "/adminmisspo/contacts", badge: unreadCount },
   ]
 
   return (
@@ -97,7 +121,7 @@ export default function ProtectedLayout({
                   href={item.href}
                   onClick={() => setIsMobileOpen(false)}
                   className={`
-                    flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
+                    flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative
                     ${isActive 
                       ? 'bg-misspo-rose-pale text-misspo-rose-dark font-semibold' 
                       : 'text-gray-700 hover:bg-gray-100'
@@ -108,6 +132,15 @@ export default function ProtectedLayout({
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {!isCollapsed && <span>{item.label}</span>}
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className={`
+                      ${isCollapsed ? 'absolute -top-1 -right-1' : 'ml-auto'}
+                      flex items-center justify-center min-w-[20px] h-5 px-1.5 
+                      text-xs font-bold text-white bg-red-500 rounded-full
+                    `}>
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               )
             })}

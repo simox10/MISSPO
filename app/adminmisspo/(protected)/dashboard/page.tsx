@@ -701,11 +701,14 @@ _L'équipe MISSPO_`
                           variant="ghost"
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           onClick={() => {
+                            const formattedDate = formatDateForInput(reservation.date)
                             setEditingReservation({
                               ...reservation,
-                              date: formatDateForInput(reservation.date)
+                              date: formattedDate
                             })
-                            setSelectedDateForEdit(formatDateForInput(reservation.date))
+                            setSelectedDateForEdit(formattedDate)
+                            // Force refresh available hours immediately
+                            fetchAvailableHoursEdit(formattedDate)
                           }}
                           title="Modifier"
                         >
@@ -984,12 +987,15 @@ _L'équipe MISSPO_`
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F29CB1'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ED7A97'}
                   onClick={() => {
+                    const formattedDate = formatDateForInput(selectedReservation.date)
                     setEditingReservation({
                       ...selectedReservation,
-                      date: formatDateForInput(selectedReservation.date)
+                      date: formattedDate
                     })
                     setSelectedReservation(null)
-                    setSelectedDateForEdit(formatDateForInput(selectedReservation.date))
+                    setSelectedDateForEdit(formattedDate)
+                    // Force refresh available hours immediately
+                    fetchAvailableHoursEdit(formattedDate)
                   }}
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -1029,6 +1035,20 @@ _L'équipe MISSPO_`
 
                 const data = await response.json()
 
+                // Check for slot capacity error (409 Conflict)
+                if (response.status === 409) {
+                  toast.error(data.message || 'Ce créneau est complet', {
+                    duration: 6000,
+                    style: {
+                      background: '#FBDEE5',
+                      color: '#ED7A97',
+                      border: '2px solid #ED7A97',
+                    },
+                  })
+                  // Keep form open with data preserved - admin can change time/date
+                  return
+                }
+
                 if (data.success) {
                   toast.success('Rendez-vous modifié avec succès !', {
                     style: {
@@ -1042,13 +1062,16 @@ _L'équipe MISSPO_`
                   fetchStats()
                   fetchAppointments()
                 } else {
-                  toast.error('Erreur lors de la modification', {
+                  // Show specific error message from API
+                  toast.error(data.message || 'Erreur lors de la modification', {
+                    duration: 5000,
                     style: {
                       background: '#FBDEE5',
                       color: '#ED7A97',
                       border: '2px solid #ED7A97',
                     },
                   })
+                  // Keep form open with data preserved
                 }
               } catch (error) {
                 console.error("Erreur:", error)
@@ -1059,6 +1082,7 @@ _L'équipe MISSPO_`
                     border: '2px solid #ED7A97',
                   },
                 })
+                // Keep form open on connection error
               }
             }}>
               <div className="grid grid-cols-2 gap-4">

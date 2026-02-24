@@ -391,7 +391,11 @@ export default function PlanningPage() {
                   {/* Créneaux */}
                   <div className="flex-1 min-h-[60px] border-l-2 border-gray-200 pl-4">
                     {hasReservations ? (
-                      <div className={`grid gap-2 ${hourReservations.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                      <div className={`grid gap-2 ${
+                        hourReservations.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 
+                        hourReservations.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 
+                        'grid-cols-1'
+                      }`}>
                         {hourReservations.map((res) => (
                           <div
                             key={res.id}
@@ -556,6 +560,8 @@ export default function PlanningPage() {
                     setEditingReservation(selectedReservation)
                     setSelectedReservation(null)
                     setSelectedDateForEdit(selectedReservation.date)
+                    // Force refresh available hours immediately
+                    fetchAvailableHoursEdit(selectedReservation.date)
                   }}
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -631,6 +637,20 @@ _L'équipe MISSPO_`
 
                 const data = await response.json()
 
+                // Check for slot capacity error (409 Conflict)
+                if (response.status === 409) {
+                  toast.error(data.message || 'Ce créneau est complet', {
+                    duration: 6000,
+                    style: {
+                      background: '#FBDEE5',
+                      color: '#ED7A97',
+                      border: '2px solid #ED7A97',
+                    },
+                  })
+                  // Keep form open with data preserved - admin can change time/date
+                  return
+                }
+
                 if (data.success) {
                   toast.success('Rendez-vous modifié avec succès !', {
                     style: {
@@ -643,13 +663,16 @@ _L'équipe MISSPO_`
                   // Recharger les rendez-vous
                   fetchReservationsForDate(selectedDate)
                 } else {
-                  toast.error('Erreur lors de la modification', {
+                  // Show specific error message from API
+                  toast.error(data.message || 'Erreur lors de la modification', {
+                    duration: 5000,
                     style: {
                       background: '#FBDEE5',
                       color: '#ED7A97',
                       border: '2px solid #ED7A97',
                     },
                   })
+                  // Keep form open with data preserved
                 }
               } catch (error) {
                 console.error("Erreur:", error)
@@ -660,6 +683,7 @@ _L'équipe MISSPO_`
                     border: '2px solid #ED7A97',
                   },
                 })
+                // Keep form open on connection error
               }
             }}>
               <div className="grid grid-cols-2 gap-4">

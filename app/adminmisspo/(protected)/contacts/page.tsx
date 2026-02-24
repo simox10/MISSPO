@@ -31,7 +31,7 @@ type Contact = {
   telephone: string
   email: string
   message: string | null
-  statut: 'Non lu' | 'Lu' | 'Traité'
+  statut: 'Non lu' | 'Lu'
   created_at: string
   updated_at: string
 }
@@ -40,14 +40,13 @@ type Stats = {
   total: number
   non_lu: number
   lu: number
-  traite: number
   today: number
 }
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([])
-  const [stats, setStats] = useState<Stats>({ total: 0, non_lu: 0, lu: 0, traite: 0, today: 0 })
+  const [stats, setStats] = useState<Stats>({ total: 0, non_lu: 0, lu: 0, today: 0 })
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState<string>("all")
@@ -126,7 +125,7 @@ export default function ContactsPage() {
     setFilteredContacts(filtered)
   }
 
-  const updateStatus = async (id: number, newStatus: 'Non lu' | 'Lu' | 'Traité') => {
+  const updateStatus = async (id: number, newStatus: 'Non lu' | 'Lu') => {
     try {
       const response = await fetch(`${API_URL}/admin/contacts/${id}/status`, {
         method: 'PUT',
@@ -188,7 +187,6 @@ export default function ContactsPage() {
     const variants = {
       "Non lu": "bg-yellow-100 text-yellow-700 border-yellow-300",
       "Lu": "bg-blue-100 text-blue-700 border-blue-300",
-      "Traité": "bg-green-100 text-green-700 border-green-300",
     }
     return variants[statut as keyof typeof variants] || ""
   }
@@ -197,7 +195,6 @@ export default function ContactsPage() {
     const icons = {
       "Non lu": <Clock className="h-3 w-3" />,
       "Lu": <Eye className="h-3 w-3" />,
-      "Traité": <CheckCircle className="h-3 w-3" />,
     }
     return icons[statut as keyof typeof icons] || null
   }
@@ -254,17 +251,6 @@ export default function ContactsPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500 min-w-[140px]" onClick={() => setFilterStatus("Traité")}>
-              <CardContent className="pt-4 pb-4 px-4">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <CheckCircle className="h-6 w-6 text-green-400" />
-                    <p className="text-2xl font-bold text-green-600">{stats.traite}</p>
-                  </div>
-                  <p className="text-xs font-medium text-green-600 uppercase tracking-wide">Traités</p>
-                </div>
-              </CardContent>
-            </Card>
             <Card className="hover:shadow-md transition-shadow min-w-[140px]">
               <CardContent className="pt-4 pb-4 px-4">
                 <div className="flex flex-col gap-2">
@@ -282,7 +268,7 @@ export default function ContactsPage() {
         </div>
 
         {/* Desktop: Grid Layout */}
-        <div className="hidden md:grid gap-3 md:grid-cols-5">
+        <div className="hidden md:grid gap-3 md:grid-cols-4">
         <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setFilterStatus("all")}>
           <CardContent className="pt-4 pb-4">
             <div className="flex items-center justify-between">
@@ -313,17 +299,6 @@ export default function ContactsPage() {
                 <p className="text-2xl font-bold text-blue-600 mt-1">{stats.lu}</p>
               </div>
               <Eye className="h-8 w-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500" onClick={() => setFilterStatus("Traité")}>
-          <CardContent className="pt-4 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-green-600 uppercase tracking-wide">Traités</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{stats.traite}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-400" />
             </div>
           </CardContent>
         </Card>
@@ -403,15 +378,6 @@ export default function ContactsPage() {
                     <Eye className="h-3 w-3 mr-1" />
                     Lus ({stats.lu})
                   </Button>
-                  <Button
-                    size="sm"
-                    variant={filterStatus === "Traité" ? "default" : "outline"}
-                    onClick={() => setFilterStatus("Traité")}
-                    className="rounded-full h-9"
-                  >
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Traités ({stats.traite})
-                  </Button>
                 </div>
               )}
             </div>
@@ -446,15 +412,6 @@ export default function ContactsPage() {
                 >
                   <Eye className="h-3 w-3 mr-1" />
                   Lus ({stats.lu})
-                </Button>
-                <Button
-                  size="sm"
-                  variant={filterStatus === "Traité" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("Traité")}
-                  className="rounded-full"
-                >
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Traités ({stats.traite})
                 </Button>
               </div>
               
@@ -621,9 +578,6 @@ export default function ContactsPage() {
                           {contact.statut === 'Lu' && (
                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           )}
-                          {contact.statut === 'Traité' && (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                          )}
                         </div>
                       </div>
                     </div>
@@ -665,7 +619,7 @@ export default function ContactsPage() {
                     {/* Status Selector */}
                     <Select
                       value={selectedContact.statut}
-                      onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu' | 'Traité')}
+                      onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu')}
                     >
                       <SelectTrigger className="w-40">
                         <SelectValue />
@@ -681,12 +635,6 @@ export default function ContactsPage() {
                           <div className="flex items-center gap-2">
                             <Eye className="h-3 w-3" />
                             Lu
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="Traité">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3" />
-                            Traité
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -884,7 +832,7 @@ export default function ContactsPage() {
                   <p className="text-sm font-semibold text-gray-700 mb-2">Statut</p>
                   <Select
                     value={selectedContact.statut}
-                    onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu' | 'Traité')}
+                    onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu')}
                   >
                     <SelectTrigger className="w-full h-12">
                       <SelectValue />
@@ -900,12 +848,6 @@ export default function ContactsPage() {
                         <div className="flex items-center gap-2">
                           <Eye className="h-4 w-4" />
                           Lu
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="Traité">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4" />
-                          Traité
                         </div>
                       </SelectItem>
                     </SelectContent>

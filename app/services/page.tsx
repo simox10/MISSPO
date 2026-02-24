@@ -265,74 +265,6 @@ function ProtocolSection() {
   )
 }
 
-function PricingCards() {
-  const { t, dir } = useLanguage()
-  const { ref, isInView } = useInView()
-
-  const pricingData = [
-    {
-      ...t.packs.school,
-      borderColor: "border-misspo-blue-light",
-      bgColor: "bg-misspo-blue-pale/30",
-      priceColor: "text-misspo-blue-dark",
-      btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
-      href: "/contact",
-    },
-    {
-      ...t.packs.home,
-      borderColor: "border-misspo-rose-light",
-      bgColor: "bg-misspo-rose-pale/30",
-      priceColor: "text-misspo-rose-dark",
-      btnClass: "bg-misspo-rose-dark text-white hover:bg-misspo-rose",
-      href: "/booking",
-    },
-  ]
-
-  return (
-    <section className="py-12 bg-gray-50" dir={dir} ref={ref}>
-      <div className="mx-auto max-w-5xl px-4">
-        <div className={`text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
-            {t.pricingTable.title}
-          </h2>
-        </div>
-
-        <div className={`mt-10 grid md:grid-cols-2 gap-6 transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          {pricingData.map((pack, index) => (
-            <div
-              key={pack.title}
-              className={`rounded-2xl border ${pack.borderColor} ${pack.bgColor} p-6 shadow-sm hover:shadow-md transition-all duration-300`}
-            >
-              <h3 className="text-xl font-bold text-foreground mb-2">{pack.title}</h3>
-              <div className="mb-4">
-                <p className={`text-3xl font-bold ${pack.priceColor}`}>{pack.price}</p>
-                {pack.priceContext && (
-                  <p className="text-sm text-muted-foreground mt-1">{pack.priceContext}</p>
-                )}
-                <p className="text-sm text-muted-foreground">{pack.priceUnit}</p>
-              </div>
-              <ul className="space-y-2 mb-6">
-                {pack.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-misspo-blue-pale flex-shrink-0">
-                      <Check className="h-2.5 w-2.5 text-misspo-blue-dark" />
-                    </div>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Link href={pack.href} className="block">
-                <Button className={`w-full ${pack.btnClass}`}>
-                  {pack.cta}
-                </Button>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 
 
@@ -431,7 +363,6 @@ export default function ServicesPage() {
 
       <TrustIndicators />
       <ProtocolSection />
-      <PricingCards />
     </div>
   )
 }

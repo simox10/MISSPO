@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "sonner"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
@@ -30,7 +31,7 @@ type Contact = {
   telephone: string
   email: string
   message: string | null
-  statut: 'Non lu' | 'Lu' | 'Traité'
+  statut: 'Non lu' | 'Lu'
   created_at: string
   updated_at: string
 }
@@ -39,18 +40,29 @@ type Stats = {
   total: number
   non_lu: number
   lu: number
-  traite: number
   today: number
 }
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([])
-  const [stats, setStats] = useState<Stats>({ total: 0, non_lu: 0, lu: 0, traite: 0, today: 0 })
+  const [stats, setStats] = useState<Stats>({ total: 0, non_lu: 0, lu: 0, today: 0 })
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Proper mobile detection with resize listener
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     fetchContacts()
@@ -113,7 +125,7 @@ export default function ContactsPage() {
     setFilteredContacts(filtered)
   }
 
-  const updateStatus = async (id: number, newStatus: 'Non lu' | 'Lu' | 'Traité') => {
+  const updateStatus = async (id: number, newStatus: 'Non lu' | 'Lu') => {
     try {
       const response = await fetch(`${API_URL}/admin/contacts/${id}/status`, {
         method: 'PUT',
@@ -175,7 +187,6 @@ export default function ContactsPage() {
     const variants = {
       "Non lu": "bg-yellow-100 text-yellow-700 border-yellow-300",
       "Lu": "bg-blue-100 text-blue-700 border-blue-300",
-      "Traité": "bg-green-100 text-green-700 border-green-300",
     }
     return variants[statut as keyof typeof variants] || ""
   }
@@ -184,7 +195,6 @@ export default function ContactsPage() {
     const icons = {
       "Non lu": <Clock className="h-3 w-3" />,
       "Lu": <Eye className="h-3 w-3" />,
-      "Traité": <CheckCircle className="h-3 w-3" />,
     }
     return icons[statut as keyof typeof icons] || null
   }
@@ -196,86 +206,242 @@ export default function ContactsPage() {
   }
 
   return (
-    <div>
+    <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Messages de Contact</h1>
-        <p className="text-muted-foreground mt-1">Gérer les messages reçus via le formulaire de contact</p>
+      <div className="mb-3 md:mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Messages de Contact</h1>
+        <p className="text-muted-foreground mt-1 text-sm md:text-base">Gérer les messages reçus via le formulaire de contact</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-5 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-yellow-600">Non lus</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.non_lu}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-blue-600">Lus</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.lu}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-green-600">Traités</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.traite}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Aujourd'hui</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.today}</div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Stats Cards - Mobile Optimized with Horizontal Scroll */}
+      <div className="mb-3 md:mb-4">
+        {/* Mobile: Horizontal Scroll */}
+        <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4">
+          <div className="flex gap-3 min-w-max">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer min-w-[140px]" onClick={() => setFilterStatus("all")}>
+              <CardContent className="pt-4 pb-4 px-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <MessageCircle className="h-6 w-6 text-gray-400" />
+                    <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                  </div>
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-yellow-500 min-w-[140px]" onClick={() => setFilterStatus("Non lu")}>
+              <CardContent className="pt-4 pb-4 px-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <Clock className="h-6 w-6 text-yellow-400" />
+                    <p className="text-2xl font-bold text-yellow-600">{stats.non_lu}</p>
+                  </div>
+                  <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">Non lus</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500 min-w-[140px]" onClick={() => setFilterStatus("Lu")}>
+              <CardContent className="pt-4 pb-4 px-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <Eye className="h-6 w-6 text-blue-400" />
+                    <p className="text-2xl font-bold text-blue-600">{stats.lu}</p>
+                  </div>
+                  <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">Lus</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="hover:shadow-md transition-shadow min-w-[140px]">
+              <CardContent className="pt-4 pb-4 px-4">
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-xs font-bold text-blue-600">📅</span>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">{stats.today}</p>
+                  </div>
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Aujourd'hui</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
-      {/* Filters */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <Input
-                placeholder="Rechercher par nom, téléphone ou email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full"
-              />
+        {/* Desktop: Grid Layout */}
+        <div className="hidden md:grid gap-3 md:grid-cols-4">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setFilterStatus("all")}>
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+              </div>
+              <MessageCircle className="h-8 w-8 text-gray-400" />
             </div>
-            <div className="w-full md:w-48">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger>
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Filtrer par statut" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous</SelectItem>
-                  <SelectItem value="Non lu">Non lus</SelectItem>
-                  <SelectItem value="Lu">Lus</SelectItem>
-                  <SelectItem value="Traité">Traités</SelectItem>
-                </SelectContent>
-              </Select>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-yellow-500" onClick={() => setFilterStatus("Non lu")}>
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">Non lus</p>
+                <p className="text-2xl font-bold text-yellow-600 mt-1">{stats.non_lu}</p>
+              </div>
+              <Clock className="h-8 w-8 text-yellow-400" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500" onClick={() => setFilterStatus("Lu")}>
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">Lus</p>
+                <p className="text-2xl font-bold text-blue-600 mt-1">{stats.lu}</p>
+              </div>
+              <Eye className="h-8 w-8 text-blue-400" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Aujourd'hui</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats.today}</p>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-sm font-bold text-blue-600">📅</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        </div>
+      </div>
+
+      {/* Enhanced Filters - Mobile Optimized */}
+      <Card className="mb-3 md:mb-4">
+        <CardContent className="pt-3 pb-3 md:pt-4 md:pb-4">
+          <div className="flex flex-col gap-3 md:gap-4">
+            {/* Mobile: Collapsible Filters */}
+            <div className="md:hidden">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Input
+                    placeholder="Rechercher..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 h-11"
+                  />
+                  <Filter className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="h-11 w-11 relative"
+                >
+                  <Filter className="h-4 w-4" />
+                  {(filterStatus !== "all" || searchQuery) && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                      {(filterStatus !== "all" ? 1 : 0) + (searchQuery ? 1 : 0)}
+                    </span>
+                  )}
+                </Button>
+              </div>
+              
+              {/* Expandable Filter Chips */}
+              {showFilters && (
+                <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 animate-in slide-in-from-top-2">
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "all" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("all")}
+                    className="rounded-full h-9"
+                  >
+                    Tous ({stats.total})
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "Non lu" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("Non lu")}
+                    className={`rounded-full h-9 ${filterStatus === "Non lu" ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : ''}`}
+                  >
+                    <Clock className="h-3 w-3 mr-1" />
+                    Non lus ({stats.non_lu})
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "Lu" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("Lu")}
+                    className="rounded-full h-9"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Lus ({stats.lu})
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop: Always Visible Filters */}
+            <div className="hidden md:flex flex-col gap-4">
+              {/* Quick Filter Chips */}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant={filterStatus === "all" ? "default" : "outline"}
+                  onClick={() => setFilterStatus("all")}
+                  className="rounded-full"
+                >
+                  Tous ({stats.total})
+                </Button>
+                <Button
+                  size="sm"
+                  variant={filterStatus === "Non lu" ? "default" : "outline"}
+                  onClick={() => setFilterStatus("Non lu")}
+                  className="rounded-full bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                  style={filterStatus === "Non lu" ? {} : { backgroundColor: 'transparent', color: 'inherit' }}
+                >
+                  <Clock className="h-3 w-3 mr-1" />
+                  Non lus ({stats.non_lu})
+                </Button>
+                <Button
+                  size="sm"
+                  variant={filterStatus === "Lu" ? "default" : "outline"}
+                  onClick={() => setFilterStatus("Lu")}
+                  className="rounded-full"
+                >
+                  <Eye className="h-3 w-3 mr-1" />
+                  Lus ({stats.lu})
+                </Button>
+              </div>
+              
+              {/* Search Bar */}
+              <div className="flex gap-3">
+                <div className="flex-1 relative">
+                  <Input
+                    placeholder="Rechercher par nom, téléphone ou email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10"
+                  />
+                  <Filter className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                </div>
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery("")}
+                    className="text-gray-500"
+                  >
+                    Effacer
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
+
 
       {/* Messages Table */}
       <Card>
@@ -317,160 +483,456 @@ export default function ContactsPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredContacts.map((contact) => (
                     <tr
+
+      {/* Split-Pane Inbox Layout */}
+      <div className="flex-1 flex gap-4 overflow-hidden">
+        {/* Left Panel - Message List */}
+        <Card className="w-full md:w-2/5 flex flex-col overflow-hidden">
+          <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  <p className="text-gray-500 text-sm">Chargement des messages...</p>
+                </div>
+              </div>
+            ) : filteredContacts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4">
+                <MessageCircle className="h-16 w-16 text-gray-300 mb-4" />
+                <p className="text-gray-900 font-medium mb-1">Aucun message trouvé</p>
+                <p className="text-gray-500 text-sm text-center">
+                  {searchQuery ? "Essayez de modifier votre recherche" : "Les nouveaux messages apparaîtront ici"}
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-y-auto divide-y divide-gray-200">
+                {filteredContacts.map((contact) => {
+                  const isSelected = selectedContact?.id === contact.id
+                  const isUnread = contact.statut === 'Non lu'
+                  
+                  return (
+                    <div
+
                       key={contact.id}
                       onClick={() => handleRowClick(contact)}
-                      className={`cursor-pointer hover:bg-gray-50 transition-colors ${
-                        contact.statut === 'Non lu' ? 'bg-yellow-50' : ''
-                      }`}
+                      className={`p-3 md:p-4 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 relative group ${
+                        isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                      } ${isUnread ? 'bg-yellow-50/50' : ''}`}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(contact.created_at).toLocaleDateString('fr-FR', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {contact.prenom} {contact.nom}
+                      {/* Status Indicator */}
+                      {isUnread && !isSelected && (
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500 md:hidden"></div>
+                      )}
+                      {isUnread && !isSelected && (
+                        <div className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      )}
+                      
+                      <div className={`flex gap-3 ${isUnread && !isSelected ? 'ml-2 md:ml-2' : ''}`}>
+                        {/* Avatar */}
+                        <div className={`flex-shrink-0 w-10 h-10 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
+                          isUnread ? 'bg-yellow-500' : 'bg-gray-400'
+                        }`}>
+                          {contact.prenom.charAt(0)}{contact.nom.charAt(0)}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {contact.telephone}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {contact.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`border ${getStatutBadge(contact.statut)}`}>
-                          {getStatutIcon(contact.statut)}
-                          {contact.statut}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleWhatsAppClick(contact)
-                            }}
-                            title="WhatsApp"
-                          >
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              deleteContact(contact.id)
-                            }}
-                            title="Supprimer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <h3 className={`text-sm md:text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
+                              {contact.prenom} {contact.nom}
+                            </h3>
+                            <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
+                              {(() => {
+                                const date = new Date(contact.created_at)
+                                const now = new Date()
+                                const diffMs = now.getTime() - date.getTime()
+                                const diffMins = Math.floor(diffMs / 60000)
+                                const diffHours = Math.floor(diffMs / 3600000)
+                                const diffDays = Math.floor(diffMs / 86400000)
+                                
+                                if (diffMins < 1) return "maintenant"
+                                if (diffMins < 60) return `${diffMins}m`
+                                if (diffHours < 24) return `${diffHours}h`
+                                if (diffDays < 7) return `${diffDays}j`
+                                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                              })()}
+                            </span>
+                          </div>
+                          
+                          {/* Mobile: Show only phone, Desktop: Show phone */}
+                          <p className="text-xs text-gray-600 mb-1 md:mb-2 flex items-center gap-1">
+                            <Phone className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{contact.telephone}</span>
+                          </p>
+                          
+                          {/* Message Preview */}
+                          {contact.message && (
+                            <p className={`text-xs line-clamp-2 ${isUnread ? 'text-gray-700' : 'text-gray-500'}`}>
+                              {contact.message}
+                            </p>
+                          )}
+                          
+                          {/* Quick Actions - Desktop Only (Show on Hover) */}
+                          <div className="hidden md:flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 px-2 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleWhatsAppClick(contact)
+                              }}
+                              title="WhatsApp"
+                            >
+                              <MessageCircle className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                window.location.href = `tel:${contact.telephone}`
+                              }}
+                              title="Appeler"
+                            >
+                              <Phone className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 px-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                window.location.href = `mailto:${contact.email}`
+                              }}
+                              title="Email"
+                            >
+                              <Mail className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Contact Details Dialog */}
-      <Dialog open={!!selectedContact} onOpenChange={() => setSelectedContact(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Détails du message</DialogTitle>
-          </DialogHeader>
-          {selectedContact && (
-            <div className="space-y-4">
-              {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Nom complet</p>
-                  <p className="font-medium">{selectedContact.prenom} {selectedContact.nom}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Date</p>
-                  <p className="font-medium">
-                    {new Date(selectedContact.created_at).toLocaleDateString('fr-FR', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Téléphone</p>
-                  <p className="font-medium">{selectedContact.telephone}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{selectedContact.email}</p>
-                </div>
+                        
+                        {/* Status Badge - Desktop Only */}
+                        <div className="hidden md:flex flex-shrink-0">
+                          {contact.statut === 'Non lu' && (
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                          )}
+                          {contact.statut === 'Lu' && (
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
+            )}
+          </CardContent>
+        </Card>
 
-              {/* Message */}
-              {selectedContact.message && (
-                <div>
-                  <p className="text-sm text-gray-500 mb-2">Message</p>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm whitespace-pre-wrap">{selectedContact.message}</p>
+        {/* Right Panel - Message Details */}
+        <Card className="hidden md:flex md:w-3/5 flex-col overflow-hidden">
+          <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
+            {selectedContact ? (
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="p-6 border-b bg-gray-50">
+                  <div className="flex items-start justify-between">
+                    <div className="flex gap-4">
+                      <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                        {selectedContact.prenom.charAt(0)}{selectedContact.nom.charAt(0)}
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-900">
+                          {selectedContact.prenom} {selectedContact.nom}
+                        </h2>
+                        <p className="text-sm text-gray-500">
+                          {new Date(selectedContact.created_at).toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Status Selector */}
+                    <Select
+                      value={selectedContact.statut}
+                      onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu')}
+                    >
+                      <SelectTrigger className="w-40">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Non lu">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-3 w-3" />
+                            Non lu
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="Lu">
+                          <div className="flex items-center gap-2">
+                            <Eye className="h-3 w-3" />
+                            Lu
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              )}
 
-              {/* Status */}
-              <div>
-                <p className="text-sm text-gray-500 mb-2">Statut</p>
-                <Select
-                  value={selectedContact.statut}
-                  onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu' | 'Traité')}
+                {/* Contact Info Cards */}
+                <div className="p-6 border-b bg-white">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <Phone className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Téléphone</p>
+                        <p className="font-medium text-gray-900">{selectedContact.telephone}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <Mail className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Email</p>
+                        <p className="font-medium text-gray-900 truncate">{selectedContact.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Content */}
+                <div className="flex-1 overflow-y-auto p-6">
+                  {selectedContact.message ? (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 mb-3">Message</h3>
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                          {selectedContact.message}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400">
+                      <p>Aucun message</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="p-6 border-t bg-gray-50">
+                  <div className="flex gap-3">
+                    <Button
+                      className="flex-1 bg-green-600 text-white hover:bg-green-700 h-12"
+                      onClick={() => handleWhatsAppClick(selectedContact)}
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      WhatsApp
+                    </Button>
+                    <a href={`tel:${selectedContact.telephone}`} className="flex-1">
+                      <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12">
+                        <Phone className="h-5 w-5 mr-2" />
+                        Appeler
+                      </Button>
+                    </a>
+                    <a href={`mailto:${selectedContact.email}`} className="flex-1">
+                      <Button className="w-full bg-purple-600 text-white hover:bg-purple-700 h-12">
+                        <Mail className="h-5 w-5 mr-2" />
+                        Email
+                      </Button>
+                    </a>
+                    <Button
+                      variant="outline"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                      onClick={() => deleteContact(selectedContact.id)}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                <MessageCircle className="h-20 w-20 mb-4 text-gray-300" />
+                <p className="text-lg font-medium text-gray-500">Sélectionnez un message</p>
+                <p className="text-sm text-gray-400">Choisissez un message pour voir les détails</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Mobile Full-Screen Detail View */}
+      <Dialog open={!!selectedContact && isMobile} onOpenChange={() => setSelectedContact(null)}>
+        <DialogContent className="max-w-full h-full m-0 p-0 rounded-none flex flex-col">
+          <VisuallyHidden>
+            <DialogTitle>Détails du message</DialogTitle>
+          </VisuallyHidden>
+          {selectedContact && (
+            <div className="flex flex-col h-full">
+              {/* Mobile Header with Back Button */}
+              <div className="flex items-center gap-3 p-4 border-b bg-white sticky top-0 z-10">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedContact(null)}
+                  className="h-9 w-9"
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Non lu">Non lu</SelectItem>
-                    <SelectItem value="Lu">Lu</SelectItem>
-                    <SelectItem value="Traité">Traité</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </Button>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-bold text-base truncate">
+                    {selectedContact.prenom} {selectedContact.nom}
+                  </h2>
+                  <p className="text-xs text-gray-500 truncate">Messages</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedContact(null)}
+                  className="h-9 w-9"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </Button>
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-2 pt-4 border-t">
-                <a href={`tel:${selectedContact.telephone}`} className="flex-1">
-                  <Button className="w-full bg-misspo-blue-dark text-white hover:bg-misspo-blue">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Appeler
+              {/* Contact Info Header */}
+              <div className="p-4 bg-gray-50 border-b">
+                <div className="flex gap-4 items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xl">
+                    {selectedContact.prenom.charAt(0)}{selectedContact.nom.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-lg">{selectedContact.prenom} {selectedContact.nom}</h3>
+                    <p className="text-sm text-gray-500">
+                      {new Date(selectedContact.created_at).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Contact Details */}
+                <div className="grid grid-cols-1 gap-3">
+                  <a href={`tel:${selectedContact.telephone}`} className="flex items-center gap-3 p-3 bg-white rounded-lg border active:bg-gray-50">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Phone className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500">Téléphone</p>
+                      <p className="font-medium text-gray-900">{selectedContact.telephone}</p>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                  <a href={`mailto:${selectedContact.email}`} className="flex items-center gap-3 p-3 bg-white rounded-lg border active:bg-gray-50">
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500">Email</p>
+                      <p className="font-medium text-gray-900 truncate">{selectedContact.email}</p>
+                    </div>
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {/* Message Content - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 bg-white">
+                {selectedContact.message ? (
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Message</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                        {selectedContact.message}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    <p>Aucun message</p>
+                  </div>
+                )}
+
+                {/* Status Selector */}
+                <div className="mt-6">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">Statut</p>
+                  <Select
+                    value={selectedContact.statut}
+                    onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu')}
+                  >
+                    <SelectTrigger className="w-full h-12">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Non lu">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          Non lu
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="Lu">
+                        <div className="flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          Lu
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Sticky Bottom Actions */}
+              <div className="p-4 border-t bg-white sticky bottom-0">
+                <div className="grid grid-cols-3 gap-2 mb-2">
+                  <Button
+                    className="bg-green-600 text-white hover:bg-green-700 h-12"
+                    onClick={() => handleWhatsAppClick(selectedContact)}
+                  >
+                    <MessageCircle className="h-5 w-5 mr-1" />
+                    <span className="text-xs">WhatsApp</span>
                   </Button>
-                </a>
+                  <a href={`tel:${selectedContact.telephone}`} className="w-full">
+                    <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12">
+                      <Phone className="h-5 w-5 mr-1" />
+                      <span className="text-xs">Appeler</span>
+                    </Button>
+                  </a>
+                  <a href={`mailto:${selectedContact.email}`} className="w-full">
+                    <Button className="w-full bg-purple-600 text-white hover:bg-purple-700 h-12">
+                      <Mail className="h-5 w-5 mr-1" />
+                      <span className="text-xs">Email</span>
+                    </Button>
+                  </a>
+                </div>
                 <Button
-                  className="flex-1 bg-green-600 text-white hover:bg-green-700"
-                  onClick={() => handleWhatsAppClick(selectedContact)}
+                  variant="outline"
+                  className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 h-11"
+                  onClick={() => {
+                    if (confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
+                      deleteContact(selectedContact.id)
+                    }
+                  }}
                 >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  WhatsApp
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Supprimer le message
                 </Button>
-                <a href={`mailto:${selectedContact.email}`} className="flex-1">
-                  <Button className="w-full bg-misspo-rose-dark text-white hover:bg-misspo-rose">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Email
-                  </Button>
-                </a>
               </div>
             </div>
           )}

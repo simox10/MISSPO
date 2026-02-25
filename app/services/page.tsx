@@ -438,14 +438,6 @@ export default function ServicesPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-misspo-rose-pale via-white to-misspo-blue-pale py-12">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Link href="/" className="hover:text-foreground transition-colors">
-              {t.servicesPreview.breadcrumb}
-            </Link>
-            <ChevronRight className="h-4 w-4" />
-            <span className="text-foreground font-medium">{t.servicesPreview.title}</span>
-          </div>
-          
           <div className="text-center">
             <span className="text-sm font-semibold uppercase tracking-wider text-misspo-blue-dark">
               {t.servicesPreview.title}

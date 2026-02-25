@@ -420,18 +420,16 @@ _L'équipe MISSPO_`
   }
 
   return (
-    <div>
+    <div className="pb-4">
       {/* Realtime Status Indicator - Development Only */}
       {process.env.NODE_ENV === 'development' && <RealtimeStatus />}
       
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
-          <p className="text-muted-foreground mt-1">Gérez toutes vos réservations</p>
-        </div>
+      <div className="mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
+        <p className="text-muted-foreground text-sm md:text-base mt-1">Gérez toutes vos réservations</p>
         {/* NotificationBell visible uniquement sur desktop, sur mobile il est dans le header */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block absolute top-4 right-4">
           <NotificationBell />
         </div>
       </div>
@@ -476,9 +474,9 @@ _L'équipe MISSPO_`
       </div>
 
       {/* Mobile: Carrousel */}
-      <div className="md:hidden">
+      <div className="md:hidden mb-6">
         <div 
-          className="relative overflow-hidden touch-pan-y"
+          className="relative overflow-hidden touch-pan-y -mx-4"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -493,47 +491,47 @@ _L'équipe MISSPO_`
             }}
           >
             {/* Carte 1 */}
-            <div className="w-full flex-shrink-0 px-2">
-              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
-                <CalendarIcon className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} />
-                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Aujourd'hui</p>
-                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+            <div className="w-full flex-shrink-0 px-4">
+              <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <CalendarIcon className="absolute -right-4 top-1/2 -translate-y-1/2 h-24 w-24 opacity-20" style={{ color: '#1a7a94' }} />
+                <p className="text-xs relative z-10" style={{ color: '#2da1ca' }}>RDV Aujourd'hui</p>
+                <p className="text-2xl font-bold relative z-10 mt-1" style={{ color: '#2da1ca' }}>
                   {loading ? "..." : `${stats.total}/${stats.total_mois}`}
                 </p>
               </div>
             </div>
             {/* Carte 2 */}
-            <div className="w-full flex-shrink-0 px-2">
-              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
-                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-full flex-shrink-0 px-4">
+              <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-4 top-1/2 -translate-y-1/2 h-24 w-24 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Confirmées</p>
-                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                <p className="text-xs relative z-10" style={{ color: '#2da1ca' }}>RDV Confirmées</p>
+                <p className="text-2xl font-bold relative z-10 mt-1" style={{ color: '#2da1ca' }}>
                   {loading ? "..." : `${stats.confirmees}/${stats.total_mois}`}
                 </p>
               </div>
             </div>
             {/* Carte 3 */}
-            <div className="w-full flex-shrink-0 px-2">
-              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
-                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-full flex-shrink-0 px-4">
+              <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-4 top-1/2 -translate-y-1/2 h-24 w-24 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV En attente</p>
-                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                <p className="text-xs relative z-10" style={{ color: '#2da1ca' }}>RDV En attente</p>
+                <p className="text-2xl font-bold relative z-10 mt-1" style={{ color: '#2da1ca' }}>
                   {loading ? "..." : `${stats.en_attente}/${stats.total_mois}`}
                 </p>
               </div>
             </div>
             {/* Carte 4 */}
-            <div className="w-full flex-shrink-0 px-2">
-              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
-                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-full flex-shrink-0 px-4">
+              <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-4 top-1/2 -translate-y-1/2 h-24 w-24 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Refusées</p>
-                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                <p className="text-xs relative z-10" style={{ color: '#2da1ca' }}>RDV Refusées</p>
+                <p className="text-2xl font-bold relative z-10 mt-1" style={{ color: '#2da1ca' }}>
                   {loading ? "..." : `${stats.refusees}/${stats.total_mois}`}
                 </p>
               </div>
@@ -560,16 +558,16 @@ _L'équipe MISSPO_`
       </div>
 
       {/* Filtres */}
-      <div className="rounded-lg shadow-sm p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="rounded-lg shadow-sm p-3 md:p-4 mb-4 md:mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
           <div className="md:col-span-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#ED7A97' }} />
               <Input
-                placeholder="Rechercher par nom, prénom ou téléphone..."
+                placeholder="Rechercher..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 border-2 focus:ring-2"
+                className="pl-10 border-2 focus:ring-2 text-sm"
                 style={{ 
                   borderColor: '#F6BDCB',
                   backgroundColor: 'white',
@@ -580,7 +578,7 @@ _L'équipe MISSPO_`
           
           <Select value={filterPack} onValueChange={setFilterPack}>
             <SelectTrigger 
-              className="border-2"
+              className="border-2 text-sm"
               style={{ 
                 borderColor: '#F6BDCB',
                 backgroundColor: 'white',
@@ -589,33 +587,15 @@ _L'équipe MISSPO_`
               <SelectValue placeholder="Pack" />
             </SelectTrigger>
             <SelectContent style={{ backgroundColor: '#FBDEE5', borderColor: '#F6BDCB' }}>
-              <SelectItem 
-                value="all" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Tous les packs
-              </SelectItem>
-              <SelectItem 
-                value="École" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Pack École
-              </SelectItem>
-              <SelectItem 
-                value="Domicile" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Pack Domicile
-              </SelectItem>
+              <SelectItem value="all" className="text-sm">Tous les packs</SelectItem>
+              <SelectItem value="École" className="text-sm">Pack École</SelectItem>
+              <SelectItem value="Domicile" className="text-sm">Pack Domicile</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={filterStatut} onValueChange={setFilterStatut}>
             <SelectTrigger 
-              className="border-2"
+              className="border-2 text-sm"
               style={{ 
                 borderColor: '#F6BDCB',
                 backgroundColor: 'white',
@@ -624,82 +604,40 @@ _L'équipe MISSPO_`
               <SelectValue placeholder="Statut" />
             </SelectTrigger>
             <SelectContent style={{ backgroundColor: '#FBDEE5', borderColor: '#F6BDCB' }}>
-              <SelectItem 
-                value="all" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Tous
-              </SelectItem>
-              <SelectItem 
-                value="En attente" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                En attente
-              </SelectItem>
-              <SelectItem 
-                value="Confirmée" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Confirmée
-              </SelectItem>
-              <SelectItem 
-                value="Terminée" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Terminée
-              </SelectItem>
-              <SelectItem 
-                value="Refusée" 
-                className="data-[highlighted]:font-bold focus:font-bold"
-                style={{ backgroundColor: '#FBDEE5' }}
-              >
-                Refusée
-              </SelectItem>
+              <SelectItem value="all" className="text-sm">Tous</SelectItem>
+              <SelectItem value="En attente" className="text-sm">En attente</SelectItem>
+              <SelectItem value="Confirmée" className="text-sm">Confirmée</SelectItem>
+              <SelectItem value="Terminée" className="text-sm">Terminée</SelectItem>
+              <SelectItem value="Refusée" className="text-sm">Refusée</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Filtre des colonnes */}
-      <div className="flex justify-end gap-3 mb-4">
+      {/* Boutons d'action */}
+      <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mb-4">
         <Button
-          className="border-2 hover:shadow-md transition-all"
+          className="border-2 hover:shadow-md transition-all text-sm w-full sm:w-auto"
           style={{ 
             borderColor: '#ED7A97',
             backgroundColor: '#ED7A97',
             color: 'white',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#F29CB1'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#ED7A97'
-          }}
           onClick={() => setIsAddingNew(true)}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouveau rendez-vous
+          Nouveau RDV
         </Button>
         <Popover>
           <PopoverTrigger asChild>
             <Button 
               variant="outline" 
               size="sm"
-              className="border-2 hover:shadow-md transition-all"
+              className="border-2 hover:shadow-md transition-all text-sm w-full sm:w-auto"
               style={{ 
                 borderColor: '#ED7A97',
                 backgroundColor: '#ED7A97',
                 color: 'white',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F29CB1'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#ED7A97'
               }}
             >
               <Settings2 className="h-4 w-4 mr-2" />

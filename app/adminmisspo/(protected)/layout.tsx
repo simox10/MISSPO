@@ -176,7 +176,7 @@ export default function ProtectedLayout({
         )}
 
         {/* Main Content */}
-        <main className={`flex-1 p-4 lg:p-8 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'} transition-all duration-200`}>
+        <main className={`flex-1 p-3 md:p-4 lg:p-8 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'} transition-all duration-200`}>
           {children}
         </main>
       </div>

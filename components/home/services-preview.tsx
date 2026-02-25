@@ -17,17 +17,6 @@ export function ServicesPreview() {
 
   const packs = [
     {
-      ...t.packs.school,
-      image: "/service-ecole.jpg",
-      imageAlt: "Service MISSPO en milieu scolaire",
-      accent: "misspo-blue",
-      bgGradient: "from-misspo-blue-pale to-white",
-      borderColor: "border-misspo-blue-light",
-      btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
-      badgeClass: "bg-misspo-blue-pale text-misspo-blue-dark",
-      href: "/contact",
-    },
-    {
       ...t.packs.home,
       image: "/service-domicile.jpg",
       imageAlt: "Service MISSPO a domicile",
@@ -37,6 +26,17 @@ export function ServicesPreview() {
       btnClass: "bg-misspo-rose-dark text-white hover:bg-misspo-rose",
       badgeClass: "bg-misspo-rose-pale text-misspo-rose-dark",
       href: "/booking",
+    },
+    {
+      ...t.packs.school,
+      image: "/service-ecole.jpg",
+      imageAlt: "Service MISSPO en milieu scolaire",
+      accent: "misspo-blue",
+      bgGradient: "from-misspo-blue-pale to-white",
+      borderColor: "border-misspo-blue-light",
+      btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
+      badgeClass: "bg-misspo-blue-pale text-misspo-blue-dark",
+      href: "/contact",
     },
   ]
 

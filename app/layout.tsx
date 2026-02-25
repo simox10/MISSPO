@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" dir="ltr" suppressHydrationWarning>
-      <body className={`${poppins.variable} ${cairo.variable} font-sans antialiased`}>
+      <body className={`${poppins.variable} ${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

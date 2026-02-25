@@ -64,7 +64,8 @@ class RealtimeManager {
    */
   private async checkStatus() {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/system/realtime-status`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+      const response = await fetch(`${apiUrl}/system/realtime-status`)
       const status: { success: boolean; mode: RealtimeMode; reason: string; polling_interval: number } = await response.json()
 
       if (status.success) {

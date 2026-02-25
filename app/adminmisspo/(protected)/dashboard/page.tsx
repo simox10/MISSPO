@@ -49,6 +49,68 @@ export default function DashboardPage() {
     refusees: 0,
     total_mois: 0,
   })
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchCurrent, setTouchCurrent] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragOffset, setDragOffset] = useState(0)
+
+  // Fonction pour gérer le début du swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX)
+    setTouchCurrent(e.targetTouches[0].clientX)
+    setIsDragging(true)
+  }
+
+  // Fonction pour gérer le mouvement du swipe (les cartes suivent le doigt)
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return
+    
+    const currentTouch = e.targetTouches[0].clientX
+    setTouchCurrent(currentTouch)
+    
+    // Calculer le décalage par rapport au point de départ
+    const diff = currentTouch - touchStart
+    
+    // Limiter le drag aux bords (ne pas dépasser la première/dernière carte)
+    let newOffset = diff
+    
+    // Si on est à la première carte et qu'on essaie d'aller à gauche, résister
+    if (currentSlide === 0 && diff > 0) {
+      newOffset = diff * 0.3 // Résistance
+    }
+    
+    // Si on est à la dernière carte et qu'on essaie d'aller à droite, résister
+    if (currentSlide === 3 && diff < 0) {
+      newOffset = diff * 0.3 // Résistance
+    }
+    
+    setDragOffset(newOffset)
+  }
+
+  // Fonction pour gérer la fin du swipe
+  const handleTouchEnd = () => {
+    if (!isDragging) return
+    
+    setIsDragging(false)
+    
+    const distance = touchCurrent - touchStart
+    const threshold = 50 // Distance minimale pour changer de slide
+    
+    // Swipe vers la gauche (carte suivante)
+    if (distance < -threshold && currentSlide < 3) {
+      setCurrentSlide(currentSlide + 1)
+    }
+    // Swipe vers la droite (carte précédente)
+    else if (distance > threshold && currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1)
+    }
+    
+    // Réinitialiser
+    setDragOffset(0)
+    setTouchStart(0)
+    setTouchCurrent(0)
+  }
   const [loading, setLoading] = useState(true)
   const [newReservation, setNewReservation] = useState({
     prenom: "",
@@ -368,21 +430,20 @@ _L'équipe MISSPO_`
           <h1 className="text-3xl font-bold text-gray-900">Tableau des Réservations</h1>
           <p className="text-muted-foreground mt-1">Gérez toutes vos réservations</p>
         </div>
-        <NotificationBell />
+        {/* NotificationBell visible uniquement sur desktop, sur mobile il est dans le header */}
+        <div className="hidden lg:block">
+          <NotificationBell />
+        </div>
       </div>
 
       {/* Stats - En haut */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Desktop: Grid normal */}
+      <div className="hidden md:grid grid-cols-4 gap-4">
         <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
           <CalendarIcon className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} />
           <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Aujourd'hui</p>
-          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : (
-              <>
-                <span className="font-bold">{stats.total}</span>
-                <span className="font-normal">/{stats.total_mois}</span>
-              </>
-            )}
+          <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : `${stats.total}/${stats.total_mois}`}
           </p>
         </div>
         <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
@@ -390,13 +451,8 @@ _L'équipe MISSPO_`
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Confirmées</p>
-          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : (
-              <>
-                <span className="font-bold">{stats.confirmees}</span>
-                <span className="font-normal">/{stats.total_mois}</span>
-              </>
-            )}
+          <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : `${stats.confirmees}/${stats.total_mois}`}
           </p>
         </div>
         <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
@@ -404,13 +460,8 @@ _L'équipe MISSPO_`
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV En attente</p>
-          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : (
-              <>
-                <span className="font-bold">{stats.en_attente}</span>
-                <span className="font-normal">/{stats.total_mois}</span>
-              </>
-            )}
+          <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : `${stats.en_attente}/${stats.total_mois}`}
           </p>
         </div>
         <div className="rounded-lg shadow-sm p-4 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
@@ -418,14 +469,93 @@ _L'équipe MISSPO_`
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
           <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Refusées</p>
-          <p className="text-2xl relative z-10" style={{ color: '#2da1ca' }}>
-            {loading ? "..." : (
-              <>
-                <span className="font-bold">{stats.refusees}</span>
-                <span className="font-normal">/{stats.total_mois}</span>
-              </>
-            )}
+          <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+            {loading ? "..." : `${stats.refusees}/${stats.total_mois}`}
           </p>
+        </div>
+      </div>
+
+      {/* Mobile: Carrousel */}
+      <div className="md:hidden">
+        <div 
+          className="relative overflow-hidden touch-pan-y"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ touchAction: 'pan-y' }}
+        >
+          <div 
+            className="flex"
+            style={{ 
+              transform: `translateX(calc(-${currentSlide * 100}% + ${dragOffset}px))`,
+              transition: isDragging ? 'none' : 'transform 300ms ease-out',
+              willChange: 'transform'
+            }}
+          >
+            {/* Carte 1 */}
+            <div className="w-full flex-shrink-0 px-2">
+              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <CalendarIcon className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} />
+                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Aujourd'hui</p>
+                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                  {loading ? "..." : `${stats.total}/${stats.total_mois}`}
+                </p>
+              </div>
+            </div>
+            {/* Carte 2 */}
+            <div className="w-full flex-shrink-0 px-2">
+              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Confirmées</p>
+                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                  {loading ? "..." : `${stats.confirmees}/${stats.total_mois}`}
+                </p>
+              </div>
+            </div>
+            {/* Carte 3 */}
+            <div className="w-full flex-shrink-0 px-2">
+              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV En attente</p>
+                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                  {loading ? "..." : `${stats.en_attente}/${stats.total_mois}`}
+                </p>
+              </div>
+            </div>
+            {/* Carte 4 */}
+            <div className="w-full flex-shrink-0 px-2">
+              <div className="rounded-lg shadow-sm p-4 py-8 relative overflow-hidden" style={{ backgroundColor: '#E5F4F9' }}>
+                <svg className="absolute -right-6 top-1/2 -translate-y-1/2 -translate-y-8 h-32 w-32 opacity-20" style={{ color: '#1a7a94' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p className="text-sm relative z-10" style={{ color: '#2da1ca' }}>RDV Refusées</p>
+                <p className="text-xl font-bold relative z-10 mt-2" style={{ color: '#2da1ca' }}>
+                  {loading ? "..." : `${stats.refusees}/${stats.total_mois}`}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation Dots - Indicateurs visuels seulement */}
+        <div className="flex justify-center gap-2 mt-4">
+          {[0, 1, 2, 3].map((index) => (
+            <div
+              key={index}
+              className="transition-all duration-300"
+              style={{
+                width: currentSlide === index ? '24px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                backgroundColor: currentSlide === index ? '#2da1ca' : '#d1d5db',
+              }}
+              aria-label={`Carte ${index + 1} sur 4`}
+            />
+          ))}
         </div>
       </div>
 

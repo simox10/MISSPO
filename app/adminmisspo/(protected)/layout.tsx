@@ -6,6 +6,7 @@ import Link from "next/link"
 import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
+import { NotificationBell } from "@/components/notification-bell"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -77,13 +78,19 @@ export default function ProtectedLayout({
       {/* Header Mobile */}
       <div className="lg:hidden bg-white border-b px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold text-misspo-rose-dark">MISSPO Admin</h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-        >
-          {isMobileOpen ? <X /> : <Menu />}
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* Bouton Notification - Déplacé ici pour mobile */}
+          <NotificationBell />
+          
+          {/* Bouton Menu Hamburger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMobileOpen(!isMobileOpen)}
+          >
+            {isMobileOpen ? <X /> : <Menu />}
+          </Button>
+        </div>
       </div>
 
       <div className="flex">

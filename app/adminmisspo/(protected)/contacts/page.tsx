@@ -456,62 +456,19 @@ export default function ContactsPage() {
               <p className="text-gray-500">Aucun message trouvé</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nom Complet
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Téléphone
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Statut
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredContacts.map((contact) => (
-                    <tr
-
-      {/* Split-Pane Inbox Layout */}
-      <div className="flex-1 flex gap-4 overflow-hidden">
-        {/* Left Panel - Message List */}
-        <Card className="w-full md:w-2/5 flex flex-col overflow-hidden">
-          <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
-            {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                  <p className="text-gray-500 text-sm">Chargement des messages...</p>
-                </div>
-              </div>
-            ) : filteredContacts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 px-4">
-                <MessageCircle className="h-16 w-16 text-gray-300 mb-4" />
-                <p className="text-gray-900 font-medium mb-1">Aucun message trouvé</p>
-                <p className="text-gray-500 text-sm text-center">
-                  {searchQuery ? "Essayez de modifier votre recherche" : "Les nouveaux messages apparaîtront ici"}
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-y-auto divide-y divide-gray-200">
-                {filteredContacts.map((contact) => {
-                  const isSelected = selectedContact?.id === contact.id
-                  const isUnread = contact.statut === 'Non lu'
-                  
-                  return (
-                    <div
+            <>
+              {/* Split-Pane Inbox Layout */}
+              <div className="flex-1 flex gap-4 overflow-hidden">
+                {/* Left Panel - Message List */}
+                <Card className="w-full md:w-2/5 flex flex-col overflow-hidden">
+                  <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
+                    <div className="overflow-y-auto divide-y divide-gray-200">
+                      {filteredContacts.map((contact) => {
+                        const isSelected = selectedContact?.id === contact.id
+                        const isUnread = contact.statut === 'Non lu'
+                        
+                        return (
+                          <div
 
                       key={contact.id}
                       onClick={() => handleRowClick(contact)}
@@ -627,7 +584,6 @@ export default function ContactsPage() {
                   )
                 })}
               </div>
-            )}
           </CardContent>
         </Card>
 
@@ -765,6 +721,10 @@ export default function ContactsPage() {
           </CardContent>
         </Card>
       </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Mobile Full-Screen Detail View */}
       <Dialog open={!!selectedContact && isMobile} onOpenChange={() => setSelectedContact(null)}>

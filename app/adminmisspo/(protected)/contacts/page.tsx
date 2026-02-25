@@ -285,7 +285,7 @@ export default function ContactsPage() {
               <p className="text-gray-500">Chargement des messages...</p>
             </div>
           ) : filteredContacts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center min-h-[150px]" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
               <MessageCircle className="h-12 w-12 text-gray-300 mb-3" />
               <p className="text-gray-500">Aucun message trouvé</p>
             </div>

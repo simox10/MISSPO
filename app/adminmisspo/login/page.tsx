@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { LogIn, Eye, EyeOff, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -88,24 +89,17 @@ export default function LoginPage() {
               
               <div className="relative z-10 flex flex-col justify-center items-center min-h-[500px] text-white">
                 <div className="mb-8 text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <span className="text-3xl font-bold text-[#ED7A97]">M</span>
-                  </div>
-                  <h1 className="text-4xl font-bold mb-2">MISSPO</h1>
-                  <p className="text-white/90">Administration</p>
+                  <h1 className="text-5xl font-black text-white tracking-tight mb-2">
+                    MISSPO
+                  </h1>
+                  <p className="text-white/90 text-base font-medium tracking-wide">Administration</p>
                 </div>
 
                 <div className="text-center max-w-sm">
+                  <div className="h-1 w-16 bg-white/60 mx-auto mb-4 rounded-full"></div>
                   <h2 className="text-2xl font-bold mb-3">Bienvenue !</h2>
                   <p className="text-white/90 leading-relaxed">
                     Connectez-vous pour accéder au panneau d'administration et gérer vos réservations
-                  </p>
-                </div>
-
-                <div className="mt-8 p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                  <p className="text-sm text-center text-white/90">
-                    <span className="font-semibold">Email:</span> admin@misspo.com<br />
-                    <span className="font-semibold">Mot de passe:</span> misspo2026
                   </p>
                 </div>
 
@@ -252,26 +246,18 @@ export default function LoginPage() {
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               {/* Logo */}
               <div className="mb-8 text-center">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <span className="text-3xl font-bold text-[#ED7A97]">M</span>
-                </div>
-                <h1 className="text-4xl font-bold mb-2">MISSPO</h1>
-                <p className="text-white/90">Administration</p>
+                <h1 className="text-5xl font-black text-white tracking-tight mb-2">
+                  MISSPO
+                </h1>
+                <p className="text-white/90 text-base font-medium tracking-wide">Administration</p>
               </div>
 
               {/* Message de bienvenue */}
               <div className="text-center max-w-sm">
+                <div className="h-1 w-16 bg-white/60 mx-auto mb-4 rounded-full"></div>
                 <h2 className="text-2xl font-bold mb-3">Bienvenue !</h2>
                 <p className="text-white/90 leading-relaxed">
                   Connectez-vous pour accéder au panneau d'administration et gérer vos réservations
-                </p>
-              </div>
-
-              {/* Info credentials */}
-              <div className="mt-8 p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                <p className="text-sm text-center text-white/90">
-                  <span className="font-semibold">Email:</span> admin@misspo.com<br />
-                  <span className="font-semibold">Mot de passe:</span> misspo2026
                 </p>
               </div>
             </div>

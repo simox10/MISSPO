@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock, MessageCircle } from "lucide-react"
+import { LayoutDashboard, Calendar, LogOut, Menu, X, ChevronLeft, ChevronRight, Clock, MessageCircle, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
 import {
@@ -69,6 +69,7 @@ export default function ProtectedLayout({
     { icon: Calendar, label: "Planning", href: "/adminmisspo/planning" },
     { icon: Clock, label: "Horaires", href: "/adminmisspo/horaires" },
     { icon: MessageCircle, label: "Messages", href: "/adminmisspo/contacts", badge: unreadCount },
+    { icon: Settings, label: "Paramètres", href: "/adminmisspo/parametres" },
   ]
 
   return (

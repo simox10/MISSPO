@@ -97,44 +97,64 @@ export const api = {
   },
 
   async getNotifications(): Promise<Notification[]> {
-    const response = await fetch(`${API_URL}/admin/notifications`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch notifications');
+    try {
+      const response = await fetch(`${API_URL}/admin/notifications`);
+      if (!response.ok) {
+        console.warn('Failed to fetch notifications:', response.status);
+        return [];
+      }
+      const result = await response.json();
+      return result.notifications || [];
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      return [];
     }
-    const result = await response.json();
-    return result.notifications || [];
   },
 
   async getUnreadNotificationCount(): Promise<number> {
-    const response = await fetch(`${API_URL}/admin/notifications/unread-count`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch unread count');
+    try {
+      const response = await fetch(`${API_URL}/admin/notifications/unread-count`);
+      if (!response.ok) {
+        console.warn('Failed to fetch unread count:', response.status);
+        return 0;
+      }
+      const result = await response.json();
+      return result.count || 0;
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+      return 0;
     }
-    const result = await response.json();
-    return result.count || 0;
   },
 
   async markNotificationAsRead(id: number): Promise<void> {
-    const response = await fetch(`${API_URL}/admin/notifications/${id}/read`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to mark notification as read');
+    try {
+      const response = await fetch(`${API_URL}/admin/notifications/${id}/read`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        console.warn('Failed to mark notification as read:', response.status);
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
     }
   },
 
   async markAllNotificationsAsRead(): Promise<void> {
-    const response = await fetch(`${API_URL}/admin/notifications/read-all`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to mark all notifications as read');
+    try {
+      const response = await fetch(`${API_URL}/admin/notifications/read-all`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        console.warn('Failed to mark all notifications as read:', response.status);
+      }
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
     }
   },
 };

@@ -135,6 +135,7 @@ function ContactForm() {
   const { t, dir } = useLanguage()
   const { ref, isInView } = useInView()
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [values, setValues] = useState({
@@ -144,6 +145,8 @@ function ContactForm() {
     email: "",
     message: ""
   })
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
   const validateField = (name: string, value: string) => {
     switch (name) {
@@ -193,7 +196,7 @@ function ContactForm() {
     return validateField(name, values[name as keyof typeof values]) ? "valid" : "invalid"
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     
     const newErrors: Record<string, string> = {}
@@ -208,42 +211,51 @@ function ContactForm() {
       return
     }
 
-    // Call API to save contact message
-    fetch('http://localhost:8000/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nom: values.lastName,
-        prenom: values.firstName,
-        telephone: values.phone,
-        email: values.email,
-        message: values.message
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          setErrors({})
-          setSent(true)
-          // Reset form
-          setValues({
-            lastName: "",
-            firstName: "",
-            phone: "",
-            email: "",
-            message: ""
-          })
-          setTouched({})
-        } else {
-          setErrors({ submit: 'Erreur lors de l\'envoi du message' })
-        }
+    setLoading(true)
+    setErrors({})
+
+    try {
+      console.log('Envoi vers:', `${API_URL}/contact`)
+      const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          nom: values.lastName,
+          prenom: values.firstName,
+          telephone: values.phone,
+          email: values.email,
+          message: values.message
+        }),
       })
-      .catch(error => {
-        console.error("Erreur:", error)
-        setErrors({ submit: 'Erreur de connexion au serveur' })
+
+      console.log('Response status:', response.status)
+      const data = await response.json()
+      console.log('Response data:', data)
+
+      if (response.ok && data.success) {
+        setSent(true)
+        setValues({
+          lastName: "",
+          firstName: "",
+          phone: "",
+          email: "",
+          message: ""
+        })
+        setTouched({})
+      } else {
+        setErrors({ submit: data.message || 'Erreur lors de l\'envoi du message' })
+      }
+    } catch (error) {
+      console.error("Erreur complète:", error)
+      setErrors({ 
+        submit: `Impossible de contacter le serveur (${API_URL}). Vérifiez que le serveur Laravel est démarré avec "php artisan serve".` 
       })
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (sent) {
@@ -398,14 +410,29 @@ function ContactForm() {
               placeholder={t.contact.messageField}
             />
           </div>
+          {errors.submit && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600 text-center">{errors.submit}</p>
+            </div>
+          )}
           <Button
             type="submit"
-            className="group w-full bg-misspo-rose-dark text-white shadow-md hover:bg-misspo-rose hover:shadow-lg transition-all overflow-hidden relative"
+            disabled={loading}
+            className="group w-full bg-misspo-rose-dark text-white shadow-md hover:bg-misspo-rose hover:shadow-lg transition-all overflow-hidden relative disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Send className="h-4 w-4 group-hover:animate-send-arrow" />
-            <span className="opacity-100 group-hover:opacity-0 group-hover:animate-blur-in">
-              {t.contact.sendBtn}
-            </span>
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Envoi en cours...</span>
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4 group-hover:animate-send-arrow" />
+                <span className="opacity-100 group-hover:opacity-0 group-hover:animate-blur-in">
+                  {t.contact.sendBtn}
+                </span>
+              </>
+            )}
           </Button>
         </form>
       </div>

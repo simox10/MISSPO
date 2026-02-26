@@ -51,8 +51,23 @@ export default function ContactsPage() {
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [filterDate, setFilterDate] = useState<string>("")
+  const [showDatePicker, setShowDatePicker] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+
+  // Close date picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (showDatePicker && !target.closest('.date-picker-container')) {
+        setShowDatePicker(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showDatePicker])
 
   // Proper mobile detection with resize listener
   useEffect(() => {
@@ -71,7 +86,7 @@ export default function ContactsPage() {
 
   useEffect(() => {
     filterContacts()
-  }, [contacts, filterStatus, searchQuery])
+  }, [contacts, filterStatus, searchQuery, filterDate])
 
   const fetchContacts = async () => {
     try {
@@ -109,6 +124,14 @@ export default function ContactsPage() {
     // Filter by status
     if (filterStatus !== "all") {
       filtered = filtered.filter(c => c.statut === filterStatus)
+    }
+
+    // Filter by date
+    if (filterDate) {
+      filtered = filtered.filter(c => {
+        const contactDate = new Date(c.created_at).toISOString().split('T')[0]
+        return contactDate === filterDate
+      })
     }
 
     // Filter by search query
@@ -384,37 +407,6 @@ export default function ContactsPage() {
 
             {/* Desktop: Always Visible Filters */}
             <div className="hidden md:flex flex-col gap-4">
-              {/* Quick Filter Chips */}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  variant={filterStatus === "all" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("all")}
-                  className="rounded-full"
-                >
-                  Tous ({stats.total})
-                </Button>
-                <Button
-                  size="sm"
-                  variant={filterStatus === "Non lu" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("Non lu")}
-                  className="rounded-full bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
-                  style={filterStatus === "Non lu" ? {} : { backgroundColor: 'transparent', color: 'inherit' }}
-                >
-                  <Clock className="h-3 w-3 mr-1" />
-                  Non lus ({stats.non_lu})
-                </Button>
-                <Button
-                  size="sm"
-                  variant={filterStatus === "Lu" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("Lu")}
-                  className="rounded-full"
-                >
-                  <Eye className="h-3 w-3 mr-1" />
-                  Lus ({stats.lu})
-                </Button>
-              </div>
-              
               {/* Search Bar */}
               <div className="flex gap-3">
                 <div className="flex-1 relative">
@@ -426,6 +418,19 @@ export default function ContactsPage() {
                   />
                   <Filter className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="relative"
+                >
+                  <Filter className="h-4 w-4" />
+                  {(filterStatus !== "all" || filterDate) && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                      {(filterStatus !== "all" ? 1 : 0) + (filterDate ? 1 : 0)}
+                    </span>
+                  )}
+                </Button>
                 {searchQuery && (
                   <Button
                     variant="ghost"
@@ -437,6 +442,83 @@ export default function ContactsPage() {
                   </Button>
                 )}
               </div>
+              
+              {/* Expandable Filter Chips */}
+              {showFilters && (
+                <div className="flex flex-wrap gap-2 animate-in slide-in-from-top-2">
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "all" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("all")}
+                    className="rounded-full h-8 text-xs"
+                  >
+                    Tous ({stats.total})
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "Non lu" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("Non lu")}
+                    className="rounded-full h-8 text-xs bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500"
+                    style={filterStatus === "Non lu" ? {} : { backgroundColor: 'transparent', color: 'inherit' }}
+                  >
+                    <Clock className="h-3 w-3 mr-1" />
+                    Non lus ({stats.non_lu})
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={filterStatus === "Lu" ? "default" : "outline"}
+                    onClick={() => setFilterStatus("Lu")}
+                    className="rounded-full h-8 text-xs"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Lus ({stats.lu})
+                  </Button>
+                  <div className="relative date-picker-container">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setShowDatePicker(!showDatePicker)}
+                      className={`rounded-full h-8 text-xs ${filterDate ? 'bg-blue-100 border-blue-500' : ''}`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 mr-1">
+                        <path d="M8 2v4" />
+                        <path d="M16 2v4" />
+                        <rect width="18" height="18" x="3" y="4" rx="2" />
+                        <path d="M3 10h18" />
+                      </svg>
+                      {filterDate ? new Date(filterDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : 'Date'}
+                      {filterDate && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setFilterDate("")
+                            setShowDatePicker(false)
+                          }}
+                          className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </Button>
+                    {showDatePicker && (
+                      <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
+                        <input
+                          type="date"
+                          value={filterDate}
+                          onChange={(e) => {
+                            setFilterDate(e.target.value)
+                            setShowDatePicker(false)
+                          }}
+                          className="text-xs border border-gray-300 rounded px-2 py-1"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
@@ -472,7 +554,7 @@ export default function ContactsPage() {
 
                       key={contact.id}
                       onClick={() => handleRowClick(contact)}
-                      className={`p-3 md:p-4 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 relative group ${
+                      className={`p-1.5 md:p-2 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 relative group ${
                         isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                       } ${isUnread ? 'bg-yellow-50/50' : ''}`}
                     >
@@ -484,9 +566,9 @@ export default function ContactsPage() {
                         <div className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-500 rounded-full"></div>
                       )}
                       
-                      <div className={`flex gap-3 ${isUnread && !isSelected ? 'ml-2 md:ml-2' : ''}`}>
+                      <div className={`flex gap-2 ${isUnread && !isSelected ? 'ml-2 md:ml-2' : ''}`}>
                         {/* Avatar */}
-                        <div className={`flex-shrink-0 w-10 h-10 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
+                        <div className={`flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
                           isUnread ? 'bg-yellow-500' : 'bg-gray-400'
                         }`}>
                           {contact.prenom.charAt(0)}{contact.nom.charAt(0)}
@@ -494,8 +576,8 @@ export default function ContactsPage() {
                         
                         {/* Content */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className={`text-sm md:text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className={`text-xs truncate ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
                               {contact.prenom} {contact.nom}
                             </h3>
                             <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
@@ -517,66 +599,66 @@ export default function ContactsPage() {
                           </div>
                           
                           {/* Mobile: Show only phone, Desktop: Show phone */}
-                          <p className="text-xs text-gray-600 mb-1 md:mb-2 flex items-center gap-1">
-                            <Phone className="h-3 w-3 flex-shrink-0" />
+                          <p className="text-xs text-gray-600 flex items-center gap-1">
+                            <Phone className="h-2.5 w-2.5 flex-shrink-0" />
                             <span className="truncate">{contact.telephone}</span>
                           </p>
                           
                           {/* Message Preview */}
                           {contact.message && (
-                            <p className={`text-xs line-clamp-2 ${isUnread ? 'text-gray-700' : 'text-gray-500'}`}>
+                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
                               {contact.message}
                             </p>
                           )}
                           
                           {/* Quick Actions - Desktop Only (Show on Hover) */}
-                          <div className="hidden md:flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="hidden md:flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-7 px-2 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              className="h-5 px-1.5 text-green-600 hover:text-green-700 hover:bg-green-50"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleWhatsAppClick(contact)
                               }}
                               title="WhatsApp"
                             >
-                              <MessageCircle className="h-3 w-3" />
+                              <MessageCircle className="h-2.5 w-2.5" />
                             </Button>
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-7 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              className="h-5 px-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 window.location.href = `tel:${contact.telephone}`
                               }}
                               title="Appeler"
                             >
-                              <Phone className="h-3 w-3" />
+                              <Phone className="h-2.5 w-2.5" />
                             </Button>
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-7 px-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                              className="h-5 px-1.5 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 window.location.href = `mailto:${contact.email}`
                               }}
                               title="Email"
                             >
-                              <Mail className="h-3 w-3" />
+                              <Mail className="h-2.5 w-2.5" />
                             </Button>
                           </div>
                         </div>
                         
                         {/* Status Badge - Desktop Only */}
-                        <div className="hidden md:flex flex-shrink-0">
+                        <div className="hidden md:flex flex-shrink-0 items-center">
                           {contact.statut === 'Non lu' && (
-                            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
                           )}
                           {contact.statut === 'Lu' && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
                           )}
                         </div>
                       </div>
@@ -593,17 +675,17 @@ export default function ContactsPage() {
             {selectedContact ? (
               <div className="flex flex-col h-full">
                 {/* Header */}
-                <div className="p-6 border-b bg-gray-50">
+                <div className="p-3 border-b bg-gray-50">
                   <div className="flex items-start justify-between">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="flex gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-base">
                         {selectedContact.prenom.charAt(0)}{selectedContact.nom.charAt(0)}
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-lg font-bold text-gray-900">
                           {selectedContact.prenom} {selectedContact.nom}
                         </h2>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500">
                           {new Date(selectedContact.created_at).toLocaleDateString('fr-FR', {
                             day: 'numeric',
                             month: 'long',
@@ -620,7 +702,7 @@ export default function ContactsPage() {
                       value={selectedContact.statut}
                       onValueChange={(value) => updateStatus(selectedContact.id, value as 'Non lu' | 'Lu')}
                     >
-                      <SelectTrigger className="w-40">
+                      <SelectTrigger className="w-32 h-8 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -641,72 +723,52 @@ export default function ContactsPage() {
                   </div>
                 </div>
 
-                {/* Contact Info Cards */}
-                <div className="p-6 border-b bg-white">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <Phone className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Téléphone</p>
-                        <p className="font-medium text-gray-900">{selectedContact.telephone}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <Mail className="h-5 w-5 text-purple-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Email</p>
-                        <p className="font-medium text-gray-900 truncate">{selectedContact.email}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Message Content */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto p-4">
                   {selectedContact.message ? (
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-700 mb-3">Message</h3>
-                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
-                          {selectedContact.message}
-                        </p>
-                      </div>
+                    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                      <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base">
+                        {selectedContact.message}
+                      </p>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">
-                      <p>Aucun message</p>
+                      <div className="text-center">
+                        <MessageCircle className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm">Aucun message</p>
+                      </div>
                     </div>
                   )}
                 </div>
 
                 {/* Action Buttons */}
-                <div className="p-6 border-t bg-gray-50">
-                  <div className="flex gap-3">
+                <div className="p-3 border-t bg-gray-50">
+                  <div className="flex gap-2">
                     <Button
-                      className="flex-1 bg-green-600 text-white hover:bg-green-700 h-12"
+                      className="flex-1 bg-green-600 text-white hover:bg-green-700 h-9 text-xs"
                       onClick={() => handleWhatsAppClick(selectedContact)}
                     >
-                      <MessageCircle className="h-5 w-5 mr-2" />
+                      <MessageCircle className="h-4 w-4 mr-1" />
                       WhatsApp
                     </Button>
                     <a href={`tel:${selectedContact.telephone}`} className="flex-1">
-                      <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 h-12">
-                        <Phone className="h-5 w-5 mr-2" />
+                      <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 h-9 text-xs">
+                        <Phone className="h-4 w-4 mr-1" />
                         Appeler
                       </Button>
                     </a>
                     <a href={`mailto:${selectedContact.email}`} className="flex-1">
-                      <Button className="w-full bg-purple-600 text-white hover:bg-purple-700 h-12">
-                        <Mail className="h-5 w-5 mr-2" />
+                      <Button className="w-full bg-purple-600 text-white hover:bg-purple-700 h-9 text-xs">
+                        <Mail className="h-4 w-4 mr-1" />
                         Email
                       </Button>
                     </a>
                     <Button
                       variant="outline"
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 h-9 px-3"
                       onClick={() => deleteContact(selectedContact.id)}
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>

@@ -378,21 +378,31 @@ export default function PlanningPage() {
             {hours.map((hour) => {
               const hourReservations = getReservationForHour(hour)
               const hasReservations = hourReservations.length > 0
+              const confirmedCount = hourReservations.filter(r => r.statut === 'Confirmée').length
+              const isFull = confirmedCount >= 2
 
               return (
                 <div key={hour} className="flex gap-4">
                   {/* Heure */}
                   <div className="w-20 flex-shrink-0 text-right">
-                    <span className="text-sm font-semibold text-gray-600">
-                      {String(hour).padStart(2, '0')}:00
-                    </span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-semibold text-gray-600">
+                        {String(hour).padStart(2, '0')}:00
+                      </span>
+                      {hasReservations && (
+                        <span className={`text-xs font-medium mt-1 ${
+                          isFull ? 'text-red-600' : 'text-green-600'
+                        }`}>
+                          {confirmedCount}/2
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Créneaux */}
                   <div className="flex-1 min-h-[60px] border-l-2 border-gray-200 pl-4">
                     {hasReservations ? (
                       <div className={`grid gap-2 ${
-                        hourReservations.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 
                         hourReservations.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 
                         'grid-cols-1'
                       }`}>
@@ -444,6 +454,13 @@ export default function PlanningPage() {
                     ) : (
                       <div className="h-full flex items-center text-sm text-gray-400">
                         Disponible
+                      </div>
+                    )}
+                    {isFull && (
+                      <div className="mt-2 px-3 py-1.5 bg-red-50 border border-red-200 rounded-md">
+                        <p className="text-xs font-medium text-red-700">
+                          ⚠️ Créneau complet (2/2)
+                        </p>
                       </div>
                     )}
                   </div>
@@ -639,7 +656,11 @@ _L'équipe MISSPO_`
 
                 // Check for slot capacity error (409 Conflict)
                 if (response.status === 409) {
-                  toast.error(data.message || 'Ce créneau est complet', {
+                  const errorMsg = data.slot_full 
+                    ? `Ce créneau est complet (${data.confirmed_count || 2}/2 rendez-vous confirmés). Veuillez choisir un autre horaire.`
+                    : data.message || 'Ce créneau est complet (maximum 2 rendez-vous par heure)'
+                  
+                  toast.error(errorMsg, {
                     duration: 6000,
                     style: {
                       background: '#FBDEE5',
@@ -735,7 +756,7 @@ _L'équipe MISSPO_`
                   <Input
                     id="edit-date"
                     type="date"
-                    value={editingReservation.date}
+                    value={editingReservation.date.split('T')[0]}
                     onChange={(e) => {
                       setEditingReservation({...editingReservation, date: e.target.value})
                       setSelectedDateForEdit(e.target.value)
@@ -817,6 +838,28 @@ _L'équipe MISSPO_`
                       <SelectItem value="Refusée">Refusée</SelectItem>
                     </SelectContent>
                   </Select>
+                  {editingReservation.statut === "Confirmée" && (() => {
+                    const sameTimeSlot = reservations.filter(r => 
+                      r.date === editingReservation.date && 
+                      r.heure === editingReservation.heure &&
+                      r.id !== editingReservation.id &&
+                      r.statut === "Confirmée"
+                    )
+                    if (sameTimeSlot.length >= 2) {
+                      return (
+                        <p className="text-xs text-red-600 mt-1 font-medium">
+                          ⚠️ Ce créneau est déjà complet (2/2)
+                        </p>
+                      )
+                    } else if (sameTimeSlot.length === 1) {
+                      return (
+                        <p className="text-xs text-orange-600 mt-1 font-medium">
+                          ⚠️ 1 rendez-vous déjà confirmé sur ce créneau
+                        </p>
+                      )
+                    }
+                    return null
+                  })()}
                 </div>
               </div>
 

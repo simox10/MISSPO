@@ -126,7 +126,23 @@ export default function DashboardPage() {
     notes: "",
   })
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+  
+  // Détection mobile pour la pagination
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+  
+  // 4 items par page sur mobile, 10 sur desktop
+  const itemsPerPage = isMobile ? 4 : 10
   const [visibleColumns, setVisibleColumns] = useState({
     date: true,
     client: true,
@@ -399,10 +415,10 @@ _L'équipe MISSPO_`
   const endIndex = startIndex + itemsPerPage
   const paginatedReservations = filteredReservations.slice(startIndex, endIndex)
 
-  // Reset to page 1 when filters change
+  // Reset to page 1 when filters change or screen size changes
   useEffect(() => {
     setCurrentPage(1)
-  }, [search, filterPack, filterStatut])
+  }, [search, filterPack, filterStatut, isMobile])
 
   const getStatutBadge = (statut: string) => {
     const variants = {
@@ -557,25 +573,39 @@ _L'équipe MISSPO_`
         </div>
       </div>
 
-      {/* Filtres */}
-      <div className="rounded-lg shadow-sm p-3 md:p-4 mb-4 md:mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-          <div className="md:col-span-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#ED7A97' }} />
-              <Input
-                placeholder="Rechercher..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 border-2 focus:ring-2 text-sm"
-                style={{ 
-                  borderColor: '#F6BDCB',
-                  backgroundColor: 'white',
-                }}
-              />
-            </div>
-          </div>
-          
+      {/* Filtres et Actions - VERSION MOBILE */}
+      <div className="md:hidden space-y-3 mb-4">
+        {/* Ligne 1: Bouton Nouveau RDV */}
+        <Button
+          className="border-2 hover:shadow-md transition-all text-sm w-full"
+          style={{ 
+            borderColor: '#ED7A97',
+            backgroundColor: '#ED7A97',
+            color: 'white',
+          }}
+          onClick={() => setIsAddingNew(true)}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nouveau RDV
+        </Button>
+
+        {/* Ligne 2: Barre de recherche */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#ED7A97' }} />
+          <Input
+            placeholder="Rechercher..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 border-2 focus:ring-2 text-sm"
+            style={{ 
+              borderColor: '#F6BDCB',
+              backgroundColor: 'white',
+            }}
+          />
+        </div>
+
+        {/* Ligne 3: Les 2 dropdowns côte à côte */}
+        <div className="grid grid-cols-2 gap-3">
           <Select value={filterPack} onValueChange={setFilterPack}>
             <SelectTrigger 
               className="border-2 text-sm"
@@ -614,10 +644,67 @@ _L'équipe MISSPO_`
         </div>
       </div>
 
-      {/* Boutons d'action */}
-      <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mb-4">
+      {/* Filtres - VERSION DESKTOP */}
+      <div className="hidden md:block rounded-lg shadow-sm p-4 mb-6">
+        <div className="grid grid-cols-4 gap-4">
+          <div className="col-span-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#ED7A97' }} />
+              <Input
+                placeholder="Rechercher par nom, prénom ou téléphone..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 border-2 focus:ring-2"
+                style={{ 
+                  borderColor: '#F6BDCB',
+                  backgroundColor: 'white',
+                }}
+              />
+            </div>
+          </div>
+          
+          <Select value={filterPack} onValueChange={setFilterPack}>
+            <SelectTrigger 
+              className="border-2"
+              style={{ 
+                borderColor: '#F6BDCB',
+                backgroundColor: 'white',
+              }}
+            >
+              <SelectValue placeholder="Pack" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: '#FBDEE5', borderColor: '#F6BDCB' }}>
+              <SelectItem value="all">Tous les packs</SelectItem>
+              <SelectItem value="École">Pack École</SelectItem>
+              <SelectItem value="Domicile">Pack Domicile</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={filterStatut} onValueChange={setFilterStatut}>
+            <SelectTrigger 
+              className="border-2"
+              style={{ 
+                borderColor: '#F6BDCB',
+                backgroundColor: 'white',
+              }}
+            >
+              <SelectValue placeholder="Statut" />
+            </SelectTrigger>
+            <SelectContent style={{ backgroundColor: '#FBDEE5', borderColor: '#F6BDCB' }}>
+              <SelectItem value="all">Tous</SelectItem>
+              <SelectItem value="En attente">En attente</SelectItem>
+              <SelectItem value="Confirmée">Confirmée</SelectItem>
+              <SelectItem value="Terminée">Terminée</SelectItem>
+              <SelectItem value="Refusée">Refusée</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Boutons d'action - VERSION DESKTOP uniquement */}
+      <div className="hidden md:flex justify-end gap-3 mb-4">
         <Button
-          className="border-2 hover:shadow-md transition-all text-sm w-full sm:w-auto"
+          className="border-2 hover:shadow-md transition-all"
           style={{ 
             borderColor: '#ED7A97',
             backgroundColor: '#ED7A97',
@@ -626,14 +713,14 @@ _L'équipe MISSPO_`
           onClick={() => setIsAddingNew(true)}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouveau RDV
+          Nouveau rendez-vous
         </Button>
         <Popover>
           <PopoverTrigger asChild>
             <Button 
               variant="outline" 
               size="sm"
-              className="border-2 hover:shadow-md transition-all text-sm w-full sm:w-auto"
+              className="border-2 hover:shadow-md transition-all"
               style={{ 
                 borderColor: '#ED7A97',
                 backgroundColor: '#ED7A97',
@@ -885,7 +972,7 @@ _L'équipe MISSPO_`
         {paginatedReservations.map((reservation) => (
           <div
             key={reservation.id}
-            className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 min-h-[280px]"
+            className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
           >
             <div className="flex items-start justify-between mb-3">
               <div>
@@ -899,54 +986,64 @@ _L'équipe MISSPO_`
               </Badge>
             </div>
 
-            <div className="space-y-2 mb-3">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-gray-500">📅</span>
-                <span>{new Date(reservation.date).toLocaleDateString('fr-FR')} à {reservation.heure}</span>
+            {/* Layout: Infos à gauche, Boutons à droite */}
+            <div className="flex items-start justify-between gap-4">
+              {/* Colonne gauche: Infos */}
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-500">📅</span>
+                  <span>{new Date(reservation.date).toLocaleDateString('fr-FR')} à {reservation.heure}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-500">📞</span>
+                  <span>{reservation.telephone}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge className={getPackBadge(reservation.pack)}>
+                    {reservation.pack}
+                  </Badge>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-gray-500">📞</span>
-                <span>{reservation.telephone}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge className={getPackBadge(reservation.pack)}>
-                  {reservation.pack}
-                </Badge>
-              </div>
-            </div>
 
-            <div className="flex gap-2 pt-3 border-t">
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-1"
-                onClick={() => setSelectedReservation(reservation)}
-              >
-                <Eye className="h-4 w-4 mr-1" />
-                Voir
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-blue-600 hover:text-blue-700"
-                onClick={() => {
-                  setEditingReservation({
-                    ...reservation,
-                    date: formatDateForInput(reservation.date)
-                  })
-                  setSelectedDateForEdit(formatDateForInput(reservation.date))
-                }}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-green-600 hover:text-green-700"
-                onClick={() => handleWhatsAppClick(reservation)}
-              >
-                <MessageCircle className="h-4 w-4" />
-              </Button>
+              {/* Colonne droite: Boutons */}
+              <div className="flex flex-col gap-2">
+                {/* Ligne 1: Modifier + Message */}
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-blue-600 hover:text-blue-700"
+                    onClick={() => {
+                      setEditingReservation({
+                        ...reservation,
+                        date: formatDateForInput(reservation.date)
+                      })
+                      setSelectedDateForEdit(formatDateForInput(reservation.date))
+                    }}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-green-600 hover:text-green-700"
+                    onClick={() => handleWhatsAppClick(reservation)}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                {/* Ligne 2: Voir */}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setSelectedReservation(reservation)}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Voir
+                </Button>
+              </div>
             </div>
           </div>
         ))}
@@ -959,29 +1056,29 @@ _L'équipe MISSPO_`
 
         {/* Pagination Mobile */}
         {filteredReservations.length > 0 && (
-          <div className="bg-white rounded-lg p-4">
-            <div className="text-sm text-gray-700 text-center mb-3">
+          <div className="bg-white rounded-lg p-5">
+            <div className="text-base text-gray-700 text-center mb-4 font-medium">
               Page {currentPage} sur {totalPages} ({filteredReservations.length} résultats)
             </div>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-4">
               <Button
                 variant="outline"
-                size="sm"
+                className="h-12 w-12"
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-6 w-6" />
               </Button>
-              <span className="text-sm font-medium">
+              <span className="text-lg font-semibold min-w-[60px] text-center">
                 {currentPage} / {totalPages}
               </span>
               <Button
                 variant="outline"
-                size="sm"
+                className="h-12 w-12"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-6 w-6" />
               </Button>
             </div>
           </div>

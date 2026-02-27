@@ -25,7 +25,7 @@ export function CtaSection() {
         <div className="absolute bottom-0 right-1/4 h-48 w-48 rounded-full bg-misspo-blue blur-3xl" />
       </div>
 
-      <div className={`relative mx-auto max-w-3xl px-4 text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+      <div className={`relative mx-auto max-w-3xl px-3 md:px-4 text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
           {t.ctaSection.title}
         </h2>

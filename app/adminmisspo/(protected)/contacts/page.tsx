@@ -229,61 +229,61 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col">
+    <div className="h-[calc(100vh-8rem)] flex flex-col overflow-hidden">
       {/* Header */}
       <div className="mb-3 md:mb-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Messages de Contact</h1>
-        <p className="text-muted-foreground mt-1 text-sm md:text-base">Gérer les messages reçus via le formulaire de contact</p>
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900">Messages de Contact</h1>
+        <p className="text-muted-foreground mt-1 text-xs md:text-base">Gérer les messages reçus</p>
       </div>
 
       {/* Stats Cards - Mobile Optimized with Horizontal Scroll */}
       <div className="mb-3 md:mb-4">
-        {/* Mobile: Horizontal Scroll */}
-        <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4">
-          <div className="flex gap-3 min-w-max">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer min-w-[140px]" onClick={() => setFilterStatus("all")}>
-              <CardContent className="pt-4 pb-4 px-4">
-                <div className="flex flex-col gap-2">
+        {/* Mobile: Horizontal Scroll - Show 2 cards at a time */}
+        <div className="md:hidden overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', marginLeft: '-12px', marginRight: '-12px', paddingLeft: '12px', paddingRight: '12px' }}>
+          <div className="flex gap-2">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer flex-shrink-0" style={{ width: 'calc(50% - 4px)' }} onClick={() => setFilterStatus("all")}>
+              <CardContent className="pt-3 pb-3 px-3">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <MessageCircle className="h-6 w-6 text-gray-400" />
-                    <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                    <MessageCircle className="h-4 w-4 text-gray-400" />
+                    <p className="text-xl font-bold text-gray-900">{stats.total}</p>
                   </div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Total</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-yellow-500 min-w-[140px]" onClick={() => setFilterStatus("Non lu")}>
-              <CardContent className="pt-4 pb-4 px-4">
-                <div className="flex flex-col gap-2">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-yellow-500 flex-shrink-0" style={{ width: 'calc(50% - 4px)' }} onClick={() => setFilterStatus("Non lu")}>
+              <CardContent className="pt-3 pb-3 px-3">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <Clock className="h-6 w-6 text-yellow-400" />
-                    <p className="text-2xl font-bold text-yellow-600">{stats.non_lu}</p>
+                    <Clock className="h-4 w-4 text-yellow-400" />
+                    <p className="text-xl font-bold text-yellow-600">{stats.non_lu}</p>
                   </div>
-                  <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">Non lus</p>
+                  <p className="text-[10px] font-medium text-yellow-600 uppercase tracking-wide">Non lus</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500 min-w-[140px]" onClick={() => setFilterStatus("Lu")}>
-              <CardContent className="pt-4 pb-4 px-4">
-                <div className="flex flex-col gap-2">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500 flex-shrink-0" style={{ width: 'calc(50% - 4px)' }} onClick={() => setFilterStatus("Lu")}>
+              <CardContent className="pt-3 pb-3 px-3">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <Eye className="h-6 w-6 text-blue-400" />
-                    <p className="text-2xl font-bold text-blue-600">{stats.lu}</p>
+                    <Eye className="h-4 w-4 text-blue-400" />
+                    <p className="text-xl font-bold text-blue-600">{stats.lu}</p>
                   </div>
-                  <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">Lus</p>
+                  <p className="text-[10px] font-medium text-blue-600 uppercase tracking-wide">Lus</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-shadow min-w-[140px]">
-              <CardContent className="pt-4 pb-4 px-4">
-                <div className="flex flex-col gap-2">
+            <Card className="hover:shadow-md transition-shadow flex-shrink-0" style={{ width: 'calc(50% - 4px)' }}>
+              <CardContent className="pt-3 pb-3 px-3">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span className="text-xs font-bold text-blue-600">📅</span>
+                    <div className="h-4 w-4 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-blue-600">📅</span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">{stats.today}</p>
+                    <p className="text-xl font-bold text-gray-900">{stats.today}</p>
                   </div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Aujourd'hui</p>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">Aujourd'hui</p>
                 </div>
               </CardContent>
             </Card>

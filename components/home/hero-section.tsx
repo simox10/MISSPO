@@ -36,7 +36,7 @@ export function HeroSection() {
         {/* Background Image - Au premier plan avec Parallax */}
         <Parallax speed={-15} className="absolute inset-0">
           <Image
-            src="/b.png"
+            src="/oncom.png"
             alt="MISSPO - Traitement anti-poux professionnel"
             fill
             className="object-contain"
@@ -82,7 +82,9 @@ export function HeroSection() {
                   </span>
                 </h1>
                 <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium">
-                  {t.hero.description}
+                  Intervention pro en milieu scolaire et à domicile.
+                  <br />
+                  Une méthode douce, efficace et rassurante.
                 </p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -126,8 +128,8 @@ export function HeroSection() {
       </div>
 
       {/* Mobile Version */}
-      <div className="lg:hidden relative min-h-[600px] bg-gradient-to-b from-misspo-rose-pale/50 to-white">
-        <div className="relative mx-auto max-w-7xl px-4 py-8">
+      <div className="lg:hidden relative min-h-[600px] bg-gradient-to-b from-misspo-rose-pale/50 to-white overflow-hidden">
+        <div className="relative mx-auto max-w-7xl px-3 py-6">
           {/* Title - Centered */}
           <h1 className="text-4xl font-bold text-misspo-rose-dark text-center">
             {t.hero.title}
@@ -146,7 +148,7 @@ export function HeroSection() {
           {/* Image - Moved up with negative margin and reduced bottom padding */}
           <div className="relative -mt-4 h-[280px] -mb-4">
             <Image
-              src="/b.png"
+              src="/oncom.png"
               alt="MISSPO"
               fill
               className="object-contain"
@@ -157,7 +159,9 @@ export function HeroSection() {
 
           {/* Description */}
           <p className="mt-2 text-base leading-relaxed text-foreground/90 text-center">
-            {t.hero.description}
+            Intervention pro en milieu scolaire et à domicile.
+            <br />
+            Une méthode douce, efficace et rassurante.
           </p>
 
           {/* Buttons */}
@@ -183,13 +187,13 @@ export function HeroSection() {
           </div>
 
           {/* Badges - Horizontal scroll */}
-          <div className="mt-8 flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="mt-8 -mx-3 px-3 flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {badges.map((badge) => (
               <div
                 key={badge.label}
-                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium shadow-sm ${badge.color} snap-center whitespace-nowrap flex-shrink-0`}
+                className={`flex items-center gap-2 rounded-full px-3 py-2 text-[11px] font-medium shadow-sm ${badge.color} snap-center whitespace-nowrap flex-shrink-0`}
               >
-                <badge.icon className="h-3.5 w-3.5" />
+                <badge.icon className="h-3 w-3" />
                 {badge.label}
               </div>
             ))}

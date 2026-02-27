@@ -17,7 +17,7 @@ export function TreatmentProcessSection() {
       icon: Sparkles,
       title: t.treatmentProcess.step1.title,
       description: t.treatmentProcess.step1.description,
-      image: "/traite1.jpg",
+      image: "/traite.jpg",
       color: "misspo-blue",
       textColor: "text-misspo-blue-dark",
       bgColor: "bg-misspo-blue-dark",
@@ -27,7 +27,7 @@ export function TreatmentProcessSection() {
       icon: Droplet,
       title: t.treatmentProcess.step2.title,
       description: t.treatmentProcess.step2.description,
-      image: "/traite2.jpg",
+      image: "/traite1.jpg",
       color: "misspo-rose",
       textColor: "text-misspo-rose-dark",
       bgColor: "bg-misspo-rose-dark",
@@ -85,27 +85,26 @@ export function TreatmentProcessSection() {
   }
 
   return (
-    <div ref={containerRef} style={{ height: '400vh' }} dir={dir}>
+    <div ref={containerRef} style={{ height: '300vh' }} dir={dir} className="relative">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-gradient-to-b from-white to-gray-50">
         {/* Fixed Header */}
-        <div className="absolute top-0 left-0 right-0 z-30 pt-20 pb-8 bg-gradient-to-b from-white to-transparent">
-          <div className="mx-auto max-w-7xl px-4">
+        <div className="absolute top-0 left-0 right-0 z-30 pt-12 md:pt-20 pb-6 md:pb-8 bg-gradient-to-b from-white to-transparent">
+          <div className="mx-auto max-w-7xl px-3 md:px-4">
             <div className="text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4">
                 {t.treatmentProcess.title}
               </h2>
               
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                 {t.treatmentProcess.subtitle}
               </p>
-              <br />
             </div>
           </div>
         </div>
 
         {/* Stacking Cards */}
-        <div className="absolute inset-0 flex items-center justify-center px-4 pt-32">
-          <div className="relative w-full max-w-4xl" style={{ height: '70vh', maxHeight: '600px' }}>
+        <div className="absolute inset-0 flex items-center justify-center px-3 md:px-4 pt-32 md:pt-44 pb-8">
+          <div className="relative w-full max-w-4xl h-[65vh] md:h-[70vh] max-h-[600px]">
             {steps.map((step, index) => (
               <TreatmentCard 
                 key={step.number} 
@@ -145,16 +144,11 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Blurred Background Layer - Extended on bottom, left, right */}
+      {/* Blurred Background Layer */}
       <div 
-        className="absolute -z-10" 
+        className="absolute -z-10 inset-0"
         style={{ 
-          left: '-20%',
-          right: '-20%',
-          top: '0',
-          bottom: '-30%',
-          width: '140%',
-          height: '130%'
+          transform: 'scale(1.2)',
         }}
       >
         <div className="relative w-full h-full">
@@ -184,12 +178,12 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center p-8">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center p-4 md:p-8">
           {/* Title with SplitText Animation */}
-          <div className="mb-6 px-4">
+          <div className="mb-4 md:mb-6 px-2 md:px-4">
             <SplitText
               text={step.title}
-              className="text-2xl md:text-4xl font-bold text-center text-white break-words"
+              className="text-xl md:text-4xl font-bold text-center text-white break-words"
               delay={0.03}
               duration={0.5}
               isVisible={progress > 0.1}
@@ -198,7 +192,7 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
 
           {/* Description with simple fade */}
           <p
-            className="text-base md:text-lg text-center text-white leading-relaxed max-w-md transition-opacity duration-700"
+            className="text-sm md:text-lg text-center text-white leading-relaxed max-w-md md:max-w-2xl px-2 transition-opacity duration-700"
             style={{ opacity: descriptionOpacity }}
           >
             {step.description}
@@ -206,11 +200,11 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
 
           {/* Number Badge - Bottom Right */}
           <div
-            className={`absolute bottom-8 right-8 w-14 h-14 rounded-full ${step.bgColor} shadow-lg flex items-center justify-center transition-all duration-500 ${
+            className={`absolute bottom-4 md:bottom-8 right-4 md:right-8 w-12 h-12 md:w-14 md:h-14 rounded-full ${step.bgColor} shadow-lg flex items-center justify-center transition-all duration-500 ${
               isHovered ? 'scale-110' : 'scale-100'
             }`}
           >
-            <span className="text-2xl font-bold text-white">{step.number}</span>
+            <span className="text-xl md:text-2xl font-bold text-white">{step.number}</span>
           </div>
         </div>
       </div>

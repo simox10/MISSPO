@@ -20,8 +20,8 @@ export function FaqSection() {
   const previewQuestions = t.faq.questions.slice(0, 3)
 
   return (
-    <section className="py-16 bg-white" dir={dir} ref={ref}>
-      <div className="mx-auto max-w-3xl px-4">
+    <section className="py-16 bg-white overflow-hidden" dir={dir} ref={ref}>
+      <div className="mx-auto max-w-3xl px-3 md:px-4">
         <div className={`text-center mb-10 transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
             {t.faqPreview.title}

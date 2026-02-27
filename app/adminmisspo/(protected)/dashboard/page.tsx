@@ -704,7 +704,7 @@ _L'équipe MISSPO_`
       {/* Boutons d'action - VERSION DESKTOP uniquement */}
       <div className="hidden md:flex justify-end gap-3 mb-4">
         <Button
-          className="border-2 hover:shadow-md transition-all"
+          className="border-2 hover:shadow-md transition-all h-10"
           style={{ 
             borderColor: '#ED7A97',
             backgroundColor: '#ED7A97',
@@ -718,9 +718,8 @@ _L'équipe MISSPO_`
         <Popover>
           <PopoverTrigger asChild>
             <Button 
-              variant="outline" 
-              size="sm"
-              className="border-2 hover:shadow-md transition-all"
+              variant="outline"
+              className="border-2 hover:shadow-md transition-all h-10"
               style={{ 
                 borderColor: '#ED7A97',
                 backgroundColor: '#ED7A97',

@@ -202,16 +202,13 @@ export default function PlanningPage() {
 
   const isToday = selectedDate.toDateString() === new Date().toDateString()
 
-  // Obtenir les jours de la semaine actuelle
+  // Obtenir 5 jours centrés sur la date sélectionnée
   const getWeekDays = (date: Date) => {
     const days = []
-    const currentDay = date.getDay() // 0 = dimanche, 1 = lundi, etc.
-    const monday = new Date(date)
-    monday.setDate(date.getDate() - (currentDay === 0 ? 6 : currentDay - 1))
-    
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(monday)
-      day.setDate(monday.getDate() + i)
+    // 2 jours avant, le jour actuel, 2 jours après = 5 jours
+    for (let i = -2; i <= 2; i++) {
+      const day = new Date(date)
+      day.setDate(date.getDate() + i)
       days.push(day)
     }
     return days
@@ -254,13 +251,13 @@ export default function PlanningPage() {
 
   const previousWeek = () => {
     const newDate = new Date(selectedDate)
-    newDate.setDate(newDate.getDate() - 7)
+    newDate.setDate(newDate.getDate() - 5) // Avancer de 5 jours
     setSelectedDate(newDate)
   }
 
   const nextWeek = () => {
     const newDate = new Date(selectedDate)
-    newDate.setDate(newDate.getDate() + 7)
+    newDate.setDate(newDate.getDate() + 5) // Reculer de 5 jours
     setSelectedDate(newDate)
   }
 
@@ -273,24 +270,20 @@ export default function PlanningPage() {
       </div>
 
       {/* Planning journalier */}
-      <Card>
-        <CardHeader>
-          {/* Sélecteur de semaine */}
+      <Card className="overflow-hidden">
+        <CardHeader className="p-3 md:p-6">
+          {/* Sélecteur de 5 jours */}
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <Button variant="outline" size="sm" onClick={previousWeek} className="text-xs md:text-sm px-2 md:px-3">
-                <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 mr-1" />
-                <span className="hidden sm:inline">Semaine précédente</span>
-                <span className="sm:hidden">Préc.</span>
+            <div className="flex items-stretch gap-1 md:gap-2">
+              <Button 
+                variant="outline"
+                onClick={previousWeek}
+                className="h-auto px-2 md:px-3 flex-shrink-0"
+              >
+                <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
               </Button>
-              <Button variant="outline" size="sm" onClick={nextWeek} className="text-xs md:text-sm px-2 md:px-3">
-                <span className="hidden sm:inline">Semaine suivante</span>
-                <span className="sm:hidden">Suiv.</span>
-                <ChevronRight className="h-3 w-3 md:h-4 md:w-4 ml-1" />
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-7 gap-1 md:gap-2">
+              
+              <div className="flex-1 grid grid-cols-5 gap-0.5 md:gap-2 min-w-0">
               {weekDays.map((day, index) => {
                 const isSelected = day.toDateString() === selectedDate.toDateString()
                 const isDayToday = day.toDateString() === new Date().toDateString()
@@ -301,20 +294,20 @@ export default function PlanningPage() {
                     key={index}
                     onClick={() => setSelectedDate(day)}
                     className={`
-                      p-1.5 md:p-3 rounded-lg border-2 transition-all text-center
+                      p-1 md:p-3 rounded-lg border-2 transition-all text-center min-w-0
                       ${isSelected 
                         ? 'border-misspo-rose-dark bg-misspo-rose-pale shadow-md' 
                         : 'border-gray-200 hover:border-misspo-rose-light hover:bg-gray-50'
                       }
                     `}
                   >
-                    <div className="text-[10px] md:text-xs font-medium text-gray-600 mb-0.5 md:mb-1">
+                    <div className="text-[9px] md:text-xs font-medium text-gray-600 mb-0.5 md:mb-1 truncate">
                       {day.toLocaleDateString('fr-FR', { weekday: 'short' })}
                     </div>
-                    <div className={`text-sm md:text-lg font-bold ${isSelected ? 'text-misspo-rose-dark' : 'text-gray-900'}`}>
+                    <div className={`text-xs md:text-lg font-bold ${isSelected ? 'text-misspo-rose-dark' : 'text-gray-900'}`}>
                       {day.getDate()}
                     </div>
-                    <div className="text-[10px] md:text-xs text-gray-500 mt-0.5 md:mt-1 hidden sm:block">
+                    <div className="text-[9px] md:text-xs text-gray-500 mt-0.5 md:mt-1 hidden sm:block truncate">
                       {day.toLocaleDateString('fr-FR', { month: 'short' })}
                     </div>
                     {isDayToday && (
@@ -333,26 +326,43 @@ export default function PlanningPage() {
                   </button>
                 )
               })}
+              </div>
+              
+              <Button 
+                variant="outline"
+                onClick={nextWeek}
+                className="h-auto px-2 md:px-3 flex-shrink-0"
+              >
+                <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
+              </Button>
             </div>
           </div>
 
-          <div className="flex items-center justify-between flex-col md:flex-row gap-3 md:gap-0">
-            <div className="flex items-center gap-3 w-full md:w-auto justify-center md:justify-start">
-              <CalendarIcon className="h-5 w-5 md:h-6 md:w-6 text-misspo-rose-dark" />
-              <div>
-                <CardTitle className="text-lg md:text-2xl text-center md:text-left">
-                  {selectedDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                </CardTitle>
-                {isToday && (
-                  <Badge className="mt-1 bg-misspo-rose-dark text-white">Aujourd'hui</Badge>
-                )}
-              </div>
+          {/* Date avec badge et icône sur une seule ligne */}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <CardTitle className="text-base md:text-2xl truncate">
+                {selectedDate.toLocaleDateString('fr-FR', { 
+                  weekday: 'short', 
+                  day: 'numeric', 
+                  month: 'short', 
+                  year: 'numeric' 
+                })}
+              </CardTitle>
+              {isToday && (
+                <Badge className="bg-misspo-rose-dark text-white text-[10px] md:text-xs px-1.5 md:px-2.5 py-0.5 whitespace-nowrap">Aujourd'hui</Badge>
+              )}
             </div>
+            
+            {/* Icône calendrier */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto">
-                  <CalendarIcon className="h-4 w-4 mr-2" />
-                  Choisir une date
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0"
+                >
+                  <CalendarIcon className="h-4 md:h-6 w-4 md:w-6 text-misspo-rose-dark" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="end">
@@ -366,7 +376,7 @@ export default function PlanningPage() {
             </Popover>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 md:p-6">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-500">Chargement des rendez-vous...</p>

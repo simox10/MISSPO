@@ -20,11 +20,11 @@ export function MissionSection() {
 
   return (
     <section className="relative py-8 md:py-20 bg-white overflow-hidden" dir={dir} ref={ref}>
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="mx-auto max-w-7xl px-3 md:px-4">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Image Side */}
           <div className={`relative transition-all duration-700 ${isInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"}`}>
-            <div className="relative h-[320px] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative h-[280px] md:h-[320px] rounded-3xl overflow-hidden shadow-2xl">
               <Image
                 src="/hero-misspo.jpg"
                 alt="Notre Mission MISSPO"

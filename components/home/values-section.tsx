@@ -36,8 +36,8 @@ export function ValuesSection() {
   }, [])
 
   return (
-    <section className="py-20 bg-white" dir={dir} ref={ref}>
-      <div className="mx-auto max-w-7xl px-4">
+    <section className="py-20 bg-white overflow-hidden" dir={dir} ref={ref}>
+      <div className="mx-auto max-w-7xl px-3 md:px-4">
         <div className={`text-center transition-all duration-700 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <span className="text-sm font-semibold uppercase tracking-wider text-misspo-blue-dark">
             {t.values.title}
@@ -53,24 +53,24 @@ export function ValuesSection() {
           <div className="md:hidden">
             <div 
               ref={scrollContainerRef}
-              className="flex gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4" 
+              className="-mx-3 px-3 flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4" 
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {values.map((value, index) => (
                 <div
                   key={value.label}
-                  className={`flex flex-col items-center gap-4 min-w-[200px] snap-center transition-all duration-700 ${
+                  className={`flex flex-col items-center gap-3 min-w-[160px] snap-center transition-all duration-700 ${
                     isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                   }`}
                   style={{ transitionDelay: `${(index + 1) * 100}ms` }}
                 >
                   {/* Icon */}
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-misspo-blue-pale text-misspo-blue-dark transition-transform duration-300 hover:scale-110">
-                    <value.icon className="h-8 w-8" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-misspo-blue-pale text-misspo-blue-dark transition-transform duration-300 hover:scale-110">
+                    <value.icon className="h-7 w-7" />
                   </div>
                   
                   {/* Label */}
-                  <span className="text-sm font-semibold text-center text-foreground">
+                  <span className="text-xs font-semibold text-center text-foreground">
                     {value.label}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ export function ValuesSection() {
                   onClick={() => {
                     const container = scrollContainerRef.current
                     if (container) {
-                      const itemWidth = 200 + 32 // min-w-[200px] + gap-8
+                      const itemWidth = 160 + 24 // min-w-[160px] + gap-6
                       container.scrollTo({
                         left: index * itemWidth,
                         behavior: 'smooth'

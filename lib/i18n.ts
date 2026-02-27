@@ -16,7 +16,7 @@ export const translations = {
       subtitle: "Spécialiste du traitement anti-poux",
       subtitle2: "Spécialiste du traitement",
       antiPoux: "Anti-Poux",
-      description: "Intervention professionnelle en milieu scolaire et à domicile. Une méthode douce, efficace et rassurante.",
+      description: "Intervention pro en milieu scolaire et à domicile. Une méthode douce, efficace et rassurante.",
       cta: "Prendre Rendez-vous",
       phone: "0622945571",
     },
@@ -265,15 +265,15 @@ export const translations = {
       subtitle: "Un traitement en 3 étapes simples",
       step1: {
         title: "Diagnostic Précis",
-        description: "Nous passons notre machine brevetée sur l'ensemble de la chevelure afin d'éradiquer les poux. Cette étape est sans douleur et n'abîme pas les cheveux.",
+        description: "Nous utilisons un peigne pour examiner minutieusement l'ensemble de la chevelure et détecter la présence de poux et de lentes. Cette étape est sans douleur et n'abîme pas les cheveux.",
       },
       step2: {
-        title: "Passage du Peigne Cranté",
-        description: "Le peigne cranté nous permet de retirer minutieusement les lentes une par une. Cette technique mécanique garantit un traitement 100% sans produits chimiques.",
+        title: "Traitement Mécanique",
+        description: "Nous passons notre aspirateur professionnel sur l'ensemble de la chevelure afin d'éradiquer les poux. Cette technique mécanique garantit un traitement 100% sans produits chimiques et sans douleur.",
       },
       step3: {
         title: "Vérification Finale",
-        description: "Nous vérifions mèche par mèche que rien ne subsiste afin de vous garantir 100% d'efficacité. Vous pouvez, si vous le souhaitez, voir le résultat de notre travail à la fin du traitement.",
+        description: "Nous utilisons une lampe loupe et un peigne pour vérifier mèche par mèche que rien ne subsiste afin de vous garantir 100% d'efficacité. Vous pouvez, si vous le souhaitez, voir le résultat de notre travail à la fin du traitement.",
       },
     },
     // Mission

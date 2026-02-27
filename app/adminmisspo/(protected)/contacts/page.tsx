@@ -526,8 +526,8 @@ export default function ContactsPage() {
 
 
       {/* Messages Table */}
-      <Card>
-        <CardContent className="p-0">
+      <Card className="flex-1 flex flex-col overflow-hidden">
+        <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <p className="text-gray-500">Chargement des messages...</p>
@@ -544,128 +544,114 @@ export default function ContactsPage() {
                 {/* Left Panel - Message List */}
                 <Card className="w-full md:w-2/5 flex flex-col overflow-hidden">
                   <CardContent className="p-0 flex-1 overflow-hidden flex flex-col">
-                    <div className="overflow-y-auto divide-y divide-gray-200">
+                    <div className="overflow-y-auto divide-y divide-gray-200 flex-1">
                       {filteredContacts.map((contact) => {
                         const isSelected = selectedContact?.id === contact.id
                         const isUnread = contact.statut === 'Non lu'
                         
                         return (
                           <div
-
-                      key={contact.id}
-                      onClick={() => handleRowClick(contact)}
-                      className={`p-1.5 md:p-2 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 relative group ${
-                        isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                      } ${isUnread ? 'bg-yellow-50/50' : ''}`}
-                    >
-                      {/* Status Indicator */}
-                      {isUnread && !isSelected && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500 md:hidden"></div>
-                      )}
-                      {isUnread && !isSelected && (
-                        <div className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      )}
-                      
-                      <div className={`flex gap-2 ${isUnread && !isSelected ? 'ml-2 md:ml-2' : ''}`}>
-                        {/* Avatar */}
-                        <div className={`flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs ${
-                          isUnread ? 'bg-yellow-500' : 'bg-gray-400'
-                        }`}>
-                          {contact.prenom.charAt(0)}{contact.nom.charAt(0)}
-                        </div>
-                        
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <h3 className={`text-xs truncate ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
-                              {contact.prenom} {contact.nom}
-                            </h3>
-                            <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
-                              {(() => {
-                                const date = new Date(contact.created_at)
-                                const now = new Date()
-                                const diffMs = now.getTime() - date.getTime()
-                                const diffMins = Math.floor(diffMs / 60000)
-                                const diffHours = Math.floor(diffMs / 3600000)
-                                const diffDays = Math.floor(diffMs / 86400000)
-                                
-                                if (diffMins < 1) return "maintenant"
-                                if (diffMins < 60) return `${diffMins}m`
-                                if (diffHours < 24) return `${diffHours}h`
-                                if (diffDays < 7) return `${diffDays}j`
-                                return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-                              })()}
-                            </span>
+                            key={contact.id}
+                            onClick={() => handleRowClick(contact)}
+                            className={`p-2 md:p-3 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 relative group ${
+                              isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                            } ${isUnread ? 'bg-yellow-50/50' : ''}`}
+                          >
+                            <div className="flex gap-3">
+                              {/* Avatar */}
+                              <div className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
+                                isUnread ? 'bg-yellow-500' : 'bg-gray-400'
+                              }`}>
+                                {contact.prenom.charAt(0)}{contact.nom.charAt(0)}
+                              </div>
+                              
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className={`text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
+                                      {contact.prenom} {contact.nom}
+                                    </h3>
+                                    
+                                    {/* Message Preview */}
+                                    {contact.message && (
+                                      <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                                        {contact.message}
+                                      </p>
+                                    )}
+                                  </div>
+                                  
+                                  {/* Right Side: Buttons, Date, Status */}
+                                  <div className="flex items-start gap-2 flex-shrink-0">
+                                    {/* Quick Actions - Show on Hover */}
+                                    <div className="hidden md:flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-6 w-6 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          handleWhatsAppClick(contact)
+                                        }}
+                                        title="WhatsApp"
+                                      >
+                                        <MessageCircle className="h-3.5 w-3.5" />
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          window.location.href = `tel:${contact.telephone}`
+                                        }}
+                                        title="Appeler"
+                                      >
+                                        <Phone className="h-3.5 w-3.5" />
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-6 w-6 p-0 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          window.location.href = `mailto:${contact.email}`
+                                        }}
+                                        title="Email"
+                                      >
+                                        <Mail className="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
+                                    
+                                    <span className="text-xs text-gray-500 whitespace-nowrap">
+                                      {(() => {
+                                        const date = new Date(contact.created_at)
+                                        const now = new Date()
+                                        const diffMs = now.getTime() - date.getTime()
+                                        const diffMins = Math.floor(diffMs / 60000)
+                                        const diffHours = Math.floor(diffMs / 3600000)
+                                        const diffDays = Math.floor(diffMs / 86400000)
+                                        
+                                        if (diffMins < 1) return "maintenant"
+                                        if (diffMins < 60) return `${diffMins}m`
+                                        if (diffHours < 24) return `${diffHours}h`
+                                        if (diffDays < 7) return `${diffDays}j`
+                                        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                                      })()}
+                                    </span>
+                                    
+                                    {/* Status Indicator */}
+                                    {contact.statut === 'Non lu' && (
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          
-                          {/* Mobile: Show only phone, Desktop: Show phone */}
-                          <p className="text-xs text-gray-600 flex items-center gap-1">
-                            <Phone className="h-2.5 w-2.5 flex-shrink-0" />
-                            <span className="truncate">{contact.telephone}</span>
-                          </p>
-                          
-                          {/* Message Preview */}
-                          {contact.message && (
-                            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-                              {contact.message}
-                            </p>
-                          )}
-                          
-                          {/* Quick Actions - Desktop Only (Show on Hover) */}
-                          <div className="hidden md:flex gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-5 px-1.5 text-green-600 hover:text-green-700 hover:bg-green-50"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleWhatsAppClick(contact)
-                              }}
-                              title="WhatsApp"
-                            >
-                              <MessageCircle className="h-2.5 w-2.5" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-5 px-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                window.location.href = `tel:${contact.telephone}`
-                              }}
-                              title="Appeler"
-                            >
-                              <Phone className="h-2.5 w-2.5" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-5 px-1.5 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                window.location.href = `mailto:${contact.email}`
-                              }}
-                              title="Email"
-                            >
-                              <Mail className="h-2.5 w-2.5" />
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Status Badge - Desktop Only */}
-                        <div className="hidden md:flex flex-shrink-0 items-center">
-                          {contact.statut === 'Non lu' && (
-                            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
-                          )}
-                          {contact.statut === 'Lu' && (
-                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                          )}
-                        </div>
-                      </div>
+                        )
+                      })}
                     </div>
-                  )
-                })}
-              </div>
           </CardContent>
         </Card>
 

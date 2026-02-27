@@ -1,0 +1,433 @@
+"use client"
+
+import { useState } from "react"
+import { Settings, Mail, Eye, EyeOff, Save, User, Edit2, X, ChevronDown, ChevronUp, HelpCircle, Plus, MoreVertical, GripVertical, Trash2, Edit } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+interface FAQ {
+  id: number
+  question: string
+  answer: string
+  order: number
+}
+
+export default function ParametresPage() {
+  const [isEditing, setIsEditing] = useState(false)
+  const [isPasswordExpanded, setIsPasswordExpanded] = useState(false)
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // FAQ States
+  const [faqs, setFaqs] = useState<FAQ[]>([
+    { id: 1, question: "Comment être sûr que mon enfant a des poux ?", answer: "Le symptôme le plus évident est la démangeaison...", order: 1 },
+    { id: 2, question: "Comment les attrape-t-on ?", answer: "Dans la plupart des cas les poux s'attrapent par contact direct...", order: 2 },
+    { id: 3, question: "Y-a-t-il des profils plus propices que d'autres ?", answer: "Oui, il y a des personnes qui sont plus propices que d'autres...", order: 3 },
+  ])
+  const [expandedFaqId, setExpandedFaqId] = useState<number | null>(null)
+  const [isAddingFaq, setIsAddingFaq] = useState(false)
+  const [editingFaqId, setEditingFaqId] = useState<number | null>(null)
+  const [deletingFaqId, setDeleteingFaqId] = useState<number | null>(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false)
+  const [draggedItem, setDraggedItem] = useState<number | null>(null)
+
+  const [newFaq, setNewFaq] = useState({ question: "", answer: "" })
+  const [editFaq, setEditFaq] = useState({ question: "", answer: "" })
+
+  const [formData, setFormData] = useState({
+    firstName: "Admin",
+    lastName: "MISSPO",
+    email: "admin@misspo.com",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  })
+
+  const handleEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+    setIsPasswordExpanded(false)
+    setFormData({
+      ...formData,
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    })
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Mise à jour des informations:", formData)
+    setIsEditing(false)
+    setIsPasswordExpanded(false)
+  }
+
+  // FAQ Functions
+  const handleAddFaq = () => {
+    if (newFaq.question && newFaq.answer) {
+      const newId = Math.max(...faqs.map(f => f.id), 0) + 1
+      setFaqs([...faqs, { ...newFaq, id: newId, order: faqs.length + 1 }])
+      setNewFaq({ question: "", answer: "" })
+      setIsAddingFaq(false)
+      setHasUnsavedChanges(true)
+    }
+  }
+
+  const handleEditFaq = (id: number) => {
+    const faq = faqs.find(f => f.id === id)
+    if (faq) {
+      setEditFaq({ question: faq.question, answer: faq.answer })
+      setEditingFaqId(id)
+    }
+  }
+
+  const handleSaveEdit = () => {
+    if (editingFaqId && editFaq.question && editFaq.answer) {
+      setFaqs(faqs.map(f => f.id === editingFaqId ? { ...f, question: editFaq.question, answer: editFaq.answer } : f))
+      setEditingFaqId(null)
+      setEditFaq({ question: "", answer: "" })
+      setHasUnsavedChanges(true)
+    }
+  }
+
+  const handleDeleteFaq = () => {
+    if (deletingFaqId) {
+      setFaqs(faqs.filter(f => f.id !== deletingFaqId).map((f, index) => ({ ...f, order: index + 1 })))
+      setDeleteingFaqId(null)
+      setHasUnsavedChanges(true)
+    }
+  }
+
+  const handleDragStart = (id: number) => {
+    setDraggedItem(id)
+  }
+
+  const handleDragOver = (e: React.DragEvent, id: number) => {
+    e.preventDefault()
+    if (draggedItem === null || draggedItem === id) return
+
+    const draggedIndex = faqs.findIndex(f => f.id === draggedItem)
+    const targetIndex = faqs.findIndex(f => f.id === id)
+
+    const newFaqs = [...faqs]
+    const [removed] = newFaqs.splice(draggedIndex, 1)
+    newFaqs.splice(targetIndex, 0, removed)
+
+    setFaqs(newFaqs.map((f, index) => ({ ...f, order: index + 1 })))
+    setHasUnsavedChanges(true)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedItem(null)
+  }
+
+  const handleSaveFaqs = () => {
+    setShowSaveConfirm(true)
+  }
+
+  const confirmSaveFaqs = () => {
+    // TODO: Appel API pour sauvegarder les FAQs
+    console.log("Sauvegarde des FAQs:", faqs)
+    setHasUnsavedChanges(false)
+    setShowSaveConfirm(false)
+  }
+
+  return (
+    <div className="p-3 sm:p-6 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <div className="p-1.5 sm:p-2 bg-[#ED7A97] rounded-lg">
+            <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Paramètres</h1>
+        </div>
+        <p className="text-sm sm:text-base text-gray-600">Gérez vos informations de connexion</p>
+      </div>
+
+      <div className="space-y-6">
+        {/* Informations du compte */}
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-[#ED7A97]" />
+                  Informations du compte
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Gérez vos informations personnelles et de connexion
+                </CardDescription>
+              </div>
+              {!isEditing && (
+                <Button
+                  onClick={handleEdit}
+                  variant="outline"
+                  className="border-[#ED7A97] text-[#ED7A97] hover:bg-[#FBDEE5] w-full sm:w-auto"
+                >
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Modifier
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Prénom et Nom sur une ligne (stack sur mobile) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName">Prénom</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    disabled={!isEditing}
+                    className="mt-2"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="lastName">Nom</Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    disabled={!isEditing}
+                    className="mt-2"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email avec bouton (stack sur mobile) */}
+              <div>
+                <Label htmlFor="email">Adresse email</Label>
+                <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    disabled={!isEditing}
+                    className="flex-1"
+                    required
+                  />
+                  {isEditing && (
+                    <Button 
+                      type="button"
+                      className="bg-[#2DA1CA] hover:bg-[#96D0E5] text-white whitespace-nowrap w-full sm:w-auto"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Enregistrer
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Mot de passe avec flèche à droite */}
+              <div>
+                <Label htmlFor="password">Mot de passe</Label>
+                
+                {!isEditing ? (
+                  <div className="relative mt-2">
+                    <Input
+                      type="password"
+                      value="••••••••"
+                      disabled
+                    />
+                  </div>
+                ) : (
+                  <div className="mt-2">
+                    <div className="relative">
+                      <Input
+                        type="password"
+                        value="••••••••"
+                        disabled
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setIsPasswordExpanded(!isPasswordExpanded)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#ED7A97] hover:text-[#F29CB1] transition-all duration-300"
+                        title={isPasswordExpanded ? "Masquer" : "Modifier le mot de passe"}
+                      >
+                        {isPasswordExpanded ? (
+                          <ChevronUp className="h-5 w-5" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                    
+                    <div 
+                      className="overflow-hidden transition-all duration-700 ease-in-out"
+                      style={{
+                        maxHeight: isPasswordExpanded ? '400px' : '0',
+                        opacity: isPasswordExpanded ? 1 : 0,
+                        marginTop: isPasswordExpanded ? '16px' : '0'
+                      }}
+                    >
+                      <div className="space-y-4">
+                        {/* Mot de passe actuel */}
+                        <div>
+                          <Label htmlFor="currentPassword" className="text-sm">Mot de passe actuel</Label>
+                          <div className="relative mt-2">
+                            <Input
+                              id="currentPassword"
+                              type={showCurrentPassword ? "text" : "password"}
+                              placeholder="Entrez votre mot de passe actuel"
+                              value={formData.currentPassword}
+                              onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                              {showCurrentPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Nouveau mot de passe */}
+                        <div>
+                          <Label htmlFor="newPassword" className="text-sm">Nouveau mot de passe</Label>
+                          <div className="relative mt-2">
+                            <Input
+                              id="newPassword"
+                              type={showNewPassword ? "text" : "password"}
+                              placeholder="Entrez votre nouveau mot de passe"
+                              value={formData.newPassword}
+                              onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowNewPassword(!showNewPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                              {showNewPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Minimum 8 caractères
+                          </p>
+                        </div>
+
+                        {/* Confirmer le nouveau mot de passe */}
+                        <div>
+                          <Label htmlFor="confirmPassword" className="text-sm">Confirmer le nouveau mot de passe</Label>
+                          <div className="relative mt-2">
+                            <Input
+                              id="confirmPassword"
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder="Confirmez votre nouveau mot de passe"
+                              value={formData.confirmPassword}
+                              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            >
+                              {showConfirmPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Boutons d'action (stack sur mobile) */}
+              {isEditing && (
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button 
+                    type="submit" 
+                    className="flex-1 bg-[#ED7A97] hover:bg-[#F29CB1] text-white"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Enregistrer les modifications
+                  </Button>
+                  <Button 
+                    type="button"
+                    onClick={handleCancel}
+                    variant="outline"
+                    className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Annuler
+                  </Button>
+                </div>
+              )}
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Conseils de sécurité */}
+        <Card className="border-[#2DA1CA] bg-[#E5F4F9]">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <div className="p-2 bg-[#2DA1CA] rounded-lg">
+                  <Lock className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-2">Conseils de sécurité</h3>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Utilisez un mot de passe unique et complexe</li>
+                  <li>• Changez votre mot de passe régulièrement</li>
+                  <li>• Ne partagez jamais vos identifiants</li>
+                  <li>• Déconnectez-vous après chaque session</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}

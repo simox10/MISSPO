@@ -46,14 +46,26 @@ function PackCards() {
     const container = scrollContainerRef.current
     if (!container) return
 
+    let ticking = false
+    
     const handleScroll = () => {
-      const scrollLeft = container.scrollLeft
-      const cardWidth = container.offsetWidth
-      const newActiveSlide = Math.round(scrollLeft / cardWidth)
-      setActiveSlide(newActiveSlide)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!container) {
+            ticking = false
+            return
+          }
+          const scrollLeft = container.scrollLeft
+          const cardWidth = container.offsetWidth
+          const newActiveSlide = Math.round(scrollLeft / cardWidth)
+          setActiveSlide(newActiveSlide)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
-    container.addEventListener('scroll', handleScroll)
+    container.addEventListener('scroll', handleScroll, { passive: true })
     return () => container.removeEventListener('scroll', handleScroll)
   }, [])
 

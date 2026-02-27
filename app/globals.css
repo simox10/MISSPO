@@ -71,11 +71,69 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Performance optimizations to prevent forced reflows */
+  * {
+    /* Use GPU acceleration for transforms and opacity */
+    will-change: auto;
+  }
+  
+  /* Optimize animations */
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      /* Enable hardware acceleration for common properties */
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+  }
+  
+  /* Disable animations for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Performance optimization utilities */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  .will-change-transform {
+    will-change: transform;
+  }
+  
+  .will-change-opacity {
+    will-change: opacity;
+  }
+  
+  .will-change-auto {
+    will-change: auto;
+  }
+  
+  /* Prevent layout shifts */
+  .contain-layout {
+    contain: layout;
+  }
+  
+  .contain-paint {
+    contain: paint;
+  }
+  
+  .contain-strict {
+    contain: strict;
   }
 }
 

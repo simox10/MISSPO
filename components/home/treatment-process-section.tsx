@@ -45,29 +45,41 @@ export function TreatmentProcessSection() {
   ]
 
   useEffect(() => {
+    let ticking = false
+    
     const handleScroll = () => {
-      if (!containerRef.current) return
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!containerRef.current) {
+            ticking = false
+            return
+          }
 
-      const container = containerRef.current
-      const rect = container.getBoundingClientRect()
-      const containerHeight = container.offsetHeight
-      const windowHeight = window.innerHeight
+          const container = containerRef.current
+          const rect = container.getBoundingClientRect()
+          const containerHeight = container.offsetHeight
+          const windowHeight = window.innerHeight
 
-      // Calculate how much of the container has been scrolled through
-      if (rect.top <= 0 && rect.bottom >= windowHeight) {
-        // We're in the sticky zone
-        const progress = Math.abs(rect.top) / (containerHeight - windowHeight)
-        setScrollProgress(Math.min(progress, 1))
-      } else if (rect.top > 0) {
-        // Before the section
-        setScrollProgress(0)
-      } else {
-        // After the section
-        setScrollProgress(1)
+          // Calculate how much of the container has been scrolled through
+          if (rect.top <= 0 && rect.bottom >= windowHeight) {
+            // We're in the sticky zone
+            const progress = Math.abs(rect.top) / (containerHeight - windowHeight)
+            setScrollProgress(Math.min(progress, 1))
+          } else if (rect.top > 0) {
+            // Before the section
+            setScrollProgress(0)
+          } else {
+            // After the section
+            setScrollProgress(1)
+          }
+          
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
     
     return () => window.removeEventListener('scroll', handleScroll)

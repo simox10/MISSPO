@@ -2,12 +2,14 @@
 
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { MapPin, Phone, Mail } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { Parallax } from "react-scroll-parallax"
 
 export function Footer() {
   const { t, dir } = useLanguage()
+  const pathname = usePathname()
 
   const links = [
     { href: "/", label: t.nav.home },
@@ -44,16 +46,21 @@ export function Footer() {
                 {t.footer.quickLinks}
               </h3>
               <ul className="flex flex-col gap-2">
-                {links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-misspo-blue-dark"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                {links.map((link) => {
+                  const isActive = pathname === link.href
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className={`text-sm transition-colors hover:text-misspo-blue-dark ${
+                          isActive ? 'text-misspo-blue-dark font-semibold' : 'text-muted-foreground'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           </Parallax>
@@ -93,7 +100,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-misspo-blue-light/30 pt-6 text-center">
-          <p className="text-sm text-muted-foreground">{t.footer.rights}</p>
+          <p className="text-sm text-muted-foreground">© 2026 MISSPO. Tous droits réservés. Développé par BLJServices.</p>
         </div>
       </div>
     </footer>

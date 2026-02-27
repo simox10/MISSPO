@@ -159,12 +159,7 @@ export default function ParametresPage() {
     <div className="p-3 sm:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <div className="flex items-center gap-2 sm:gap-3 mb-2">
-          <div className="p-1.5 sm:p-2 bg-[#ED7A97] rounded-lg">
-            <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Paramètres</h1>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Paramètres</h1>
         <p className="text-sm sm:text-base text-gray-600">Gérez vos informations de connexion</p>
       </div>
 

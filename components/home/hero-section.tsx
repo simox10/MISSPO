@@ -82,9 +82,7 @@ export function HeroSection() {
                   </span>
                 </h1>
                 <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium">
-                  Intervention pro en milieu scolaire et à domicile.
-                  <br />
-                  Une méthode douce, efficace et rassurante.
+                  {t.hero.description}
                 </p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -159,9 +157,7 @@ export function HeroSection() {
 
           {/* Description */}
           <p className="mt-2 text-base leading-relaxed text-foreground/90 text-center">
-            Intervention pro en milieu scolaire et à domicile.
-            <br />
-            Une méthode douce, efficace et rassurante.
+            {t.hero.description}
           </p>
 
           {/* Buttons */}

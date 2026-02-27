@@ -178,6 +178,11 @@ export default function ProtectedLayout({
         {/* Main Content */}
         <main className={`flex-1 p-3 md:p-4 lg:p-8 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'} transition-all duration-200`}>
           {children}
+          
+          {/* Footer */}
+          <footer className="mt-8 pt-6 border-t border-gray-200 text-center">
+            <p className="text-sm text-muted-foreground">© 2026 MISSPO. Tous droits réservés. Développé par BLJServices.</p>
+          </footer>
         </main>
       </div>
 

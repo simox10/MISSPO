@@ -369,10 +369,7 @@ export default function HorairesPage() {
       {/* Modern Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="p-2 bg-misspo-blue-pale rounded-xl">
-              <Clock className="h-6 w-6 text-misspo-blue-dark" />
-            </div>
+          <h1 className="text-2xl font-bold text-gray-900">
             Gestion des Horaires
           </h1>
           <p className="text-gray-500 text-sm mt-1">Configurez vos horaires d'ouverture et créneaux bloqués</p>

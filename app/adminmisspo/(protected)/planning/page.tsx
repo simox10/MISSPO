@@ -52,7 +52,7 @@ export default function PlanningPage() {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null)
   const [reservations, setReservations] = useState<Reservation[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [availableHoursEdit, setAvailableHoursEdit] = useState<{openTime: string, closeTime: string, available: boolean, bookedSlots?: string[]} | null>(null)
   const [selectedDateForEdit, setSelectedDateForEdit] = useState("")
 
@@ -263,6 +263,19 @@ export default function PlanningPage() {
 
   return (
     <div>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+          <div className="relative">
+            {/* Spinner principal */}
+            <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-[#ED7A97]"></div>
+            {/* Spinner secondaire */}
+            <div className="absolute top-0 left-0 animate-spin rounded-full h-20 w-20 border-t-4 border-[#2DA1CA] opacity-50" style={{ animationDuration: '1.5s' }}></div>
+          </div>
+          <p className="mt-8 text-gray-700 font-semibold text-lg">Chargement du planning...</p>
+          <p className="mt-2 text-sm text-gray-500">Veuillez patienter</p>
+        </div>
+      ) : (
+        <>
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Planning des Réservations</h1>
@@ -377,14 +390,8 @@ export default function PlanningPage() {
           </div>
         </CardHeader>
         <CardContent className="p-3 md:p-6">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-gray-500">Chargement des rendez-vous...</p>
-            </div>
-          ) : (
-            <>
-              {/* Grille horaire */}
-              <div className="space-y-2">
+          {/* Grille horaire */}
+          <div className="space-y-2">
             {hours.map((hour) => {
               const hourReservations = getReservationForHour(hour)
               const hasReservations = hourReservations.length > 0
@@ -478,8 +485,6 @@ export default function PlanningPage() {
               )
             })}
           </div>
-            </>
-          )}
         </CardContent>
       </Card>
 
@@ -935,6 +940,8 @@ _L'équipe MISSPO_`
           )}
         </DialogContent>
       </Dialog>
+        </>
+      )}
     </div>
   )
 }

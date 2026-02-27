@@ -33,8 +33,8 @@ export function HeroSection() {
         {/* Gradient Overlay - En arrière-plan */}
         <div className="absolute inset-0 bg-gradient-to-r from-misspo-rose-pale/95 via-white/80 to-[#E1EDEC]/95" />
         
-        {/* Background Image - Au premier plan avec Parallax */}
-        <Parallax speed={-15} className="absolute inset-0">
+        {/* Background Image - LCP optimized without Parallax */}
+        <div className="absolute inset-0">
           <Image
             src="/oncom.png"
             alt="MISSPO - Traitement anti-poux professionnel"
@@ -44,84 +44,78 @@ export function HeroSection() {
             priority
             quality={65}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+            fetchPriority="high"
           />
-        </Parallax>
+        </div>
 
         {/* Content */}
         <div className="relative mx-auto max-w-7xl px-4 py-24 lg:py-32">
           <div className={`max-w-2xl ${dir === 'rtl' ? 'mr-auto ml-0' : ''}`}>
-            {/* Text Content */}
-            <Parallax speed={5}>
-              <div className={`flex flex-col ${dir === 'rtl' ? 'items-end text-end' : 'items-start text-start'}`}>
-                <h1 className="text-balance text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
+            {/* Text Content - LCP optimized with selective animations */}
+            <div className={`flex flex-col ${dir === 'rtl' ? 'items-end text-end' : 'items-start text-start'}`}>
+              <h1 className="text-balance text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
+                <span className="text-misspo-rose-dark inline-block">
+                  {t.hero.title}
+                </span>
+                {" "}
+                <span className="block mt-12 text-xl md:text-2xl lg:text-3xl">
+                  <BlurText
+                    text={t.hero.subtitle2}
+                    delay={150}
+                    animateBy="words"
+                    direction="bottom"
+                    tag="span"
+                    className="text-black inline"
+                  />
+                  {" "}
                   <SplitText
-                    text={t.hero.title}
-                    className="text-misspo-rose-dark inline-block"
-                    delay={0.10}
+                    text={t.hero.antiPoux}
+                    tag="span"
+                    className="inline text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#3B9FC7] to-[#A8D5E2] bg-clip-text text-transparent"
+                    delay={0.08}
                     duration={0.6}
                     isVisible={isVisible}
                   />
-                  {" "}
-                  <span className="block mt-12 text-xl md:text-2xl lg:text-3xl">
-                    <BlurText
-                      text={t.hero.subtitle2}
-                      delay={150}
-                      animateBy="words"
-                      direction="bottom"
-                      tag="span"
-                      className="text-black inline"
-                    />
-                    {" "}
-                    <SplitText
-                      text={t.hero.antiPoux}
-                      tag="span"
-                      className="inline text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#3B9FC7] to-[#A8D5E2] bg-clip-text text-transparent"
-                      delay={0.08}
-                      duration={0.6}
-                      isVisible={isVisible}
-                    />
-                  </span>
-                </h1>
-                <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium whitespace-pre-line">
-                  {t.hero.description}
-                </p>
+                </span>
+              </h1>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium whitespace-pre-line">
+                {t.hero.description}
+              </p>
 
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <Link href="/booking">
-                    <Button
-                      size="lg"
-                      className="bg-misspo-rose-dark text-white shadow-lg transition-all hover:bg-misspo-rose hover:shadow-xl hover:-translate-y-0.5"
-                    >
-                      {t.hero.cta}
-                    </Button>
-                  </Link>
-                  <a href="tel:0622945571">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="bg-white/90 backdrop-blur-sm border-misspo-blue text-misspo-blue-dark hover:bg-white shadow-md"
-                    >
-                      <Phone className="h-4 w-4" />
-                      {t.hero.phone}
-                    </Button>
-                  </a>
-                </div>
-
-                {/* Badges */}
-                <div className="mt-10 flex flex-wrap items-center gap-3">
-                  {badges.map((badge, index) => (
-                    <Parallax key={badge.label} speed={index * 2} style={{ display: 'inline-block' }}>
-                      <div
-                        className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium shadow-sm ${badge.color} transition-transform hover:scale-105`}
-                      >
-                        <badge.icon className="h-3.5 w-3.5" />
-                        {badge.label}
-                      </div>
-                    </Parallax>
-                  ))}
-                </div>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link href="/booking">
+                  <Button
+                    size="lg"
+                    className="bg-misspo-rose-dark text-white shadow-lg transition-all hover:bg-misspo-rose hover:shadow-xl hover:-translate-y-0.5"
+                  >
+                    {t.hero.cta}
+                  </Button>
+                </Link>
+                <a href="tel:0622945571">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="bg-white/90 backdrop-blur-sm border-misspo-blue text-misspo-blue-dark hover:bg-white shadow-md"
+                  >
+                    <Phone className="h-4 w-4" />
+                    {t.hero.phone}
+                  </Button>
+                </a>
               </div>
-            </Parallax>
+
+              {/* Badges */}
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                {badges.map((badge) => (
+                  <div
+                    key={badge.label}
+                    className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium shadow-sm ${badge.color} transition-transform hover:scale-105`}
+                  >
+                    <badge.icon className="h-3.5 w-3.5" />
+                    {badge.label}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

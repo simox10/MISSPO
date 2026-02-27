@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   School, Home, User, Phone, Mail, MapPin, CalendarDays, Clock,
   Send, CheckCircle2, MessageCircle, FileText, Loader2,
@@ -23,6 +24,7 @@ type Pack = "school" | "home" | ""
 export default function BookingPage() {
   const { t, dir } = useLanguage()
   const { ref, isInView } = useInView()
+  const searchParams = useSearchParams()
   const [pack, setPack] = useState<Pack>("")
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
@@ -39,6 +41,14 @@ export default function BookingPage() {
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [apiError, setApiError] = useState<string>("")
+
+  // Initialize pack from URL parameter
+  useEffect(() => {
+    const packParam = searchParams.get('pack')
+    if (packParam === 'school' || packParam === 'home') {
+      setPack(packParam)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     const fetchWorkingHours = async () => {

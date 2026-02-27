@@ -35,7 +35,7 @@ export function ServicesPreview() {
       borderColor: "border-misspo-blue-light",
       btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
       badgeClass: "bg-misspo-blue-pale text-misspo-blue-dark",
-      href: "/contact",
+      href: "/booking?pack=school",
     },
   ]
 

@@ -37,7 +37,7 @@ function PackCards() {
       borderColor: "border-misspo-blue-light",
       bgGradient: "from-misspo-blue-pale to-white",
       btnClass: "bg-misspo-blue-dark text-white hover:bg-misspo-blue",
-      href: "/contact",
+      href: "/booking?pack=school",
     },
   ]
 

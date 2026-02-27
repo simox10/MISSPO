@@ -37,6 +37,8 @@ class RealtimeManager {
   private config: RealtimeManagerConfig = {}
   private channels: Map<string, any> = new Map()
   private pollingCallbacks: Map<string, () => Promise<any>> = new Map()
+  private isRestoredFromBfcache: boolean = false
+  private bfcacheListenersAttached: boolean = false
 
   /**
    * Initialize the realtime manager
@@ -51,6 +53,9 @@ class RealtimeManager {
     if (config.statusCheckInterval) {
       this.statusCheckInterval = config.statusCheckInterval
     }
+
+    // Setup bfcache compatibility
+    this.setupBfcacheHandlers()
 
     // Check initial status
     await this.checkStatus()
@@ -262,6 +267,63 @@ class RealtimeManager {
    */
   getPollingInterval(): number {
     return this.pollingInterval
+  }
+
+  /**
+   * Setup bfcache compatibility handlers
+   */
+  private setupBfcacheHandlers() {
+    if (typeof window === 'undefined' || this.bfcacheListenersAttached) {
+      return
+    }
+
+    // Handle page hide - close WebSocket for bfcache
+    window.addEventListener('pagehide', () => {
+      console.log('[RealtimeManager] Page hiding - closing WebSocket for bfcache')
+      if (this.mode === 'websocket') {
+        this.disconnectWebSocket()
+      }
+    }, { passive: true })
+
+    // Handle page show - detect bfcache restoration
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        // Page was restored from bfcache
+        console.log('[RealtimeManager] Page restored from bfcache - switching to polling')
+        this.isRestoredFromBfcache = true
+        this.switchMode('polling', 'bfcache_restored')
+        
+        // Setup user interaction listener to reconnect WebSocket
+        this.setupReconnectOnInteraction()
+      }
+    }, { passive: true })
+
+    this.bfcacheListenersAttached = true
+  }
+
+  /**
+   * Setup listener to reconnect WebSocket after user interaction
+   */
+  private setupReconnectOnInteraction() {
+    const reconnectHandler = () => {
+      if (this.isRestoredFromBfcache) {
+        console.log('[RealtimeManager] User interaction detected - reconnecting WebSocket')
+        this.isRestoredFromBfcache = false
+        this.switchMode('websocket', 'user_interaction')
+        
+        // Remove listeners after reconnection
+        window.removeEventListener('click', reconnectHandler)
+        window.removeEventListener('touchstart', reconnectHandler)
+        window.removeEventListener('keydown', reconnectHandler)
+        window.removeEventListener('scroll', reconnectHandler)
+      }
+    }
+
+    // Listen for various user interactions
+    window.addEventListener('click', reconnectHandler, { once: true, passive: true })
+    window.addEventListener('touchstart', reconnectHandler, { once: true, passive: true })
+    window.addEventListener('keydown', reconnectHandler, { once: true, passive: true })
+    window.addEventListener('scroll', reconnectHandler, { once: true, passive: true })
   }
 
   /**

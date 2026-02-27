@@ -63,6 +63,10 @@ export function RealtimeStatus() {
         return "Limite de connexions atteinte"
       case "status_check_failed":
         return "Vérification échouée"
+      case "bfcache_restored":
+        return "Page restaurée - Cliquez pour reconnecter"
+      case "user_interaction":
+        return "Reconnexion en cours..."
       default:
         return ""
     }

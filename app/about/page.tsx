@@ -1,9 +1,11 @@
 "use client"
 
 import Image from "next/image"
+import { useState, useEffect } from "react"
 import { ShieldCheck, Baby, EyeOff, Zap, Hand, Plus, Minus } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { useInView } from "@/hooks/use-in-view"
+import { getFaqs, type FAQ } from "@/lib/api/faqs"
 import {
   Accordion,
   AccordionContent,
@@ -204,8 +206,20 @@ function ApproachSection() {
 }
 
 function FaqSection() {
-  const { t, dir } = useLanguage()
+  const { t, dir, language } = useLanguage()
   const { ref, isInView } = useInView()
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadFaqs() {
+      setLoading(true)
+      const data = await getFaqs(language)
+      setFaqs(data)
+      setLoading(false)
+    }
+    loadFaqs()
+  }, [language])
 
   return (
     <section id="faq" className="py-20 bg-white" dir={dir} ref={ref}>
@@ -225,24 +239,30 @@ function FaqSection() {
           <p className="mt-3 text-muted-foreground">{t.faq.subtitle}</p>
         </div>
 
-        <div className={`mt-10 transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Accordion type="single" collapsible className="flex flex-col gap-3">
-            {t.faq.questions.map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`faq-${index}`}
-                className="overflow-hidden rounded-2xl border border-misspo-blue-light bg-gradient-to-br from-misspo-blue-pale/30 to-white px-5 shadow-sm transition-shadow data-[state=open]:shadow-md"
-              >
-                <AccordionTrigger className="py-4 text-start text-sm font-semibold text-foreground hover:no-underline md:text-base">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Chargement...</p>
+          </div>
+        ) : (
+          <div className={`mt-10 transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <Accordion type="single" collapsible className="flex flex-col gap-3">
+              {faqs.map((item, index) => (
+                <AccordionItem
+                  key={item.id}
+                  value={`faq-${index}`}
+                  className="overflow-hidden rounded-2xl border border-misspo-blue-light bg-gradient-to-br from-misspo-blue-pale/30 to-white px-5 shadow-sm transition-shadow data-[state=open]:shadow-md"
+                >
+                  <AccordionTrigger className="py-4 text-start text-sm font-semibold text-foreground hover:no-underline md:text-base">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        )}
       </div>
     </section>
   )

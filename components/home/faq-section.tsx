@@ -4,6 +4,8 @@ import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { useInView } from "@/hooks/use-in-view"
+import { useState, useEffect } from "react"
+import { getFaqsPreview, type FAQ } from "@/lib/api/faqs"
 import {
   Accordion,
   AccordionContent,
@@ -13,11 +15,20 @@ import {
 import { Button } from "@/components/ui/button"
 
 export function FaqSection() {
-  const { t, dir } = useLanguage()
+  const { t, dir, language } = useLanguage()
   const { ref, isInView } = useInView()
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Afficher seulement les 3 premières questions sur la page d'accueil
-  const previewQuestions = t.faq.questions.slice(0, 3)
+  useEffect(() => {
+    async function loadFaqs() {
+      setLoading(true)
+      const data = await getFaqsPreview(language)
+      setFaqs(data)
+      setLoading(false)
+    }
+    loadFaqs()
+  }, [language])
 
   return (
     <section className="py-16 bg-white overflow-hidden" dir={dir} ref={ref}>
@@ -28,24 +39,30 @@ export function FaqSection() {
           </h2>
         </div>
 
-        <div className={`transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Accordion type="single" collapsible className="w-full">
-            {previewQuestions.map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border-b"
-              >
-                <AccordionTrigger className="text-left text-base font-semibold">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Chargement...</p>
+          </div>
+        ) : (
+          <div className={`transition-all duration-700 delay-200 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((item, index) => (
+                <AccordionItem
+                  key={item.id}
+                  value={`item-${index}`}
+                  className="border-b"
+                >
+                  <AccordionTrigger className="text-left text-base font-semibold">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        )}
 
         <div className={`mt-8 text-center transition-all duration-700 delay-400 ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <Link href="/about#faq">

@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Settings, Eye, EyeOff, Save, User, Edit2, X, ChevronDown, ChevronUp, HelpCircle, Plus, MoreVertical, GripVertical, Trash2, Edit } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { getAdminFaqs, createFaq, updateFaq, reorderFaqs, deleteFaq, type AdminFAQ } from "@/lib/api/faqs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { toast } from "sonner"
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
 interface FAQ {
   id: number
@@ -37,13 +41,11 @@ export default function ParametresPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   // FAQ States
-  const [faqs, setFaqs] = useState<FAQ[]>([
-    { id: 1, question: "Comment être sûr que mon enfant a des poux ?", answer: "Le symptôme le plus évident est la démangeaison. L'envie de se gratter est une réaction allergique à la salive que le pou injecte dans le sang pour le fluidité.", order: 1 },
-    { id: 2, question: "Comment les attrape-t-on ?", answer: "Dans la plupart des cas les poux s'attrapent par contact direct tête contre tête. Ils peuvent toutefois se transmettre par contact indirect avec des objets.", order: 2 },
-    { id: 3, question: "Y-a-t-il des profils plus propices que d'autres ?", answer: "Oui, il y a des personnes qui sont plus propices que d'autres. La cause de cette fragilité est notre odeur corporelle.", order: 3 },
-  ])
+  const [faqs, setFaqs] = useState<FAQ[]>([])
   const [expandedFaqId, setExpandedFaqId] = useState<number | null>(null)
   const [isAddingFaq, setIsAddingFaq] = useState(false)
   const [editingFaqId, setEditingFaqId] = useState<number | null>(null)
@@ -51,18 +53,79 @@ export default function ParametresPage() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [showSaveConfirm, setShowSaveConfirm] = useState(false)
   const [draggedItem, setDraggedItem] = useState<number | null>(null)
+  const [loadingFaqs, setLoadingFaqs] = useState(true)
 
   const [newFaq, setNewFaq] = useState({ question: "", answer: "" })
   const [editFaq, setEditFaq] = useState({ question: "", answer: "" })
 
   const [formData, setFormData] = useState({
-    firstName: "Admin",
-    lastName: "MISSPO",
-    email: "admin@misspo.com",
+    firstName: "",
+    lastName: "",
+    email: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: ""
   })
+
+  // Fetch admin profile on mount
+  useEffect(() => {
+    fetchAdminProfile()
+    fetchFaqs()
+  }, [])
+
+  const fetchFaqs = async () => {
+    try {
+      setLoadingFaqs(true)
+      const data = await getAdminFaqs()
+      setFaqs(data.map(faq => ({
+        id: faq.id,
+        question: faq.question_fr,
+        answer: faq.answer_fr,
+        order: faq.order
+      })))
+    } catch (error) {
+      console.error("Erreur lors du chargement des FAQs:", error)
+      toast.error('Erreur de chargement des FAQs')
+    } finally {
+      setLoadingFaqs(false)
+    }
+  }
+
+  const fetchAdminProfile = async () => {
+    try {
+      setLoading(true)
+      
+      // Get admin data from localStorage
+      const adminDataStr = localStorage.getItem('adminData')
+      if (!adminDataStr) {
+        toast.error('Session expirée, veuillez vous reconnecter')
+        return
+      }
+      
+      const adminData = JSON.parse(adminDataStr)
+      
+      const response = await fetch(`${API_URL}/admin/profile?admin_id=${adminData.id}`)
+      const data = await response.json()
+      
+      if (data.success) {
+        setFormData({
+          firstName: data.admin.prenom || "",
+          lastName: data.admin.nom || "",
+          email: data.admin.email || "",
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        })
+      } else {
+        toast.error(data.message || 'Erreur de chargement du profil')
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement du profil:", error)
+      toast.error('Erreur de chargement du profil')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleEdit = () => {
     setIsEditing(true)
@@ -79,21 +142,118 @@ export default function ParametresPage() {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Mise à jour des informations:", formData)
-    setIsEditing(false)
-    setIsPasswordExpanded(false)
+    
+    try {
+      setSaving(true)
+      
+      // Get admin data from localStorage
+      const adminDataStr = localStorage.getItem('adminData')
+      if (!adminDataStr) {
+        toast.error('Session expirée, veuillez vous reconnecter')
+        return
+      }
+      
+      const adminData = JSON.parse(adminDataStr)
+      
+      // Update profile info (name and email)
+      const profileResponse = await fetch(`${API_URL}/admin/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          admin_id: adminData.id,
+          prenom: formData.firstName,
+          nom: formData.lastName,
+          email: formData.email,
+        })
+      })
+      
+      const profileData = await profileResponse.json()
+      
+      if (!profileData.success) {
+        toast.error(profileData.message || 'Erreur lors de la mise à jour du profil')
+        setSaving(false)
+        return
+      }
+      
+      // Update localStorage with new data
+      localStorage.setItem('adminData', JSON.stringify(profileData.admin))
+      
+      // If password fields are filled, update password
+      if (formData.currentPassword && formData.newPassword && formData.confirmPassword) {
+        if (formData.newPassword !== formData.confirmPassword) {
+          toast.error('Les mots de passe ne correspondent pas')
+          setSaving(false)
+          return
+        }
+        
+        const passwordResponse = await fetch(`${API_URL}/admin/profile/password`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            admin_id: adminData.id,
+            current_password: formData.currentPassword,
+            new_password: formData.newPassword,
+            new_password_confirmation: formData.confirmPassword,
+          })
+        })
+        
+        const passwordData = await passwordResponse.json()
+        
+        if (!passwordData.success) {
+          toast.error(passwordData.message || 'Erreur lors du changement de mot de passe')
+          setSaving(false)
+          return
+        }
+        
+        toast.success('Profil et mot de passe mis à jour avec succès')
+      } else {
+        toast.success('Profil mis à jour avec succès')
+      }
+      
+      setIsEditing(false)
+      setIsPasswordExpanded(false)
+      setFormData({
+        ...formData,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      })
+    } catch (error) {
+      console.error("Erreur:", error)
+      toast.error('Erreur de connexion au serveur')
+    } finally {
+      setSaving(false)
+    }
   }
 
   // FAQ Functions
-  const handleAddFaq = () => {
+  const handleAddFaq = async () => {
     if (newFaq.question && newFaq.answer) {
-      const newId = Math.max(...faqs.map(f => f.id), 0) + 1
-      setFaqs([...faqs, { ...newFaq, id: newId, order: faqs.length + 1 }])
-      setNewFaq({ question: "", answer: "" })
-      setIsAddingFaq(false)
-      setHasUnsavedChanges(true)
+      try {
+        const result = await createFaq({
+          question_fr: newFaq.question,
+          answer_fr: newFaq.answer,
+          is_active: true
+        })
+        
+        if (result.success) {
+          await fetchFaqs()
+          setNewFaq({ question: "", answer: "" })
+          setIsAddingFaq(false)
+          toast.success('FAQ ajoutée avec succès')
+        } else {
+          toast.error(result.message || 'Erreur lors de l\'ajout')
+        }
+      } catch (error) {
+        console.error("Erreur:", error)
+        toast.error('Erreur lors de l\'ajout de la FAQ')
+      }
     }
   }
 
@@ -105,20 +265,45 @@ export default function ParametresPage() {
     }
   }
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editingFaqId && editFaq.question && editFaq.answer) {
-      setFaqs(faqs.map(f => f.id === editingFaqId ? { ...f, question: editFaq.question, answer: editFaq.answer } : f))
-      setEditingFaqId(null)
-      setEditFaq({ question: "", answer: "" })
-      setHasUnsavedChanges(true)
+      try {
+        const result = await updateFaq(editingFaqId, {
+          question_fr: editFaq.question,
+          answer_fr: editFaq.answer
+        })
+        
+        if (result.success) {
+          await fetchFaqs()
+          setEditingFaqId(null)
+          setEditFaq({ question: "", answer: "" })
+          toast.success('FAQ mise à jour avec succès')
+        } else {
+          toast.error(result.message || 'Erreur lors de la mise à jour')
+        }
+      } catch (error) {
+        console.error("Erreur:", error)
+        toast.error('Erreur lors de la mise à jour de la FAQ')
+      }
     }
   }
 
-  const handleDeleteFaq = () => {
+  const handleDeleteFaq = async () => {
     if (deletingFaqId) {
-      setFaqs(faqs.filter(f => f.id !== deletingFaqId).map((f, index) => ({ ...f, order: index + 1 })))
-      setDeletingFaqId(null)
-      setHasUnsavedChanges(true)
+      try {
+        const result = await deleteFaq(deletingFaqId)
+        
+        if (result.success) {
+          await fetchFaqs()
+          setDeletingFaqId(null)
+          toast.success('FAQ supprimée avec succès')
+        } else {
+          toast.error(result.message || 'Erreur lors de la suppression')
+        }
+      } catch (error) {
+        console.error("Erreur:", error)
+        toast.error('Erreur lors de la suppression de la FAQ')
+      }
     }
   }
 
@@ -149,10 +334,29 @@ export default function ParametresPage() {
     setShowSaveConfirm(true)
   }
 
-  const confirmSaveFaqs = () => {
-    console.log("Sauvegarde des FAQs:", faqs)
-    setHasUnsavedChanges(false)
-    setShowSaveConfirm(false)
+  const confirmSaveFaqs = async () => {
+    try {
+      const faqsToReorder = faqs.map(faq => ({
+        id: faq.id,
+        order: faq.order
+      }))
+      
+      const result = await reorderFaqs(faqsToReorder)
+      
+      if (result.success) {
+        setHasUnsavedChanges(false)
+        setShowSaveConfirm(false)
+        toast.success('Ordre des FAQs sauvegardé avec succès')
+        
+        // Re-fetch from database to confirm persistence
+        await fetchFaqs()
+      } else {
+        toast.error(result.message || 'Erreur lors de la sauvegarde')
+      }
+    } catch (error) {
+      console.error("Erreur:", error)
+      toast.error('Erreur lors de la sauvegarde de l\'ordre')
+    }
   }
 
   return (
@@ -163,7 +367,15 @@ export default function ParametresPage() {
         <p className="text-sm sm:text-base text-gray-600">Gérez vos informations de connexion</p>
       </div>
 
-      <div className="space-y-6">
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <Settings className="h-12 w-12 animate-spin text-[#ED7A97] mx-auto mb-3" />
+            <p className="text-gray-500">Chargement...</p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-6">
         {/* Informations du compte */}
         <Card>
           <CardHeader>
@@ -380,14 +592,16 @@ export default function ParametresPage() {
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <Button 
                     type="submit" 
+                    disabled={saving}
                     className="flex-1 bg-[#ED7A97] hover:bg-[#F29CB1] text-white"
                   >
                     <Save className="h-4 w-4 mr-2" />
-                    Enregistrer les modifications
+                    {saving ? 'Enregistrement...' : 'Enregistrer les modifications'}
                   </Button>
                   <Button 
                     type="button"
                     onClick={handleCancel}
+                    disabled={saving}
                     variant="outline"
                     className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
                   >
@@ -425,6 +639,12 @@ export default function ParametresPage() {
             </div>
           </CardHeader>
           <CardContent>
+            {loadingFaqs ? (
+              <div className="text-center py-8">
+                <HelpCircle className="h-12 w-12 animate-spin text-[#ED7A97] mx-auto mb-3" />
+                <p className="text-gray-500">Chargement des FAQs...</p>
+              </div>
+            ) : (
             <div className="space-y-3">
               {/* Liste des FAQs */}
               {faqs.sort((a, b) => a.order - b.order).map((faq) => (
@@ -602,9 +822,11 @@ export default function ParametresPage() {
                 </Button>
               )}
             </div>
+            )}
           </CardContent>
         </Card>
       </div>
+      )}
 
       {/* Dialog de confirmation de suppression */}
       <AlertDialog open={deletingFaqId !== null} onOpenChange={() => setDeletingFaqId(null)}>

@@ -108,6 +108,8 @@ function PackCards() {
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   style={{ objectPosition: index === 1 ? '80% 70%' : 'center 70%' }}
+                  quality={65}
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
@@ -166,6 +168,8 @@ function PackCards() {
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   style={{ objectPosition: index === 1 ? '80% 70%' : 'center 70%' }}
+                  quality={65}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>

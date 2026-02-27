@@ -32,6 +32,8 @@ export function Footer() {
                 width={180}
                 height={64}
                 className="h-16 w-auto object-contain md:-ml-2"
+                quality={80}
+                sizes="180px"
               />
               <p className="max-w-xs text-sm text-muted-foreground leading-relaxed text-center md:text-left">
                 {t.footer.description}

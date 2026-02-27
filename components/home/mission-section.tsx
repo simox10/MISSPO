@@ -30,6 +30,8 @@ export function MissionSection() {
                 alt="Notre Mission MISSPO"
                 fill
                 className="object-cover"
+                quality={65}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               />
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-misspo-blue-dark/20 via-transparent to-misspo-rose-dark/20" />

@@ -158,7 +158,8 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
             fill
             className="object-cover"
             style={{ filter: 'blur(60px)', opacity: 0.6 }}
-            quality={50}
+            quality={30}
+            sizes="(max-width: 768px) 100vw, 1200px"
           />
         </div>
       </div>
@@ -171,8 +172,9 @@ function TreatmentCard({ step, index, progress }: { step: any; index: number; pr
             alt={step.title}
             fill
             className="object-cover"
-            quality={75}
+            quality={65}
             priority={index === 0}
+            sizes="(max-width: 768px) 100vw, 1200px"
           />
           <div className="absolute inset-0 bg-black/50" />
         </div>

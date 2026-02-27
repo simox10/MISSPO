@@ -42,7 +42,8 @@ export function HeroSection() {
             className="object-contain"
             style={{ objectPosition: '120% center' }}
             priority
-            quality={90}
+            quality={65}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           />
         </Parallax>
 
@@ -81,7 +82,7 @@ export function HeroSection() {
                     />
                   </span>
                 </h1>
-                <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium">
+                <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/90 md:text-lg font-medium whitespace-pre-line">
                   {t.hero.description}
                 </p>
 
@@ -151,12 +152,13 @@ export function HeroSection() {
               fill
               className="object-contain"
               priority
-              quality={90}
+              quality={65}
+              sizes="(max-width: 768px) 100vw, 750px"
             />
           </div>
 
           {/* Description */}
-          <p className="mt-2 text-base leading-relaxed text-foreground/90 text-center">
+          <p className="mt-2 text-base leading-relaxed text-foreground/90 text-center whitespace-pre-line">
             {t.hero.description}
           </p>
 

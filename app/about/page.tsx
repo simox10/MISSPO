@@ -28,6 +28,8 @@ function AboutHero() {
                 width={600}
                 height={700}
                 className="h-auto w-full object-cover"
+                quality={65}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               />
               <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/5" />
             </div>
@@ -189,6 +191,8 @@ function ApproachSection() {
                 width={500}
                 height={400}
                 className="h-auto w-full object-cover"
+                quality={65}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
               />
               <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/5" />
             </div>

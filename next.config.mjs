@@ -19,7 +19,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
   // Enable static optimization
   output: 'standalone',
   // Optimize CSS and packages

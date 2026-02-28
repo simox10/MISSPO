@@ -123,6 +123,7 @@ export default function DashboardPage() {
     statut: "En attente",
     adresse: "",
     ecole: "",
+    service_type: "",
     notes: "",
   })
   const [currentPage, setCurrentPage] = useState(1)
@@ -1161,6 +1162,11 @@ _L'équipe MISSPO_`
                     <div>
                       <p className="text-sm text-gray-500">École</p>
                       <p className="text-base text-gray-900">{selectedReservation.ecole}</p>
+                      {selectedReservation.service_type && (
+                        <p className="text-sm text-misspo-blue-dark mt-1">
+                          Service: {selectedReservation.service_type}
+                        </p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1415,14 +1421,32 @@ _L'équipe MISSPO_`
               </div>
 
               {editingReservation.pack === "École" && (
-                <div>
-                  <Label htmlFor="edit-ecole">École</Label>
-                  <Input
-                    id="edit-ecole"
-                    value={editingReservation.ecole || ""}
-                    onChange={(e) => setEditingReservation({...editingReservation, ecole: e.target.value})}
-                    className="mt-1"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit-ecole">École</Label>
+                    <Input
+                      id="edit-ecole"
+                      value={editingReservation.ecole || ""}
+                      onChange={(e) => setEditingReservation({...editingReservation, ecole: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-service-type">Type de service</Label>
+                    <Select
+                      value={editingReservation.service_type || ""}
+                      onValueChange={(value) => setEditingReservation({...editingReservation, service_type: value})}
+                    >
+                      <SelectTrigger id="edit-service-type" className="mt-1">
+                        <SelectValue placeholder="Sélectionner le service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Diagnostic">Diagnostic</SelectItem>
+                        <SelectItem value="Diagnostic + Traitement">Diagnostic + Traitement</SelectItem>
+                        <SelectItem value="Diagnostic + Traitement + Lotion">Diagnostic + Traitement + Lotion</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               )}
 
@@ -1684,15 +1708,33 @@ _L'équipe MISSPO_`
             </div>
 
             {newReservation.pack === "École" && (
-              <div>
-                <Label htmlFor="new-ecole">École</Label>
-                <Input
-                  id="new-ecole"
-                  value={newReservation.ecole}
-                  onChange={(e) => setNewReservation({...newReservation, ecole: e.target.value})}
-                  className="mt-1"
-                  placeholder="Nom de l'école"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="new-ecole">École</Label>
+                  <Input
+                    id="new-ecole"
+                    value={newReservation.ecole}
+                    onChange={(e) => setNewReservation({...newReservation, ecole: e.target.value})}
+                    className="mt-1"
+                    placeholder="Nom de l'école"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="new-service-type">Type de service</Label>
+                  <Select
+                    value={newReservation.service_type}
+                    onValueChange={(value) => setNewReservation({...newReservation, service_type: value})}
+                  >
+                    <SelectTrigger id="new-service-type" className="mt-1">
+                      <SelectValue placeholder="Sélectionner le service" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Diagnostic">Diagnostic</SelectItem>
+                      <SelectItem value="Diagnostic + Traitement">Diagnostic + Traitement</SelectItem>
+                      <SelectItem value="Diagnostic + Traitement + Lotion">Diagnostic + Traitement + Lotion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
 

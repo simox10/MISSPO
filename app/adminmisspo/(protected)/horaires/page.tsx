@@ -65,12 +65,14 @@ export default function HorairesPage() {
   const [showInlineAdd, setShowInlineAdd] = useState(false)
   const [showBottomSheet, setShowBottomSheet] = useState(false)
   const [selectedDays, setSelectedDays] = useState<string[]>(['lundi'])
+  const [blockingMode, setBlockingMode] = useState<'recurring' | 'specific'>('recurring')
   const [creneauForm, setCreneauForm] = useState({
     jour_semaine: 'lundi',
     jours_semaine: ['lundi'],
     heure_debut: '09:00',
     heure_fin: '10:00',
     date_specifique: '',
+    date_fin: '',
     note: '',
   })
 
@@ -218,19 +220,75 @@ export default function HorairesPage() {
 
   const handleAddCreneau = async () => {
     try {
+      // Date range mode (specific dates)
+      if (blockingMode === 'specific' && creneauForm.date_specifique && creneauForm.date_fin) {
+        const payload = {
+          heure_debut: creneauForm.heure_debut,
+          heure_fin: creneauForm.heure_fin,
+          date_specifique: creneauForm.date_specifique,
+          date_fin: creneauForm.date_fin,
+          note: creneauForm.note || null,
+        }
+
+        const response = await fetch(`${API_URL}/admin/creneaux`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          toast.success(data.message || 'Créneaux bloqués ajoutés')
+          resetForm()
+        } else {
+          toast.error('Erreur lors de l\'ajout')
+        }
+        return
+      }
+
+      // Single specific date mode
+      if (blockingMode === 'specific' && creneauForm.date_specifique && !creneauForm.date_fin) {
+        const payload = {
+          heure_debut: creneauForm.heure_debut,
+          heure_fin: creneauForm.heure_fin,
+          date_specifique: creneauForm.date_specifique,
+          note: creneauForm.note || null,
+        }
+
+        const response = await fetch(`${API_URL}/admin/creneaux`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+          toast.success(data.message || 'Créneau bloqué ajouté')
+          resetForm()
+        } else {
+          toast.error('Erreur lors de l\'ajout')
+        }
+        return
+      }
+
+      // Recurring mode (multi-day or single day)
       const payload = selectedDays.length > 1 
         ? {
             jours_semaine: selectedDays,
             heure_debut: creneauForm.heure_debut,
             heure_fin: creneauForm.heure_fin,
-            date_specifique: creneauForm.date_specifique || null,
             note: creneauForm.note || null,
           }
         : {
             jour_semaine: selectedDays[0],
             heure_debut: creneauForm.heure_debut,
             heure_fin: creneauForm.heure_fin,
-            date_specifique: creneauForm.date_specifique || null,
             note: creneauForm.note || null,
           }
 
@@ -246,24 +304,40 @@ export default function HorairesPage() {
 
       if (data.success) {
         toast.success(data.message || 'Créneau bloqué ajouté')
-        setShowInlineAdd(false)
-        setShowBottomSheet(false)
-        fetchCreneaux()
-        setSelectedDays(['lundi'])
-        setCreneauForm({
-          jour_semaine: 'lundi',
-          jours_semaine: ['lundi'],
-          heure_debut: '09:00',
-          heure_fin: '10:00',
-          date_specifique: '',
-          note: '',
-        })
+        resetForm()
       } else {
         toast.error('Erreur lors de l\'ajout')
       }
     } catch (error) {
       console.error("Erreur:", error)
       toast.error('Erreur de connexion')
+    }
+  }
+
+  const resetForm = () => {
+    setShowInlineAdd(false)
+    setShowBottomSheet(false)
+    fetchCreneaux()
+    setSelectedDays(['lundi'])
+    setBlockingMode('recurring')
+    setCreneauForm({
+      jour_semaine: 'lundi',
+      jours_semaine: ['lundi'],
+      heure_debut: '09:00',
+      heure_fin: '10:00',
+      date_specifique: '',
+      date_fin: '',
+      note: '',
+    })
+  }
+
+  const handleModeChange = (mode: 'recurring' | 'specific') => {
+    setBlockingMode(mode)
+    // Clear values from the other mode
+    if (mode === 'recurring') {
+      setCreneauForm({ ...creneauForm, date_specifique: '', date_fin: '' })
+    } else {
+      setSelectedDays(['lundi'])
     }
   }
 
@@ -328,12 +402,21 @@ export default function HorairesPage() {
   const openEditDialog = (creneau: Creneau) => {
     setEditingCreneau(creneau)
     setSelectedDays([creneau.jour_semaine])
+    
+    // Set mode based on whether it has a specific date
+    if (creneau.date_specifique) {
+      setBlockingMode('specific')
+    } else {
+      setBlockingMode('recurring')
+    }
+    
     setCreneauForm({
       jour_semaine: creneau.jour_semaine,
       jours_semaine: [creneau.jour_semaine],
       heure_debut: creneau.heure_debut.substring(0, 5),
       heure_fin: creneau.heure_fin.substring(0, 5),
       date_specifique: creneau.date_specifique || '',
+      date_fin: '',
       note: creneau.note || '',
     })
     setShowBottomSheet(true)
@@ -342,12 +425,14 @@ export default function HorairesPage() {
   const openAddDialog = () => {
     setEditingCreneau(null)
     setSelectedDays(['lundi'])
+    setBlockingMode('recurring')
     setCreneauForm({
       jour_semaine: 'lundi',
       jours_semaine: ['lundi'],
       heure_debut: '09:00',
       heure_fin: '10:00',
       date_specifique: '',
+      date_fin: '',
       note: '',
     })
     setShowBottomSheet(true)
@@ -494,54 +579,93 @@ export default function HorairesPage() {
             {/* Inline Add Form */}
             {showInlineAdd && (
               <div className="mb-4 p-4 bg-white border-2 border-misspo-rose rounded-lg space-y-3">
-                {/* Date Picker (Optional) */}
+                {/* Mode Switcher */}
                 <div>
-                  <Label className="text-xs text-gray-700 mb-1 flex items-center gap-1.5">
-                    <CalendarClock className="h-4 w-4 text-gray-500" />
-                    Date spécifique (optionnel)
-                  </Label>
-                  <Input
-                    type="date"
-                    value={creneauForm.date_specifique}
-                    onChange={(e) => setCreneauForm({ ...creneauForm, date_specifique: e.target.value })}
-                    className="border-misspo-rose h-9 text-sm"
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    💡 Laissez vide pour un blocage récurrent chaque semaine
-                  </p>
+                  <Label className="text-xs text-gray-700 mb-2 block">Type de blocage</Label>
+                  <Tabs value={blockingMode} onValueChange={(value) => handleModeChange(value as 'recurring' | 'specific')} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 h-9">
+                      <TabsTrigger value="recurring" className="text-xs">
+                        <Repeat className="h-3.5 w-3.5 mr-1.5" />
+                        Récurrent
+                      </TabsTrigger>
+                      <TabsTrigger value="specific" className="text-xs">
+                        <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                        Dates Spécifiques
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </div>
 
-                {/* Multi-Day Selector */}
-                <div>
-                  <Label className="text-xs text-gray-700 mb-2 block">
-                    Jour(s) de la semaine
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { key: 'lundi', label: 'Lun' },
-                      { key: 'mardi', label: 'Mar' },
-                      { key: 'mercredi', label: 'Mer' },
-                      { key: 'jeudi', label: 'Jeu' },
-                      { key: 'vendredi', label: 'Ven' },
-                      { key: 'samedi', label: 'Sam' },
-                      { key: 'dimanche', label: 'Dim' },
-                    ].map((day) => (
-                      <button
-                        key={day.key}
-                        type="button"
-                        onClick={() => toggleDay(day.key)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                          selectedDays.includes(day.key)
-                            ? 'bg-misspo-rose-dark text-white shadow-md'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                      >
-                        {day.label}
-                      </button>
-                    ))}
+                {/* Date Range Picker - Only in specific mode */}
+                {blockingMode === 'specific' && (
+                  <div>
+                    <Label className="text-xs text-gray-700 mb-1 flex items-center gap-1.5">
+                      <CalendarClock className="h-4 w-4 text-gray-500" />
+                      Plage de dates
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Input
+                          type="date"
+                          value={creneauForm.date_specifique}
+                          onChange={(e) => setCreneauForm({ ...creneauForm, date_specifique: e.target.value })}
+                          className="border-misspo-rose h-9 text-sm"
+                          min={new Date().toISOString().split('T')[0]}
+                          placeholder="Date début"
+                        />
+                        <p className="text-xs text-gray-400 mt-0.5">Date début</p>
+                      </div>
+                      <div>
+                        <Input
+                          type="date"
+                          value={creneauForm.date_fin}
+                          onChange={(e) => setCreneauForm({ ...creneauForm, date_fin: e.target.value })}
+                          className="border-misspo-rose h-9 text-sm"
+                          min={creneauForm.date_specifique || new Date().toISOString().split('T')[0]}
+                          placeholder="Date fin"
+                          disabled={!creneauForm.date_specifique}
+                        />
+                        <p className="text-xs text-gray-400 mt-0.5">Date fin (optionnel)</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      💡 Laissez "Date fin" vide pour bloquer une seule journée
+                    </p>
                   </div>
-                </div>
+                )}
+
+                {/* Multi-Day Selector - Only in recurring mode */}
+                {blockingMode === 'recurring' && (
+                  <div>
+                    <Label className="text-xs text-gray-700 mb-2 block">
+                      Jour(s) de la semaine
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { key: 'lundi', label: 'Lun' },
+                        { key: 'mardi', label: 'Mar' },
+                        { key: 'mercredi', label: 'Mer' },
+                        { key: 'jeudi', label: 'Jeu' },
+                        { key: 'vendredi', label: 'Ven' },
+                        { key: 'samedi', label: 'Sam' },
+                        { key: 'dimanche', label: 'Dim' },
+                      ].map((day) => (
+                        <button
+                          key={day.key}
+                          type="button"
+                          onClick={() => toggleDay(day.key)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                            selectedDays.includes(day.key)
+                              ? 'bg-misspo-rose-dark text-white shadow-md'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                        >
+                          {day.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Time Range */}
                 <div className="grid grid-cols-2 gap-2">
@@ -591,15 +715,35 @@ export default function HorairesPage() {
                 <div className="flex gap-2 pt-2">
                   <Button
                     onClick={handleAddCreneau}
-                    disabled={selectedDays.length === 0}
+                    disabled={
+                      blockingMode === 'specific' 
+                        ? !creneauForm.date_specifique 
+                        : selectedDays.length === 0
+                    }
                     className="flex-1 bg-misspo-rose-dark hover:bg-misspo-rose text-white h-9 text-sm"
                   >
-                    Ajouter {selectedDays.length > 1 && `(${selectedDays.length} jours)`}
+                    {blockingMode === 'specific'
+                      ? creneauForm.date_fin 
+                        ? 'Ajouter plage' 
+                        : 'Ajouter date'
+                      : selectedDays.length > 1 
+                        ? `Ajouter (${selectedDays.length} jours)` 
+                        : 'Ajouter'}
                   </Button>
                   <Button
                     onClick={() => {
                       setShowInlineAdd(false)
                       setSelectedDays(['lundi'])
+                      setBlockingMode('recurring')
+                      setCreneauForm({
+                        jour_semaine: 'lundi',
+                        jours_semaine: ['lundi'],
+                        heure_debut: '09:00',
+                        heure_fin: '10:00',
+                        date_specifique: '',
+                        date_fin: '',
+                        note: '',
+                      })
                     }}
                     variant="outline"
                     className="flex-1 h-9 text-sm"
@@ -1061,54 +1205,91 @@ export default function HorairesPage() {
           </SheetHeader>
           
           <div className="mt-6 space-y-4">
-            {/* Date Picker */}
+            {/* Mode Switcher */}
             <div>
-              <Label className="text-sm text-gray-700 mb-2 flex items-center gap-1.5">
-                <CalendarClock className="h-4 w-4 text-gray-500" />
-                Date spécifique (optionnel)
-              </Label>
-              <Input
-                type="date"
-                value={creneauForm.date_specifique}
-                onChange={(e) => setCreneauForm({ ...creneauForm, date_specifique: e.target.value })}
-                className="h-11"
-                min={new Date().toISOString().split('T')[0]}
-              />
-              <p className="text-xs text-gray-500 mt-1.5">
-                💡 Laissez vide pour un blocage récurrent chaque semaine
-              </p>
+              <Label className="text-sm text-gray-700 mb-2 block">Type de blocage</Label>
+              <Tabs value={blockingMode} onValueChange={(value) => handleModeChange(value as 'recurring' | 'specific')} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 h-11">
+                  <TabsTrigger value="recurring" className="text-sm">
+                    <Repeat className="h-4 w-4 mr-1.5" />
+                    Récurrent
+                  </TabsTrigger>
+                  <TabsTrigger value="specific" className="text-sm">
+                    <Calendar className="h-4 w-4 mr-1.5" />
+                    Dates Spécifiques
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
 
-            {/* Multi-Day Selector */}
-            <div>
-              <Label className="text-sm text-gray-700 mb-2 block">
-                Jour(s) de la semaine
-              </Label>
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { key: 'lundi', label: 'Lun' },
-                  { key: 'mardi', label: 'Mar' },
-                  { key: 'mercredi', label: 'Mer' },
-                  { key: 'jeudi', label: 'Jeu' },
-                  { key: 'vendredi', label: 'Ven' },
-                  { key: 'samedi', label: 'Sam' },
-                  { key: 'dimanche', label: 'Dim' },
-                ].map((day) => (
-                  <button
-                    key={day.key}
-                    type="button"
-                    onClick={() => toggleDay(day.key)}
-                    className={`h-11 rounded-lg text-sm font-medium transition-all ${
-                      selectedDays.includes(day.key)
-                        ? 'bg-misspo-rose-dark text-white shadow-md'
-                        : 'bg-gray-100 text-gray-600 active:bg-gray-200'
-                    }`}
-                  >
-                    {day.label}
-                  </button>
-                ))}
+            {/* Date Range Picker - Only in specific mode */}
+            {blockingMode === 'specific' && (
+              <div>
+                <Label className="text-sm text-gray-700 mb-2 flex items-center gap-1.5">
+                  <CalendarClock className="h-4 w-4 text-gray-500" />
+                  Plage de dates
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Input
+                      type="date"
+                      value={creneauForm.date_specifique}
+                      onChange={(e) => setCreneauForm({ ...creneauForm, date_specifique: e.target.value })}
+                      className="h-11"
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Date début</p>
+                  </div>
+                  <div>
+                    <Input
+                      type="date"
+                      value={creneauForm.date_fin}
+                      onChange={(e) => setCreneauForm({ ...creneauForm, date_fin: e.target.value })}
+                      className="h-11"
+                      min={creneauForm.date_specifique || new Date().toISOString().split('T')[0]}
+                      disabled={!creneauForm.date_specifique}
+                    />
+                    <p className="text-xs text-gray-400 mt-1">Date fin (optionnel)</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1.5">
+                  💡 Laissez "Date fin" vide pour bloquer une seule journée
+                </p>
               </div>
-            </div>
+            )}
+
+            {/* Multi-Day Selector - Only in recurring mode */}
+            {blockingMode === 'recurring' && (
+              <div>
+                <Label className="text-sm text-gray-700 mb-2 block">
+                  Jour(s) de la semaine
+                </Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { key: 'lundi', label: 'Lun' },
+                    { key: 'mardi', label: 'Mar' },
+                    { key: 'mercredi', label: 'Mer' },
+                    { key: 'jeudi', label: 'Jeu' },
+                    { key: 'vendredi', label: 'Ven' },
+                    { key: 'samedi', label: 'Sam' },
+                    { key: 'dimanche', label: 'Dim' },
+                  ].map((day) => (
+                    <button
+                      key={day.key}
+                      type="button"
+                      onClick={() => toggleDay(day.key)}
+                      className={`h-11 rounded-lg text-sm font-medium transition-all ${
+                        selectedDays.includes(day.key)
+                          ? 'bg-misspo-rose-dark text-white shadow-md'
+                          : 'bg-gray-100 text-gray-600 active:bg-gray-200'
+                      }`}
+                    >
+                      {day.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Time Range */}
             <div className="grid grid-cols-2 gap-3">
@@ -1158,10 +1339,22 @@ export default function HorairesPage() {
             <div className="flex gap-3 pt-4">
               <Button
                 onClick={editingCreneau ? handleUpdateCreneau : handleAddCreneau}
-                disabled={selectedDays.length === 0}
+                disabled={
+                  blockingMode === 'specific' 
+                    ? !creneauForm.date_specifique 
+                    : selectedDays.length === 0
+                }
                 className="flex-1 bg-misspo-rose-dark hover:bg-misspo-rose text-white h-12"
               >
-                {editingCreneau ? 'Enregistrer' : `Ajouter ${selectedDays.length > 1 ? `(${selectedDays.length} jours)` : ''}`}
+                {editingCreneau 
+                  ? 'Enregistrer' 
+                  : blockingMode === 'specific'
+                    ? creneauForm.date_fin 
+                      ? 'Ajouter plage' 
+                      : 'Ajouter date'
+                    : selectedDays.length > 1 
+                      ? `Ajouter (${selectedDays.length} jours)` 
+                      : 'Ajouter'}
               </Button>
               <Button
                 onClick={() => setShowBottomSheet(false)}
@@ -1186,7 +1379,8 @@ export default function HorairesPage() {
               </p>
               <p className="text-xs text-gray-700 mt-1">
                 <span className="font-medium">Sans date:</span> Le blocage se répète chaque semaine • 
-                <span className="font-medium ml-2">Avec date:</span> Blocage ponctuel pour cette date uniquement
+                <span className="font-medium ml-2">Avec date unique:</span> Blocage ponctuel • 
+                <span className="font-medium ml-2">Avec plage:</span> Blocage sur plusieurs jours consécutifs
               </p>
             </div>
           </div>

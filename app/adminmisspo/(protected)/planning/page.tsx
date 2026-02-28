@@ -44,6 +44,7 @@ type Reservation = {
   statut: string
   adresse?: string
   ecole?: string
+  service_type?: string
   notes?: string
 }
 
@@ -572,6 +573,23 @@ export default function PlanningPage() {
                   </div>
                 )}
 
+                {/* Type de Service */}
+                {selectedReservation.service_type && (
+                  <div className="flex items-start gap-3">
+                    <School className="h-5 w-5 mt-0.5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Type de Service</p>
+                      <p className="text-base text-gray-900">
+                        {selectedReservation.service_type === 'diagnostic' 
+                          ? 'Diagnostic' 
+                          : selectedReservation.service_type === 'diagnostic_traitement' 
+                          ? 'Diagnostic + Traitement' 
+                          : 'Diagnostic + Traitement + Lotion'}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Notes */}
                 {selectedReservation.notes && (
                   <div className="pt-3 border-t">
@@ -623,7 +641,8 @@ export default function PlanningPage() {
 • *Heure :* ${selectedReservation.heure}
 • *Pack :* ${selectedReservation.pack}${selectedReservation.adresse ? `
 • *Adresse :* ${selectedReservation.adresse}` : ''}${selectedReservation.ecole ? `
-• *École :* ${selectedReservation.ecole}` : ''}
+• *École :* ${selectedReservation.ecole}` : ''}${selectedReservation.service_type ? `
+• *Type de Service :* ${selectedReservation.service_type === 'diagnostic' ? 'Diagnostic' : selectedReservation.service_type === 'diagnostic_traitement' ? 'Diagnostic + Traitement' : 'Diagnostic + Traitement + Lotion'}` : ''}
 ━━━━━━━━━━━━━━━━━━━━━
 
 Merci de confirmer votre présence en répondant à ce message.
@@ -879,14 +898,32 @@ _L'équipe MISSPO_`
               </div>
 
               {editingReservation.pack === "École" && (
-                <div>
-                  <Label htmlFor="edit-ecole">École</Label>
-                  <Input
-                    id="edit-ecole"
-                    value={editingReservation.ecole || ""}
-                    onChange={(e) => setEditingReservation({...editingReservation, ecole: e.target.value})}
-                    className="mt-1"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit-ecole">École</Label>
+                    <Input
+                      id="edit-ecole"
+                      value={editingReservation.ecole || ""}
+                      onChange={(e) => setEditingReservation({...editingReservation, ecole: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-service-type">Type de Service</Label>
+                    <Select
+                      value={editingReservation.service_type || ""}
+                      onValueChange={(value) => setEditingReservation({...editingReservation, service_type: value})}
+                    >
+                      <SelectTrigger id="edit-service-type" className="mt-1">
+                        <SelectValue placeholder="Sélectionner le service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="diagnostic">Diagnostic</SelectItem>
+                        <SelectItem value="diagnostic_traitement">Diagnostic + Traitement</SelectItem>
+                        <SelectItem value="diagnostic_traitement_lotion">Diagnostic + Traitement + Lotion</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               )}
 

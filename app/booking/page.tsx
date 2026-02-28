@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import {
   School, Home, User, Phone, Mail, MapPin, CalendarDays, Clock,
@@ -21,7 +21,7 @@ import { toast } from "sonner"
 
 type Pack = "school" | "home" | ""
 
-export default function BookingPage() {
+function BookingForm() {
   const { t, dir } = useLanguage()
   const { ref, isInView } = useInView()
   const searchParams = useSearchParams()
@@ -384,5 +384,17 @@ export default function BookingPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-misspo-blue-dark" />
+      </div>
+    }>
+      <BookingForm />
+    </Suspense>
   )
 }

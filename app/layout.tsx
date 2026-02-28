@@ -32,6 +32,11 @@ export const metadata: Metadata = {
     "domicile",
     "MISSPO",
   ],
+  icons: {
+    icon: '/fav/gr (2).png',
+    shortcut: '/fav/gr (2).png',
+    apple: '/fav/gr (2).png',
+  },
 }
 
 export default function RootLayout({
